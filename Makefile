@@ -1,28 +1,54 @@
-CPPFLAGS = -std=c++98 -Wall -Wextra -Werror  -g #-fsanitize=address
-
-NAME = webserv
 CC = c++
-SRCS = ./source/main.cpp ./source/config_file/ConfigFile.cpp ./source/config_file/CheckValidity.cpp
+NAME = webServ
+REQUEST_PATH = ./source/request/
+METHODS_PATH = ./source/methods/
+CONFIGFILE_PATH = ./source/config_file/
+INCLUDES_PATH = ./include/
+FLAGS = 
 
-INC = ./include/WebServer.hpp ./include/ConfigFile.hpp ./include/classes.hpp
 
-OBJS = $(SRCS:.cpp=.o)
+config_SRCS = $(CONFIGFILE_PATH)ConfigFile.cpp $(CONFIGFILE_PATH)CheckValidity.cpp
 
 
-.SILENT :
+method_SRCS =  $(METHODS_PATH)get.cpp  $(METHODS_PATH)method.cpp $(METHODS_PATH)delete.cpp  $(METHODS_PATH)post.cpp  $(METHODS_PATH)error.cpp
+request_SRCS =  $(REQUEST_PATH)request.cpp $(REQUEST_PATH)split.cpp $(REQUEST_PATH)trimFront.cpp $(REQUEST_PATH)parse.cpp
+SRCS =  main.cpp 
 
-all : $(NAME)
-	
-$(NAME): $(OBJS) $(INC)
-	@$(CC) $(CPPFLAGS) $(SRCS) -o $(NAME)
+method_OBJS	= $(method_SRCS:.cpp=.o)
+request_OBJS = $(request_SRCS:.cpp=.o)
+config_OBJS = $(config_SRCS:.cpp=.o)
+OBJS	= $(SRCS:.cpp=.o)
+DEPS =  $(INCLUDES_PATH)request.hpp $(INCLUDES_PATH)method.hpp $(INCLUDES_PATH)WebServer.hpp $(INCLUDES_PATH)ConfigFile.hpp $(INCLUDES_PATH)classes.hpp
 
-%.o : %.cpp  $(INC) 
-	$(CC)  $(CPPFLAGS) -o $@ -c $< 
+
+
+%.o:%.cpp $(DEPS)
+	${CC} ${FLAGS}  -o $@ -c $<
+
+all: $(NAME)
+
+$(NAME): $(OBJS) $(config_OBJS) $(request_OBJS) $(method_OBJS)
+	${CC}  ${FLAGS} $(OBJS) $(config_OBJS) $(request_OBJS) $(method_OBJS) -o $(NAME)
+	@make clean -C ./
+
+push:fclean
+	@git status
+	@read -p "Files To Add:" files; git add "$$files" 
+	@ read -p "Message:" message; \
+	git commit -m "$$message"; \
+	git push origin master
 
 clean:
-	@rm -f $(OBJS)
-
+	@rm -f $(OBJS)  $(request_OBJS) $(method_OBJS)
+	@echo "\x1b[36m   +> Clean \033[0m\033[38;5;42m [Done] \033[0m";
+	
 fclean: clean
 	@rm -f $(NAME)
-	
-re: fclean $(NAME)
+	@echo "\x1b[36m   +> fClean \033[0m\033[38;5;42m [Done] \033[0m";
+
+re: fclean all
+
+
+.PHONY : all  push clean fclean re
+
+# 
