@@ -15,15 +15,31 @@ std::vector<std::string> &request::execute(std::string body, Data *_confdata)
     std::map<std::string, std::vector<std::string> > it = _confdata->server_list.begin()->server_data;
 
 
-    std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > > location = _confdata->server_list.begin()->locations;
+    std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > > location = serv__it->locations;
     std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator location_it = location.begin();
-    std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator locat_map_it = location_it->begin();
 
 
-    while (locat_map_it != location_it->end())
+    while (location_it != location.end())
     {
-        std::cout << "  +>" << locat_map_it->first << std::endl;;
-       ++locat_map_it;
+        std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator locat_map_it = location_it->begin();
+        std::cout << "  +>" << locat_map_it->first << std::endl;
+        std::string str = locat_map_it->first;
+        if (str.compare(this->request_URI) == 0)
+        {
+            std::map<std::string, std::vector<std::string> > loc_var = locat_map_it->second;
+            std::vector<std::string>::iterator iitt = loc_var["allow"].begin();
+            while(iitt != loc_var["allow"].end()){
+            std::cout << "      +>" << *iitt << std::endl;
+            ++iitt;
+            }
+            
+            // while (loc_var != locat_map_it->second.end()) {
+            //     std::cout << "      +>" << *loc_var << std::endl;
+            //     loc_var++;
+            // }
+            // break;
+        }
+       ++location_it;
     }
     
     std::vector<std::string> root_vect = it["root"];

@@ -28,7 +28,7 @@ DEPS =  $(INCLUDES_PATH)request.hpp $(INCLUDES_PATH)method.hpp $(INCLUDES_PATH)W
 all: $(NAME)
 
 $(NAME): $(OBJS) $(config_OBJS) $(request_OBJS) $(method_OBJS)
-	${CC}  ${FLAGS} $(OBJS) $(config_OBJS) $(request_OBJS) $(method_OBJS) -o $(NAME)
+	${CC}  ${FLAGS} $(config_OBJS) $(OBJS)  $(request_OBJS) $(method_OBJS) -o $(NAME)
 	@make clean -C ./
 
 push:fclean
@@ -38,7 +38,7 @@ push:fclean
 	@read -p "Branch:" branch; git push origin $$branch
 
 clean:
-	@rm -f $(OBJS)  $(request_OBJS) $(method_OBJS)
+	@rm -f $(OBJS)  $(request_OBJS) $(method_OBJS) $(config_OBJS)
 	@echo "\x1b[36m   +> Clean \033[0m\033[38;5;42m [Done] \033[0m";
 	
 fclean: clean
