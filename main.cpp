@@ -73,7 +73,6 @@
 #include <unistd.h>
 #include "./include/request.hpp"
 #include "./include/method.hpp"
-#include "./include/WebServer.hpp"
 
 int main(int ac, char *av[])
 {
@@ -170,7 +169,7 @@ int main(int ac, char *av[])
         std::vector<std::string> response_message;
         request *req = new request(newsockfd, clientrequest[0]);
         // std::vector<std::string>::iterator Buffer = split(buffer, "\r\n\r\n").begin();
-        response_message = req->execute(clientrequest[1]);
+        response_message = req->execute(clientrequest[1], &g_Data);
         req->sand(atoi(response_message[0].c_str()), response_message[1]);
 
         close(newsockfd);

@@ -8,6 +8,8 @@
 #include <map>
 #include <sys/socket.h>
 #include <fstream> 
+#include "./WebServer.hpp"
+
 #include "./method.hpp"
 
 
@@ -80,7 +82,7 @@ private:
 
 public:
     request(int socketID, std::string req);
-    std::vector<std::string> &execute( std::string body );
+    std::vector<std::string> &execute(std::string body, Data * _confdata);
     void sand(int socketID, std::string body);
 
 

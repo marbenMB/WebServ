@@ -1,13 +1,25 @@
 #include "../../include/request.hpp"
 
-std::vector<std::string> &request::execute(std::string body)
+std::vector<std::string> &request::execute(std::string body, Data *_confdata)
 {
 
     method *reqmethod = nullptr;
     std::vector<std::string> rBody = split(body, "\r\n\r\n");
     this->message.push_back(std::to_string(this->socketID));
     // std::cout << "\nmethod : " << this->getmethod() << std::endl;
-    ;
+
+    std::vector<ServerConf> serv = _confdata->server_list;
+    std::vector<ServerConf>::iterator serv__it = _confdata->server_list.begin();
+    std::map<std::string, std::vector<std::string> > it = _confdata->server_list.begin()->server_data;
+    std::vector<std::string> root_vect = it["root"];
+    std::vector<std::string> error_page_vect = it["root"];
+    std::cout << "root_vect : " << root_vect[0] << std::endl;
+    if (!root_vect[0].empty())
+        this->root = root_vect[0];
+    // while (it != serv__it->server_data.end())
+    // {
+    //         ++it;
+    // }
 
     if (this->req_method.compare("GET") == 0)
         reqmethod = new get(*this);
@@ -18,9 +30,8 @@ std::vector<std::string> &request::execute(std::string body)
         this->setRequestBody(rBody);
         reqmethod = new Post(*this);
     }
-    else 
+    else
     {
-        
     }
     if (reqmethod->getStatuscode() != 200)
     {
@@ -44,13 +55,13 @@ std::vector<std::string> &request::execute(std::string body)
     }
     reqmethod->createresponse();
     // std::cout << "\n    Body :\n"
-            //   << reqmethod->getResponseBody() << std::endl;
+    //   << reqmethod->getResponseBody() << std::endl;
     this->message.push_back(reqmethod->getResponseBody());
 
     // std::cout << "\n    ++> SocketId :" << this->message[0] << "\n    ++>Message :" << this->message[1] << std::endl;
     // std::cout <<"\n" << reqmethod->getHost()<< " " <<  reqmethod->getStatuscode() << " " ;
     // * print status : HTTP/1.1 200 OK
-    std::cout <<"["<< this->gethost()<<"] " << this->gethttp_version() << " " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase()<<" " << this->request_URI << std::endl;
+    std::cout << "[" << this->gethost() << "] " << this->gethttp_version() << " " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase() << " " << this->request_URI << std::endl;
     delete reqmethod;
     return (this->message);
 }
