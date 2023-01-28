@@ -12,6 +12,7 @@ void server_data(Data &g_Data) {
     struct stat                                                        sb;
     std::string                                                        root_path;
     int                                                               check_error_page = 0;
+    char                                                              type;
 
     std::vector<ServerConf> server_list = g_Data.server_list;
     memset(&hints, 0, sizeof hints);
@@ -66,7 +67,6 @@ void server_data(Data &g_Data) {
                 }
                 else if (server_data_it->first == "error_page" && !check_error_page)
                 {
-                    check_error_page = true;
                     for (std::vector<std::string>::iterator value_it = server_data_it->second.begin(); value_it != server_data_it->second.end(); ++value_it) {
                         if ((check_error_page = (*value_it).find("."))  && check_error_page != -1) {
                             if (!(stat((root_path + (*value_it)).c_str(), &sb) == 0) || !S_ISREG(sb.st_mode)) {
@@ -74,6 +74,14 @@ void server_data(Data &g_Data) {
                                 break;
                             }
                         }
+                    }
+                }
+                else if (server_data_it->first == "client_max_body_size")
+                {
+                    for (std::vector<std::string>::iterator value_it = server_data_it->second.begin(); value_it != server_data_it->second.end(); ++value_it) {
+                        type = (*value_it)[(*value_it).length() - 1];
+                        // if (type == 'M' || type == 'K' || )
+                        //     std::cout << *value_it << std::endl;
                     }
                 }
             }
