@@ -5,17 +5,70 @@ std::vector<std::string> &request::execute(std::string body, Data *_confdata)
 
     method *reqmethod = nullptr;
     std::vector<std::string> rBody = split(body, "\r\n\r\n");
-    this->message.push_back(std::to_string(this->socketID));
+    this->message.push_back(std::to_string(this->socketID));\
+
     // std::cout << "\nmethod : " << this->getmethod() << std::endl;
 
     std::vector<ServerConf> serv = _confdata->server_list;
     std::vector<ServerConf>::iterator serv__it = _confdata->server_list.begin();
+    // std::vector<ServerConf>::iterator serv__it = _confdata->server_list.begin();
     std::map<std::string, std::vector<std::string> > it = _confdata->server_list.begin()->server_data;
+
+
+    std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > > location = _confdata->server_list.begin()->locations;
+    std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator location_it = location.begin();
+    std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator locat_map_it = location_it->begin();
+
+
+    while (locat_map_it != location_it->end())
+    {
+        std::cout << "  +>" << locat_map_it->first << std::endl;;
+       ++locat_map_it;
+    }
+    
     std::vector<std::string> root_vect = it["root"];
-    std::vector<std::string> error_page_vect = it["root"];
-    std::cout << "root_vect : " << root_vect[0] << std::endl;
+    std::vector<std::string>::iterator listen_vect = it["listen"].begin();
+    std::vector<std::string> error_page_vect = it["error_page"];
+    // std::cout << "root_vect : " << root_vect[0] << std::endl;
+
+    while (listen_vect != it["listen"].end()){
+        /* code */
+        std::cout << "listen_vect : " << listen_vect[0] << std::endl;
+        ++listen_vect;
+    }
+    std::vector<std::string>::iterator error_page_it = error_page_vect.begin();
+
+
+
+    // ! check request Server :
+
+    std::cout << "ROOT :" << this->root << std::endl;
+    // std::cout << "HOST :" << this->host << std::endl;
+    std::vector<std::string> splitHost = split(this->host, ":");
+    std::cout << "/* -------------------------------------------------------------------------- */"<<std::endl;
+    std::cout << "/*"<<BLUE<<"                                REQUEST INFO                                "<< END_CLR<<"*/"<<std::endl;
+    std::cout << "/*                            HOST :"<<this->host<<"                            */"<<std::endl;
+    std::cout << "/*                                 LISTEN:"<<splitHost[1]<<"                                */"<<std::endl;
+    std::cout << "/*                              SERVER NAME:"<<splitHost[0]<<"                         */"<<std::endl;
+    std::cout << "/* -------------------------------------------------------------------------- */"<<std::endl;
+    // //  * listen :
+    // std::cout << "LISTEN:" << splitHost[1] << std::endl;;
+    // //  * servre_name:
+    // std::cout << "SERVER NAME:" << splitHost[1] << std::endl;;
+    // //  * host:
+    // std::cout << "host:" << splitHost[0] << std::endl;;
+
+
+    // while (error_page_it != error_page_vect.end())
+    // {
+    //     std::cout << "  +>"<< *error_page_it << std::endl;
+    //     ++error_page_it;
+    // }
+    
     if (!root_vect[0].empty())
         this->root = root_vect[0];
+    // std::cout << "ROOT :" << this->root << std::endl;
+    
     // while (it != serv__it->server_data.end())
     // {
     //         ++it;
@@ -61,7 +114,7 @@ std::vector<std::string> &request::execute(std::string body, Data *_confdata)
     // std::cout << "\n    ++> SocketId :" << this->message[0] << "\n    ++>Message :" << this->message[1] << std::endl;
     // std::cout <<"\n" << reqmethod->getHost()<< " " <<  reqmethod->getStatuscode() << " " ;
     // * print status : HTTP/1.1 200 OK
-    std::cout << "[" << this->gethost() << "] " << this->gethttp_version() << " " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase() << " " << this->request_URI << std::endl;
+    std::cout << GREEN << "[" << this->gethost() << "] " << this->gethttp_version() << " " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase() << " " << this->request_URI << END_CLR <<std::endl;
     delete reqmethod;
     return (this->message);
 }

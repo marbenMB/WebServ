@@ -13,6 +13,7 @@ class request;
 class method
 {
 private:
+    ServerConf  request_server;
     int statuscode;
     int socketID;
     std::string host;

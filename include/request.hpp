@@ -1,6 +1,12 @@
 #ifndef REQUEST_H
 # define REQUEST_H
 
+#define BLUE "\x1b[36m"
+#define RED "\x1b[31m"
+#define GREEN "\x1b[32m"
+#define MAUVE "\x1b[33m"
+#define END_CLR "\033[0m"
+
 #include <iostream>
 #include <unistd.h>
 #include <sstream>
