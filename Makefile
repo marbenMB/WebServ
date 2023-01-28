@@ -34,9 +34,8 @@ $(NAME): $(OBJS) $(config_OBJS) $(request_OBJS) $(method_OBJS)
 push:fclean
 	@git status
 	@read -p "Files To Add:" files; git add "$$files" 
-	@ read -p "Message:" message; \
-	git commit -m "$$message"; \
-	git push origin master
+	@read -p "Message:" message; git commit -m "$$message"
+	@read -p "Branch:" branch; git push origin $$branch
 
 clean:
 	@rm -f $(OBJS)  $(request_OBJS) $(method_OBJS)
