@@ -7,12 +7,18 @@ char* ft_join(char *str1, const char *str2) {
 
 void server_data(Data &g_Data) {
     typedef std::map<std::string, std::vector<std::string> >::iterator srv_data_it;
+    typedef std::vector<std::map<std::string,std::map<std::string, std::vector<std::string> > > >::iterator ser_loc_it;
+    typedef std::map<std::string,std::map<std::string, std::vector<std::string> > >::iterator ser_loc_map_it;
+    typedef std::map<std::string, std::vector<std::string> >::iterator map_loc_val_it;
+    typedef std::vector<std::string>::iterator fin_val;
     struct addrinfo                                                    hints, *res;
     int                                                                status;
     struct stat                                                        sb;
     std::string                                                        root_path;
     int                                                               check_error_page = 0;
     char                                                              type;
+    std::string                                                       number;
+    int                                                               index;
 
     std::vector<ServerConf> server_list = g_Data.server_list;
     memset(&hints, 0, sizeof hints);
@@ -49,7 +55,7 @@ void server_data(Data &g_Data) {
                 else if (server_data_it->first == "host") {
                     status = getaddrinfo((*value_it).c_str(), NULL, &hints, &res);
                     if (status != 0) {
-                        g_Data.error = "error : host value not valide";
+                        g_Data.error = "error : host value not valide"; 
                         break;
                     }
                 }
@@ -80,8 +86,31 @@ void server_data(Data &g_Data) {
                 {
                     for (std::vector<std::string>::iterator value_it = server_data_it->second.begin(); value_it != server_data_it->second.end(); ++value_it) {
                         type = (*value_it)[(*value_it).length() - 1];
-                        // if (type == 'M' || type == 'K' || )
-                        //     std::cout << *value_it << std::endl;
+                        if (type == 'M' || type == 'K') {
+                            number = *value_it;
+                            number.erase((*value_it).length() - 1, 1);
+                            index = number.find_first_not_of("0123456789");
+                            if (index != -1) {
+                                g_Data.error = "the body size not valid";
+                                break;
+                            }
+                        }
+                        else {
+                            g_Data.error = "the body size not valid";
+                            break;
+                        }
+                    }
+                }
+
+            }
+        }
+        //////
+        for (ser_loc_it server_loc_it = it->locations.begin(); server_loc_it != it->locations.end(); ++server_loc_it) {
+            for(ser_loc_map_it server_loc_map_it = server_loc_it->begin(); server_loc_map_it != server_loc_it->end(); ++server_loc_map_it) {
+                for (map_loc_val_it map = server_loc_map_it->second.begin(); map != server_loc_map_it->second.end(); ++map) {
+                        std::cout << map->first << " : " << std::endl;
+                    for (fin_val last_val = map->second.begin(); last_val != map->second.end(); ++last_val) {
+                        std::cout << "           " << *last_val << std::endl;
                     }
                 }
             }
@@ -89,9 +118,17 @@ void server_data(Data &g_Data) {
     }
 }
 
+// void server_location(Data &g_Data) {
+//     typedef std::vector<std::map<std::string,std::map<std::string, std::vector<std::string> > > >::iterator locations = g_Data.;
+
+// }
+
+
+
 void check_validity(Data &g_Data) {
     if (!g_Data.error.length()) {
         server_data(g_Data);
+        // server_location(g_Data);
 
     }
     
