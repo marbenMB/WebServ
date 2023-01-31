@@ -1,16 +1,32 @@
 #include "../../include/WebServer.hpp"
+#include <iostream>
+#include <sstream>
 
 char* ft_join(char *str1, const char *str2) {
     strcat(str1, str2);
     return str1;
 }
 
+void convert_body_size(std::string &size, std::string number, char type) {
+    
+    std::ostringstream s_num;
+    long num = std::atoi(number.c_str());
+
+    if (type == 'G')
+        s_num << (num * 1024 * 1024);
+    else if (type == 'K')
+        s_num << num;
+    else if (type == 'M')
+        s_num << (num * 1024);
+    size = s_num.str();
+}
+
 void server_data(Data &g_Data) {
     typedef std::map<std::string, std::vector<std::string> >::iterator srv_data_it;
-    typedef std::vector<std::map<std::string,std::map<std::string, std::vector<std::string> > > >::iterator ser_loc_it;
-    typedef std::map<std::string,std::map<std::string, std::vector<std::string> > >::iterator ser_loc_map_it;
-    typedef std::map<std::string, std::vector<std::string> >::iterator map_loc_val_it;
-    typedef std::vector<std::string>::iterator fin_val;
+    // typedef std::vector<std::map<std::string,std::map<std::string, std::vector<std::string> > > >::iterator ser_loc_it;
+    // typedef std::map<std::string,std::map<std::string, std::vector<std::string> > >::iterator ser_loc_map_it;
+    // typedef std::map<std::string, std::vector<std::string> >::iterator map_loc_val_it;
+    // typedef std::vector<std::string>::iterator fin_val;
     struct addrinfo                                                    hints, *res;
     int                                                                status;
     struct stat                                                        sb;
@@ -85,8 +101,9 @@ void server_data(Data &g_Data) {
                 else if (server_data_it->first == "client_max_body_size")
                 {
                     for (std::vector<std::string>::iterator value_it = server_data_it->second.begin(); value_it != server_data_it->second.end(); ++value_it) {
+                        // std::cout << *value_it << std::endl;
                         type = (*value_it)[(*value_it).length() - 1];
-                        if (type == 'M' || type == 'K') {
+                        if (type == 'M' || type == 'K' || type == 'G') {
                             number = *value_it;
                             number.erase((*value_it).length() - 1, 1);
                             index = number.find_first_not_of("0123456789");
@@ -94,6 +111,10 @@ void server_data(Data &g_Data) {
                                 g_Data.error = "the body size not valid";
                                 break;
                             }
+                            else
+                                convert_body_size(*value_it, number, type);
+                            std::cout << *value_it << std::endl;
+
                         }
                         else {
                             g_Data.error = "the body size not valid";
@@ -105,16 +126,16 @@ void server_data(Data &g_Data) {
             }
         }
         //////
-        for (ser_loc_it server_loc_it = it->locations.begin(); server_loc_it != it->locations.end(); ++server_loc_it) {
-            for(ser_loc_map_it server_loc_map_it = server_loc_it->begin(); server_loc_map_it != server_loc_it->end(); ++server_loc_map_it) {
-                for (map_loc_val_it map = server_loc_map_it->second.begin(); map != server_loc_map_it->second.end(); ++map) {
-                        std::cout << map->first << " : " << std::endl;
-                    for (fin_val last_val = map->second.begin(); last_val != map->second.end(); ++last_val) {
-                        std::cout << "           " << *last_val << std::endl;
-                    }
-                }
-            }
-        }
+        // for (ser_loc_it server_loc_it = it->locations.begin(); server_loc_it != it->locations.end(); ++server_loc_it) {
+        //     for(ser_loc_map_it server_loc_map_it = server_loc_it->begin(); server_loc_map_it != server_loc_it->end(); ++server_loc_map_it) {
+        //         for (map_loc_val_it map = server_loc_map_it->second.begin(); map != server_loc_map_it->second.end(); ++map) {
+        //                 std::cout << map->first << " : " << std::endl;
+        //             for (fin_val last_val = map->second.begin(); last_val != map->second.end(); ++last_val) {
+        //                 std::cout << "           " << *last_val << std::endl;
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
 

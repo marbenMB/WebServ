@@ -14,6 +14,7 @@
 #include <netdb.h>
 #include <cstring>
 #include <sys/stat.h>
+#include <cstdlib>
 #include "classes.hpp"
 #include "ConfigFile.hpp"
 
