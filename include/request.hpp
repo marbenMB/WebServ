@@ -1,5 +1,5 @@
 #ifndef REQUEST_H
-# define REQUEST_H
+#define REQUEST_H
 
 #define BLUE "\x1b[36m"
 #define RED "\x1b[31m"
@@ -13,11 +13,10 @@
 #include <vector>
 #include <map>
 #include <sys/socket.h>
-#include <fstream> 
+#include <fstream>
 #include "./WebServer.hpp"
 
 #include "./method.hpp"
-
 
 /*
 
@@ -48,12 +47,20 @@ private:
     std::string root;
     std::string bufferBody;
 
+    // default :
+    std::string default_index;
+    std::string default_10x;
+    std::string default_20x;
+    std::string default_30x;
+    std::string default_40x;
+    std::string default_50x;
 
     // Requirements Fields :
     std::string req_method;
     std::string host;
     std::string request_URI;
     std::string http_version;
+
     // Optional Fields :
     std::string Accept;
     std::string Accept_Charset;
@@ -69,8 +76,6 @@ private:
     std::string User_Agent;
     std::vector<std::string> requestBody;
 
-
-
     // post requirements
     int Content_Length;
     std::string Content_Type;
@@ -78,31 +83,29 @@ private:
     std::string Transfer_Encoding;
 
     request(){};
-
-    bool parseHeader(void); 
-    bool parseBody(void); 
-
-
-    std::vector<std::string> message ;
-
+    std::vector<std::string> message;
 
 public:
     request(int socketID, std::string req);
-    std::vector<std::string> &execute(std::string body, Data * _confdata);
+    std::vector<std::string> &execute(std::string body, Data *_confdata);
     void sand(int socketID, std::string body);
-
 
     ~request();
     bool Verifying_Header(std::string req);
+    bool Verifying_Body(std::string req);
+    void checkForIndex(std::vector<std::string> vect);
+    void checkForErrorPage(std::vector<std::string> vect);
     bool executeAction();
     std::string getmethod() const
     {
         return this->req_method;
     }
 
-    std::string const & gethost() const;
-    std::string const & getrequest_URI() const;
-    std::string const & gethttp_version() const;
+    std::string const &gethost() const;
+    std::string const &getroot() const;
+    std::string const &getdefaultIndex() const;
+    std::string const &getrequest_URI() const;
+    std::string const &gethttp_version() const;
     int const &getsocketID(void) const;
     void setsocketID(int socketId);
     std::string const &getContent_Type(void) const;
@@ -112,10 +115,9 @@ public:
     std::vector<std::string> const &getRequestBody(void) const;
     void setRequestBody(std::vector<std::string> reqBody);
 
-    
+    void print_vectINFO(std::vector<std::string>, std::string);
 };
 std::vector<std::string> split(const std::string &str, const std::string &delimiter);
 std::string trimFront(const std::string &s, std::string trim);
-
 
 #endif

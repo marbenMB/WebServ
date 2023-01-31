@@ -140,6 +140,10 @@ void method::setContent_Length(int Content_Length)
 {
     this->Content_Length = Content_Length;
 }
+
+void method::setClient_max_body_size(int Client_max_body_size){
+    this->client_max_body_size = Client_max_body_size;
+}
 void method::setContent_Type(std::string Content_Type)
 {
     std::vector<std::string> tmp = split(Content_Type, ";");

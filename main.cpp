@@ -85,11 +85,14 @@ int main(int ac, char *av[])
     std::string tmp;
     struct sockaddr_in serv_addr, cli_addr;
     int n;
-    if (ac == 2){
-        g_Data.configuration.parcing_file(av[1], g_Data);    
-    }else
+    if (ac == 2)
+    {
+        g_Data.configuration.parcing_file(av[1], g_Data);
+    }
+    else
         g_Data.error = "error n number of argument";
-    if (!g_Data.error.empty()){
+    if (!g_Data.error.empty())
+    {
         std::cout << RED << g_Data.error << END_CLR << std::endl;
         // system("leaks webserv");
         return (1);

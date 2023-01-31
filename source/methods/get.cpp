@@ -7,10 +7,10 @@ get::get(request rhs)
     this->setHttp_version(rhs.gethttp_version());
     this->setStatuscode(200);
     this->setreason_phrase("OK");
-    this->setRootPath("/Users/mmasstou/Desktop/webserv/data");
+    this->setRootPath(rhs.getroot());
      this->setResponseBody("");
     this->setContent_Type(rhs.getContent_Type());
-    this->execute_method();
+    this->execute_method();    
 /**
     *
     *! Verifying_Header that the request method is indeed "GET" and the URI is valid.
@@ -34,23 +34,31 @@ int get::execute_method(void)
     std::string buffer;
     // std::string responseBody;
     // check config file if the method is allowed:
-    if (this->getRequest_URI().compare("/") == 0){
-        this->setRequest_URI("/index.html");
-    }
-    std::string filename = this->getRootPath() + this->getRequest_URI();
-    // std::cout << "Request Pathii :" << filename << std::endl;
+    // if (this->getRequest_URI().compare("/") == 0){
+    //     this->setRequest_URI("/index.html"); 
+    // }
+    std::string filename ;
+    filename.append(this->getRootPath());
+    filename.append(this->getRequest_URI());
+    // std::cout << "Request Path :" << filename << std::endl;
     // read from server :
     inFile.open( filename, std::ifstream::in);
     if (!inFile.is_open())
     {
+        // std::cout << "Ana Hna\n";
         this->error(404, "Not Found");
+         inFile.open( "/Users/mmasstou/projects/WebServ/var/errors/40x.html", std::ifstream::in);
         // this->setStatuscode(404);
         // this->setreason_phrase("Not Found");
     }
+    // std::cout << "<Line URi='"<< this->getRequest_URI() <<"' root='"<< this->getRootPath()<<"' filename='"<<filename <<"'>" << std::endl;
     while (std::getline(inFile, buffer))
     {
+        // std::cout << buffer << std::endl;
         line.append(buffer);
     }
+    // std::cout << "</Line >" << std::endl;
+
     this->setResponseBody(line);
 
     // std::cout << "\nBody : \n" << this->getResponseBody();

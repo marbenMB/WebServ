@@ -13,7 +13,12 @@ class request;
 class method
 {
 private:
-    ServerConf  request_server;
+    // ? config file :
+    int isAllowed;
+    int client_max_body_size;
+
+
+    
     int statuscode;
     int socketID;
     std::string host;
@@ -40,6 +45,7 @@ public:
     // this atributs for  Post method
     std::map<std::string, std::string> const &getContent_Type(void) const;
     std::string const &getTransfer_Encoding(void) const;
+    int const &getClient_max_body_size(void) const;
     int const &getContent_Length(void) const;
     int const &getsocketID(void) const;
     void setsocketID(int socketId);
@@ -52,6 +58,7 @@ public:
     void setStatuscode(int sCode);
 
     void setContent_Length(int Content_Length);
+    void setClient_max_body_size(int);
     void setContent_Type(std::string Content_Type);
     void setTransfer_Encoding(std::string Transfer_Encoding);
 

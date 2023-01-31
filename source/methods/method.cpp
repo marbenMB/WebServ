@@ -76,12 +76,18 @@ std::map<std::string, std::string> const &method::getContent_Type(void) const
 }
 std::string const &method::getTransfer_Encoding(void) const
 {
-    return (this->Transfer_Encoding);
+    return (this->Transfer_Encoding); //
 }
+int const &method::getClient_max_body_size(void) const
+{
+    return (this->client_max_body_size);
+}
+
 int const &method::getContent_Length(void) const
 {
     return (this->Content_Length);
 }
+
 int const &method::getsocketID(void) const
 {
     return (this->socketID);
@@ -92,12 +98,10 @@ void method::setsocketID(int socketId)
 }
 
 void method::createresponse( void ){
-
     std::string status_line;
     std::string fields;
     std::map<std::string, std::string> Content_Type = this->getContent_Type();
-    // std::cout << "Content_Type['type'] :" << Content_Type["type"] << std::endl;
-    // exit(1);
+
     // status Line :
     status_line = this->getHttp_version();
     status_line.append(" ");
@@ -107,15 +111,17 @@ void method::createresponse( void ){
     status_line.append("\r\n");
 
     // Fields :
-
     fields.append("Content-Type: ");
     fields.append(Content_Type["type"]);
     fields.append("\r\n");
     fields.append("Content-Length: ");
     fields.append(std::to_string(this->getResponseBody().size()));
     fields.append("\r\n\r\n");
-
     status_line.append(fields);
+
+    // Body :
     status_line.append(this->getResponseBody());
+
+    // std::cout << std::endl << std::endl << status_line << std::endl;
     this->setResponseBody(status_line);
 }
