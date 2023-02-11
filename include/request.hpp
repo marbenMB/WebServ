@@ -39,6 +39,13 @@ Referer: Specifies the URI of the referring resource.
 User-Agent: Identifies the user agent making the request.
 
 **/
+
+typedef struct allow_methods
+{
+   int index;
+   std::string method;
+}t_allow_methods;
+
 class request
 {
 private:
@@ -54,6 +61,8 @@ private:
     std::string default_30x;
     std::string default_40x;
     std::string default_50x;
+    int redirect_status;
+    std::string redirect_URL;
 
     // Requirements Fields :
     std::string req_method;
@@ -112,6 +121,12 @@ public:
     std::string const &getTransfer_Encoding(void) const;
     int const &getContent_Length(void) const;
 
+    //  redirect
+    int const & getRedirect_status( void) const;
+    void setRedirect_status(int redirect_status);
+    std::string const & getredirect_URL( void) const;
+    void setredirect_URL(std::string redirect_URL);
+
     std::vector<std::string> const &getRequestBody(void) const;
     void setRequestBody(std::vector<std::string> reqBody);
 
@@ -119,5 +134,6 @@ public:
 };
 std::vector<std::string> split(const std::string &str, const std::string &delimiter);
 std::string trimFront(const std::string &s, std::string trim);
+std::string _CREATEresponse(std::map<std::string, std::string> content_type, int code_status, std::string reason_phrase, std::string body, std::string request_URI);
 
 #endif

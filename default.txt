@@ -1,0 +1,4 @@
+root : "/Users/mmasstou/projects/WebServ/data"
+client_max_body_size : 2G
+errors : "/Users/mmasstou/projects/WebServ/data/errors" + (40x.html || 50x.html || 30x.html)
+index index.html;

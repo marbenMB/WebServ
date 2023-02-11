@@ -16,7 +16,8 @@ private:
     // ? config file :
     int isAllowed;
     int client_max_body_size;
-
+    int redirect_status;
+    std::string redirect_URL;
 
     
     int statuscode;
@@ -67,6 +68,12 @@ public:
     void createresponse( void );
     virtual int execute_method(void) = 0;
     void setResponseBody(std::string reqBody);
+    //  redirect
+    int const & getRedirect_status( void) const;
+    void setRedirect_status(int redirect_status);
+    std::string const & getredirect_URL( void) const;
+    void setredirect_URL(std::string redirect_URL);
+
     // virtual bool intmethod(void) = 0;
 };
 
@@ -104,5 +111,4 @@ public:
     std::vector<std::string> const &getRequestBody(void) const;
     void setRequestBody(std::vector<std::string> reqBody);
 };
-
 #endif

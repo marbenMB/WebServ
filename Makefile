@@ -11,7 +11,7 @@ config_SRCS = $(CONFIGFILE_PATH)ConfigFile.cpp $(CONFIGFILE_PATH)CheckValidity.c
 
 
 method_SRCS =  $(METHODS_PATH)get.cpp  $(METHODS_PATH)method.cpp $(METHODS_PATH)delete.cpp  $(METHODS_PATH)post.cpp  $(METHODS_PATH)error.cpp
-request_SRCS =  $(REQUEST_PATH)request.cpp $(REQUEST_PATH)split.cpp $(REQUEST_PATH)trimFront.cpp $(REQUEST_PATH)parse.cpp $(REQUEST_PATH)request_getters.cpp
+request_SRCS =  $(REQUEST_PATH)request.cpp $(REQUEST_PATH)split.cpp $(REQUEST_PATH)trimFront.cpp $(REQUEST_PATH)parse.cpp $(REQUEST_PATH)request_getters.cpp $(REQUEST_PATH)redirection.cpp
 SRCS =  main.cpp 
 
 method_OBJS	= $(method_SRCS:.cpp=.o)
