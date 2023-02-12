@@ -1,8 +1,9 @@
-CPPFLAGS = -std=c++98 -Wall -Wextra -Werror  -g #-fsanitize=address
+CPPFLAGS = -std=c++98 -Wall -Wextra -Werror  -g -fsanitize=address
 
 NAME = webserv
 CC = c++
-SRCS = ./source/main.cpp ./source/config_file/ConfigFile.cpp ./source/config_file/CheckValidity.cpp
+SRCS = ./source/main.cpp ./source/config_file/ConfigFile.cpp ./source/config_file/CheckValidity.cpp \
+		./source/Server/Server.cpp ./source/Server/ServerClass.cpp
 
 INC = ./include/WebServer.hpp ./include/ConfigFile.hpp ./include/classes.hpp
 
@@ -23,6 +24,7 @@ clean:
 	@rm -f $(OBJS)
 
 fclean: clean
-	@rm -f $(NAME)
+	@rm -f $(NAME) 
+	@rm -rf webserv.dSYM
 	
 re: fclean $(NAME)

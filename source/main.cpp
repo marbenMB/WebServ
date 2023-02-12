@@ -7,7 +7,13 @@ int main (int ac, char **av)
     if (ac == 2)
     {
         g_Data.configuration.parcing_file(av[1], g_Data);
+		
+		//	***	Creating WebServer :
+		WebServ	*myServ;
         
+		myServ = estabilishServers(g_Data);
+
+		delete	myServ;
     }
     else
         g_Data.error = "error n number of argument";
@@ -17,6 +23,7 @@ int main (int ac, char **av)
         // system("leaks webserv");
         return (1);
     }
+	std::cout << GREEN << "+> Parsing Done!!" << END_CLR << std::endl << std::endl;
     // system("leaks webserv");
     return (0);
 }
