@@ -9,11 +9,14 @@ int main (int ac, char **av)
         g_Data.configuration.parcing_file(av[1], g_Data);
 		
 		//	***	Creating WebServer :
-		WebServ	*myServ;
-        
-		myServ = estabilishServers(g_Data);
+		// if (g_Data.error.empty())
+		// {
+			WebServ	*myServ;
+			
+			myServ = estabilishServers(g_Data);
 
-		delete	myServ;
+			delete	myServ;
+		// }
     }
     else
         g_Data.error = "error n number of argument";

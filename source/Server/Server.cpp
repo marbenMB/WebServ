@@ -17,6 +17,8 @@ std::vector<int>	portsExtraction(ServerConf server)
 			// if (ss.fail())
 			// 	throw ...
 			ports.push_back(nPort);
+			ss.str("");
+			ss.clear();
 		}
 	}
 	return ports;
@@ -34,8 +36,8 @@ std::vector<std::string>	getStringKeyVal(ServerConf server, std::string key)
 
 WebServ	*estabilishServers(Data &g_data)
 {
-	WebServ *servers = new WebServ(); 
-	std::vector<int>	servPorts;
+	WebServ *servers = new WebServ();
+	std::vector<Server>	vec;
 
 	for (std::vector<ServerConf>::iterator it = g_data.server_list.begin(); it != g_data.server_list.end(); it++)
 	{
@@ -43,7 +45,7 @@ WebServ	*estabilishServers(Data &g_data)
 		Server	newServ(portsExtraction(*it), getStringKeyVal(*it, "server_name"), getStringKeyVal(*it, "host"));
 		printVector(newServ.getListenPorts(), "Server Ports : ");
 		printVector(newServ.getServerHost(), "Server Hosts : ");
-		printVector(newServ.getServerName(), "Server Names : ");		
+		printVector(newServ.getServerName(), "Server Names : ");
 	}
 	return servers;
 }
