@@ -45,3 +45,6 @@ void request::setsocketID(int socketId)
 {
     this->socketID = socketId;
 }
+int const &request::getAutoIndex() const{
+    return this->autoindex;
+}

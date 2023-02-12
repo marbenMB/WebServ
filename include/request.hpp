@@ -7,6 +7,12 @@
 #define MAUVE "\x1b[33m"
 #define END_CLR "\033[0m"
 
+#define ALLOWED 12054
+#define NOT_ALLOWED 12055
+
+#define AUTOINDEX_ON 548
+#define AUTOINDEX_OFF 549
+
 #include <iostream>
 #include <unistd.h>
 #include <sstream>
@@ -17,6 +23,7 @@
 #include "./WebServer.hpp"
 
 #include "./method.hpp"
+
 
 /*
 
@@ -45,7 +52,7 @@ typedef struct allow_methods
    int index;
    std::string method;
 }t_allow_methods;
-
+class method;
 class request
 {
 private:
@@ -85,18 +92,29 @@ private:
     std::string User_Agent;
     std::vector<std::string> requestBody;
 
+
     // post requirements
     int Content_Length;
     std::string Content_Type;
     std::string Content_Transfer_Encoding;
     std::string Transfer_Encoding;
+    int autoindex;
 
+    // allowed vars
+    int __post;
+    int __delete;
+    int __get;
     request(){};
     std::vector<std::string> message;
 
 public:
-    request(int socketID, std::string req);
+    request(int , Data *, std::string, std::vector<std::string> &);
     std::vector<std::string> &execute(std::string body, Data *_confdata);
+    method *   execute_request( void );
+    void    Retrieving_requested_resource(Data *server);
+    void    GETstatusOfexecution(method * req_method) const;
+    std::vector<std::string>  const & create_response();
+
     void sand(int socketID, std::string body);
 
     ~request();
@@ -105,11 +123,11 @@ public:
     void checkForIndex(std::vector<std::string> vect);
     void checkForErrorPage(std::vector<std::string> vect);
     bool executeAction();
+    int const &getAutoIndex() const;
     std::string getmethod() const
     {
         return this->req_method;
     }
-
     std::string const &gethost() const;
     std::string const &getroot() const;
     std::string const &getdefaultIndex() const;
@@ -120,20 +138,17 @@ public:
     std::string const &getContent_Type(void) const;
     std::string const &getTransfer_Encoding(void) const;
     int const &getContent_Length(void) const;
-
     //  redirect
     int const & getRedirect_status( void) const;
     void setRedirect_status(int redirect_status);
     std::string const & getredirect_URL( void) const;
     void setredirect_URL(std::string redirect_URL);
-
     std::vector<std::string> const &getRequestBody(void) const;
     void setRequestBody(std::vector<std::string> reqBody);
-
     void print_vectINFO(std::vector<std::string>, std::string);
 };
 std::vector<std::string> split(const std::string &str, const std::string &delimiter);
 std::string trimFront(const std::string &s, std::string trim);
-std::string _CREATEresponse(std::map<std::string, std::string> content_type, int code_status, std::string reason_phrase, std::string body, std::string request_URI);
+std::string _CREATEresponse(std::map<std::string, std::string> content_type, int code_status, std::string reason_phrase, std::string body);
 
 #endif

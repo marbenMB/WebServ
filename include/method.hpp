@@ -19,7 +19,6 @@ private:
     int redirect_status;
     std::string redirect_URL;
 
-    
     int statuscode;
     int socketID;
     std::string host;
@@ -33,6 +32,8 @@ private:
     std::map<std::string, std::string> Content_Type;
     std::string Content_Transfer_Encoding;
     std::string Transfer_Encoding;
+
+    int autoindex;
 
 public:
     method();
@@ -49,8 +50,9 @@ public:
     int const &getClient_max_body_size(void) const;
     int const &getContent_Length(void) const;
     int const &getsocketID(void) const;
+    int const &getAutoIndex() const;
+    void setAutoIndex(int autoindex);
     void setsocketID(int socketId);
-
     void setRootPath(std::string root_path);
     void setHost(std::string host);
     void setreason_phrase(std::string host);
@@ -64,14 +66,14 @@ public:
     void setTransfer_Encoding(std::string Transfer_Encoding);
 
     virtual ~method();
-    void error(int statusCode,std::string reason_phrase);
-    void createresponse( void );
-    virtual int execute_method(void) = 0;
+    void error(int statusCode, std::string reason_phrase);
+    void createresponse(void);
+    virtual int execute_method(request _request) = 0;
     void setResponseBody(std::string reqBody);
     //  redirect
-    int const & getRedirect_status( void) const;
+    int const &getRedirect_status(void) const;
     void setRedirect_status(int redirect_status);
-    std::string const & getredirect_URL( void) const;
+    std::string const &getredirect_URL(void) const;
     void setredirect_URL(std::string redirect_URL);
 
     // virtual bool intmethod(void) = 0;
@@ -83,7 +85,7 @@ class get : public method
 public:
     get(request rhs);
     ~get();
-    int execute_method(void);
+    int execute_method(request _request);
 };
 
 class deleteMethod : public method
@@ -92,7 +94,7 @@ class deleteMethod : public method
 public:
     deleteMethod(request rhs);
     ~deleteMethod();
-    int execute_method(void);
+    int execute_method(request _request);
 };
 
 class Post : public method
@@ -105,10 +107,19 @@ private:
 public:
     Post(request rhs);
     ~Post();
-    int execute_method(void);
+    int execute_method(request _request);
     bool parseBody_Content_Length();
     bool parseBody_Transfer_Encoding();
     std::vector<std::string> const &getRequestBody(void) const;
     void setRequestBody(std::vector<std::string> reqBody);
 };
+
+class NotAllowed : public method
+{
+public:
+    NotAllowed(request rhs);
+    ~NotAllowed();
+    int execute_method(request _request);
+};
+
 #endif

@@ -97,7 +97,8 @@ void method::setsocketID(int socketId)
     this->socketID = socketId;
 }
 
-void method::createresponse( void /*  content_type, code_status, reason_phrase, body*/){
+void method::createresponse(void /*  content_type, code_status, reason_phrase, body*/)
+{
     std::string status_line;
     std::string fields;
     std::map<std::string, std::string> Content_Type = this->getContent_Type();
@@ -126,7 +127,8 @@ void method::createresponse( void /*  content_type, code_status, reason_phrase, 
     this->setResponseBody(status_line);
 }
 
-std::string _CREATEresponse(std::map<std::string, std::string> content_type, int code_status, std::string reason_phrase, std::string body, std::string request_URI){
+std::string _CREATEresponse(std::map<std::string, std::string> content_type, int code_status, std::string reason_phrase, std::string body)
+{
     std::string fields;
     // status Line :
     std::string status_line = "HTTP/1.1";
@@ -147,16 +149,8 @@ std::string _CREATEresponse(std::map<std::string, std::string> content_type, int
 
     // Body :
     status_line.append(body);
-
-    std::string color_status;
-    if (code_status == 200 )
-        color_status = GREEN;
-    else
-        color_status = RED;
-    std::cout << color_status << "127.0.0.1  HTTP/1.1 " << code_status << " " << reason_phrase << " " << request_URI << END_CLR << std::endl;
     return (status_line);
 }
-
 
 int const &method::getRedirect_status(void) const
 {
@@ -173,4 +167,13 @@ std::string const &method::getredirect_URL(void) const
 void method::setredirect_URL(std::string redirect_URL)
 {
     this->redirect_URL = redirect_URL;
+}
+
+int const &method::getAutoIndex() const
+{
+    return this->autoindex;
+}
+void method::setAutoIndex(int autoindex)
+{
+    this->autoindex = autoindex;
 }

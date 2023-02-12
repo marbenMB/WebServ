@@ -1,15 +1,54 @@
 #include "../../include/request.hpp"
 
-request::request(int socketID, std::string requestHeader) : Content_Length(-1)
+request::request(int socketID, Data *server, std::string request, std::vector<std::string> & response) : Content_Length(-1),
+                                                                    autoindex(AUTOINDEX_OFF),
+                                                                    __post(NOT_ALLOWED),
+                                                                    __delete(NOT_ALLOWED),
+                                                                    __get(NOT_ALLOWED)
 {
     std::string _requestBody;
+    std::string _reaponseBody;
+    method * reqmethod;
+    
     // * Init vars :
     this->requirements = true;
     this->setsocketID(socketID);
     // * parse Header :
-    if (this->Verifying_Header(requestHeader) == false) this->requirements = false;
-    if (this->Verifying_Body(_requestBody)  == false) this->requirements = false;
+    // 1 - cheack for Header 
+    std::cout << MAUVE << "   @VERIFYING  Header" << END_CLR << std::endl;
+    this->Verifying_Header(request);
+    // 2 - check for body 
+    std::cout << MAUVE << "   @VERIFYING  Body" << END_CLR << std::endl;
+    if (this->getmethod().compare("POST") == 0 && this->requirements)
+        this->Verifying_Body(_requestBody);
+    // 3 - Retrieving the requested resource [config File and Data] :
+    std::cout << MAUVE << "   @RETRIEVING requested resource" << END_CLR << std::endl;
+    this->Retrieving_requested_resource(server);
+    // 4 - execute request ; if this->requirements = true;
+    std::cout << MAUVE << "   @EXECUTE request" << END_CLR << std::endl;
+    reqmethod = this->execute_request();
+    // 5 - get status of execution :
 
+    // 6 - create response ;
+    std::cout << MAUVE << "   @CREATE response" << END_CLR << std::endl;
+    _reaponseBody = _CREATEresponse(
+        reqmethod->getContent_Type(),
+        reqmethod->getStatuscode(),
+        reqmethod->getreason_phrase(),
+        reqmethod->getResponseBody()
+        );
+    std::cout << MAUVE << "   @PUSH socket Id" << END_CLR << std::endl;
+    response.push_back(std::to_string(this->getsocketID()));
+    std::cout << MAUVE << "   @PUSH response Body" << END_CLR << std::endl;
+    response.push_back(_reaponseBody);
+    // response = this->create_response();
+    // 7 - print server status
+    std::string color_status;
+    if (reqmethod->getStatuscode() == 200 )
+        color_status = GREEN;
+    else
+        color_status = RED;
+    std::cout << color_status << "127.0.0.1  HTTP/1.1 " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase() << " " << this->getrequest_URI() << END_CLR << std::endl;
 }
 
 
@@ -56,9 +95,15 @@ bool request::Verifying_Header(std::string req)
         if(spl[0].compare("Transfer-Encoding") == 0){this->Transfer_Encoding = spl[1];}
         if(spl[0].compare("Accept") == 0){this->Accept = spl[1];}
     }
-    if (this->req_method.empty() || this->host.empty() || this->request_URI.empty() || this->http_version.empty())
+    if (this->req_method.empty() || this->host.empty() || this->request_URI.empty() || this->http_version.empty()){
+        this->requirements =  false;
         return false;
-
+    }
+    
+    if (this->request_URI.find(".php") != std::string::npos)
+        std::cout << RED <<"  >PHP CGI" << END_CLR << std::endl;
+    if (this->request_URI.find(".py") != std::string::npos)
+        std::cout << RED <<"  >PY CGI" << END_CLR << std::endl;
     // std::cout << " this->method : |" << this->req_method << "|" << std::endl;
     // std::cout << " this->host : |" << this->host << "|" << std::endl;
     // std::cout << " this->request_URI : |" << this->request_URI << "|" << std::endl;

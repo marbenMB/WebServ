@@ -1,74 +1,15 @@
 #include "../../include/request.hpp"
 
-void request::print_vectINFO(std::vector<std::string> Data, std::string string)
+void    request::Retrieving_requested_resource(Data *server)
 {
-    std::vector<std::string>::iterator it = Data.begin();
-     while (it != Data.end())
-    {
-        /* code */
-        std::cout << string <<" : |>" << it[0] << std::endl;
-        ++it;
-    }
-}
-
-void request::checkForIndex(std::vector<std::string> vect){
-    if (vect.size()){
-        std::vector<std::string>::iterator it = vect.begin();
-        this->default_index = "" ;
-        if (vect.size() && !it[0].empty()){
-            if (it[0].find("/") != std::string::npos){
-                this->default_index.append("/");
-            }
-            this->default_index.append(*it);
-        }
-        else{
-            this->default_index.append("/index.html");
-        }
-    }
-    // std::cout << "in Default Index : " << it[0] << std::endl;
-    // std::cout << "out Default Index : " << this->default_index << std::endl;
-}
-void request::checkForErrorPage(std::vector<std::string> vect){
-    std::vector<std::string>::iterator errorspage_iterator = vect.begin();
-    int NbeOfPages = 0;
-    bool one = false, two = false, three = false, fore = false, five = false;
-    while (errorspage_iterator != vect.end())
-    {
-        if (((*errorspage_iterator).find(".html") == std::string::npos)){
-            if ((*errorspage_iterator)[0] == '1') one = true;
-            if ((*errorspage_iterator)[0] == '2') two = true;
-            if ((*errorspage_iterator)[0] == '3') three = true;
-            if ((*errorspage_iterator)[0] == '4') fore = true;
-            if ((*errorspage_iterator)[0] == '5') five = true;
-            // std::cout << "type :"<< (*errorspage_iterator)[0]<< std::endl;
-        }
-        if ((*errorspage_iterator).find(".html") != std::string::npos){
-            if (one) this->default_10x = *errorspage_iterator;
-            if (two) this->default_20x = *errorspage_iterator;
-            if (three) this->default_30x = *errorspage_iterator;
-            if (fore) this->default_40x = *errorspage_iterator;
-            if (five) this->default_50x = *errorspage_iterator;
-            one = two = three = fore = five = false;
-            NbeOfPages++;
-        }
-        ++errorspage_iterator;
-    }
-}
-
-std::vector<std::string> &request::execute(std::string body, Data *_confdata)
-{
-
-    method *reqmethod = nullptr;
-    std::string __body;
-    std::vector<std::string> rBody = split(body, "\r\n\r\n");
     this->message.push_back(std::to_string(this->socketID));
     /* -------------------------------------------------------------------------- */
     /*                             // !read config file                           */
     /*                      // * Create instaence for server                      */
     /* -------------------------------------------------------------------------- */
-    std::vector<ServerConf> serv = _confdata->server_list;
+    std::vector<ServerConf> serv = server->server_list;
     // *> create iterator for etch srever in config file :
-    std::vector<ServerConf>::iterator server_iterator = _confdata->server_list.begin();
+    std::vector<ServerConf>::iterator server_iterator = server->server_list.begin();
 
     /* -------------------------------------------------------------------------- */
     /*      // ? Create instance for Serevr Data means header of config file      */
@@ -105,9 +46,6 @@ std::vector<std::string> &request::execute(std::string body, Data *_confdata)
     /* -------------------------------------------------------------------------- */
     bool allow = false;
     bool deny = false;
-    bool __post = false;
-    bool __get = false;
-    bool __delete = false;
     int j = 0;
     int i = 0;
     bool allow_methods = false;
@@ -117,16 +55,15 @@ std::vector<std::string> &request::execute(std::string body, Data *_confdata)
         j++;
         // ***> Create iterator for location Data
         std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator location_iterator = locations_iterator->begin();
-        // std::cout << "  +>" << location_iterator->first << std::endl;
+        std::cout << "  +>" << location_iterator->first << std::endl;
         std::string str = location_iterator->first;
         if (str.compare(this->request_URI) == 0)
         {
-            __post = false;
-            __get = false;
-            __delete = false;
+
             std::map<std::string, std::vector<std::string> > location_vars = location_iterator->second;
             std::vector<std::string>::iterator iitt = location_vars["allow"].begin();
             // std::cout << RED << "ALLOW :\n" << END_CLR ;
+            std::cout << RED << "   +>Allow" << END_CLR << std::endl;
             if (location_vars["allow"].size()){
                 while (iitt != location_vars["allow"].end())
                 {
@@ -136,6 +73,8 @@ std::vector<std::string> &request::execute(std::string body, Data *_confdata)
                 }
             } else {allow = true;}
             // std::cout << RED << "DENY :\n" << END_CLR ;
+            std::cout << RED << "   +>deny" << END_CLR << std::endl;
+
             iitt = location_vars["deny"].begin();
             if (location_vars["deny"].size()){
                  while (iitt != location_vars["deny"].end())
@@ -146,13 +85,23 @@ std::vector<std::string> &request::execute(std::string body, Data *_confdata)
                 }
             } else{ deny = false;}
             //  std::cout << RED << "ROOT :\n" << END_CLR ;
+            std::cout << RED << "   +>root" << END_CLR << std::endl;
+
             iitt = location_vars["root"].begin();
             if (location_vars["root"].size()) this->root = *iitt;
+            std::cout << RED << "   +>index" << END_CLR << std::endl;
+
             checkForIndex(location_vars["index"]);
             if (this->getrequest_URI().compare("/") == 0){
                 // std::cout << RED << this->default_index << END_CLR << std::endl;
                 this->request_URI = "/" + this->default_index;
             }
+
+            // autoindex
+            iitt = location_vars["autoindex"].begin();
+            if (location_vars["autoindex"][0].compare("on")) this->autoindex = AUTOINDEX_ON;
+            std::cout << RED << "   +>redirection" << END_CLR << std::endl;
+
             // redirection :
             iitt = location_vars["return"].begin();
             // int kk = 0;
@@ -169,6 +118,7 @@ std::vector<std::string> &request::execute(std::string body, Data *_confdata)
                 this->setRedirect_status(-1);
                 this->setredirect_URL("");
             }
+            std::cout << RED << "   +>allow_methods" << END_CLR << std::endl;
 
             //    allow_methods
             iitt = location_vars["allow_methods"].begin();
@@ -179,9 +129,9 @@ std::vector<std::string> &request::execute(std::string body, Data *_confdata)
                     while(iter_allow_methods != vect_allow_methods.end()){
                         if ((*iter_allow_methods).compare(this->req_method) == 0)
                         {
-                            if (this->req_method.compare("POST") == 0) {__post = true;}
-                            if (this->req_method.compare("GET") == 0) {__get = true;}
-                            if (this->req_method.compare("DELETE") == 0) {__delete = true;}
+                            if (this->req_method.compare("POST") == 0) {this->__post = ALLOWED;}
+                            if (this->req_method.compare("GET") == 0) {this->__get = ALLOWED;}
+                            if (this->req_method.compare("DELETE") == 0) {this->__delete = ALLOWED;}
                             allow_methods = true;
                         }
                         // std::cout << "      +[allow_methods]["<< j <<"]>" << *iter_allow_methods << std::endl;
@@ -197,68 +147,4 @@ std::vector<std::string> &request::execute(std::string body, Data *_confdata)
         ++locations_iterator;
        
     }
-
-    /* -------------------------------------------------------------------------- */
-    /*                              // !execute method                            */
-    /* -------------------------------------------------------------------------- */
-    /* -------------------------------------------------------------------------- */
-    /*                                // !init vars                               */
-    /* -------------------------------------------------------------------------- */
-
-    // std::cout << "  +++ ROOT +>"<<this->root << std::endl;
-    (void)allow;
-    (void)deny;
-    // if (__post){std::cout << RED <<"POST" << END_CLR << std::endl;}
-    // if (__get){std::cout << RED <<"GET" << END_CLR << std::endl;}
-    // if (__delete){std::cout << RED <<"DELETE" << END_CLR << std::endl;}
-  
-    if (__get || __post || __delete){
-        if (this->req_method.compare("GET") == 0)
-            reqmethod = new get(*this);
-        else if (this->req_method.compare("DELETE") == 0 )
-        {
-            reqmethod = new deleteMethod(*this);
-        }
-        else if (this->req_method.compare("POST") == 0 )
-        {
-            this->setRequestBody(rBody);
-            reqmethod = new Post(*this);
-        }
-        __body = _CREATEresponse(reqmethod->getContent_Type(), reqmethod->getStatuscode(), reqmethod->getreason_phrase(), reqmethod->getResponseBody());
-    } 
-    else {
-        // std::cout << this->req_method << " method not allowed" << std::endl;
-        // reqmethod->error(404, "Not Allowed");
-
-        std::string buffer;
-        std::string line = "";
-        std::ifstream inFilemessage;
-        inFilemessage.open("/Users/mmasstou/projects/WebServ/var/errors/not_allowed.html", std::ifstream::in);
-        while (std::getline(inFilemessage, buffer))
-        {
-            // std::cout << buffer << std::endl;
-            line.append(buffer);
-        }
-        std::map<std::string, std::string> content_type;
-        content_type["type"] = "text/plain";
-
-        __body = _CREATEresponse(content_type, 404, "Not Allowed", line);
-        // reqmethod->setResponseBody(line);
-        // exit(1);
-    } // the request not allowed 
-
-
-    /* -------------------------------------------------------------------------- */
-    /*              // !retriving the request recource from the server            */
-    /* -------------------------------------------------------------------------- */
-    /* -------------------------------------------------------------------------- */
-    /*                           // !create responce msg                          */
-    /* -------------------------------------------------------------------------- */
-    // reqmethod->createresponse();
-    this->message.push_back(__body);
-    // * print status : HTTP/1.1 200 OK
-    
-    if (allow_methods == true)
-        delete reqmethod;
-    return (this->message);
 }

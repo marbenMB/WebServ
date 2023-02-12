@@ -12,17 +12,17 @@ Post::Post(request rhs)
     this->setContent_Length(rhs.getContent_Length());
     this->setContent_Type(rhs.getContent_Type());
     this->setTransfer_Encoding(rhs.getTransfer_Encoding());
-    this->setStatuscode(this->execute_method());
+    this->setStatuscode(this->execute_method(rhs));
 }
 Post::~Post()
 {
 }
-int Post::execute_method(void)
+int Post::execute_method(request _request)
 {
     std::string buffff;
     char  buff[this->getContent_Length()];
     std::vector<std::string> buff_Body;
-
+    (void)_request;
     // while (endbyte <= 0)
     // {
     //     n = read(this->getContent_Length(), buff, this->getContent_Length());

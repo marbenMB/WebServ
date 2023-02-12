@@ -168,11 +168,12 @@ int main(int ac, char *av[])
 
         // std::cout << "byte : " << n << std::endl;
         // printf("Here is the message: \n%s\n", buffer);
-        std::vector<std::string> clientrequest = split(buffer, "\r\n\r\n");
+        // std::vector<std::string> clientrequest = split(buffer, "\r\n\r\n");
         std::vector<std::string> response_message;
-        request *req = new request(newsockfd, clientrequest[0]);
+        request *req = new request(newsockfd, &g_Data, buffer, response_message);
+        // std::cout << "ID : " << atoi(response_message[0].c_str())  << " body :" << response_message[1] << std::endl;
         // std::vector<std::string>::iterator Buffer = split(buffer, "\r\n\r\n").begin();
-        response_message = req->execute(clientrequest[1], &g_Data);
+        // response_message = req->execute(clientrequest[1], &g_Data);
         req->sand(atoi(response_message[0].c_str()), response_message[1]);
 
         close(newsockfd);

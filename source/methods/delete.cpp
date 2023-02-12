@@ -12,19 +12,20 @@ deleteMethod::deleteMethod(request rhs)
     this->setRedirect_status(rhs.getRedirect_status());
     this->setredirect_URL(rhs.getredirect_URL());
     this->setContent_Type(rhs.getContent_Type());
-    this->execute_method();
+    this->execute_method(rhs);
 }
 
 deleteMethod::~deleteMethod()
 {
 }
 
-int deleteMethod::execute_method(void)
+int deleteMethod::execute_method(request _request)
 {
     std::ifstream inFile;
     std::ifstream inFilemessage;
     std::string line = "";
     std::string buffer;
+    (void)_request;
     // std::string responseBody;
     // check config file if the method is allowed:
     if (this->getRequest_URI().compare("/") == 0)
