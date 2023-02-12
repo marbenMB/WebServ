@@ -58,8 +58,12 @@ class	WebServ
 //	****	FUNCTIONS	****	//
 //	****	*********	****	//
 
-WebServ	*estabilishServers(Data &g_data);
+
+	//	+++	Server Utils	+++	//
+std::vector<int>			portsExtraction(ServerConf server);
+std::vector<std::string>	getStringKeyVal(ServerConf server, std::string key);
 template <typename T>
 void	printVector(std::vector<T> vec, std::string forWhat);
+WebServ	*estabilishServers(Data &g_data);
 
 #endif

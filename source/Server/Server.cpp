@@ -34,6 +34,21 @@ std::vector<std::string>	getStringKeyVal(ServerConf server, std::string key)
 	return	std::vector<std::string>();
 }
 
+template <typename T>
+void	printVector(std::vector<T> vec, std::string forWhat)
+{
+	typename std::vector<T>::iterator	it;
+
+	it = vec.begin();
+	std::cout << forWhat;
+	while (it != vec.end())
+	{
+		std::cout << *it << " ";
+		it++;
+	}
+	std::cout << std::endl;
+}
+
 WebServ	*estabilishServers(Data &g_data)
 {
 	WebServ *servers = new WebServ();
@@ -48,19 +63,4 @@ WebServ	*estabilishServers(Data &g_data)
 		printVector(newServ.getServerName(), "Server Names : ");
 	}
 	return servers;
-}
-
-template <typename T>
-void	printVector(std::vector<T> vec, std::string forWhat)
-{
-	typename std::vector<T>::iterator	it;
-
-	it = vec.begin();
-	std::cout << forWhat;
-	while (it != vec.end())
-	{
-		std::cout << *it << " ";
-		it++;
-	}
-	std::cout << std::endl;
 }
