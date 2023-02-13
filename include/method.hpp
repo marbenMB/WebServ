@@ -33,7 +33,6 @@ private:
     std::string Content_Transfer_Encoding;
     std::string Transfer_Encoding;
 
-    int autoindex;
 
 public:
     method();
@@ -50,8 +49,6 @@ public:
     int const &getClient_max_body_size(void) const;
     int const &getContent_Length(void) const;
     int const &getsocketID(void) const;
-    int const &getAutoIndex() const;
-    void setAutoIndex(int autoindex);
     void setsocketID(int socketId);
     void setRootPath(std::string root_path);
     void setHost(std::string host);

@@ -48,3 +48,40 @@ void request::setsocketID(int socketId)
 int const &request::getAutoIndex() const{
     return this->autoindex;
 }
+void request::setAutoIndex(int autoindex){
+    this->autoindex = autoindex;
+}
+
+
+std::string const & request::getDefault_40x( void ){
+    return this->default_40x;
+}
+int request::findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > > location){
+    std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator locations_iterator = location.begin();
+    int done = -1;
+    int index = 0;
+    std::string compare_URI;
+    compare_URI.clear();
+    compare_URI.append(this->request_URI);
+    while (locations_iterator != location.end())
+    {
+        // ***> Create iterator for location Data
+        std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator location_iterator = locations_iterator->begin();
+        // std::cout << "  +>" << location_iterator->first << "<| >compare_URI :" << compare_URI<<"<|" << std::endl;
+        std::string str = location_iterator->first;
+        if (str.compare(compare_URI) == 0){done = index;}
+        ++locations_iterator;
+        index++;
+        if (locations_iterator == location.end() && done == -1){
+            size_t start = compare_URI.find_last_of("/");
+            // std::cout << "  #|>" << start <<std::endl;
+            if (start != std::string::npos && compare_URI.compare("/") != 0){
+                locations_iterator = location.begin();
+                index = 0;
+                if (!start){start += 1;}// for the last one
+                compare_URI.erase(start, compare_URI.length() - 1);
+            }
+        }
+    }
+    return done;
+}

@@ -1,5 +1,6 @@
 #include "../../include/method.hpp"
 #include <sys/stat.h>
+#include <time.h>
 #include <sys/types.h>
 #include <dirent.h>
 
@@ -13,9 +14,8 @@ get::get(request rhs)
     this->setreason_phrase("OK");
     this->setRootPath(rhs.getroot());
     this->setResponseBody("");
-    this->setContent_Type(rhs.getContent_Type());
+    this->setContent_Type("text/html");
     this->execute_method(rhs);
-    this->setAutoIndex(rhs.getAutoIndex());
     /**
      *
      *! Verifying_Header that the request method is indeed "GET" and the URI is valid.
@@ -53,10 +53,26 @@ int get::execute_method(request _request)
     std::cout << "PATH : " << filename << std::endl;
     if (stat(filename.c_str(), &STATInfo) != 0)
     {
-        std::cout << "not foud error" << std::endl;
+        filename.clear();
+        filename.append(this->getRootPath());
+        filename.append("/");
+        filename.append(_request.getDefault_40x());
+        std::cout << "Open PATH : " << filename << std::endl;
+
+        inFile.open(filename, std::ifstream::in);
+        while (std::getline(inFile, buffer))
+        {
+            // std::cout << buffer << std::endl;
+            line.append(buffer);
+        }
+        // std::cout << "</Line >" << std::endl;
+        inFile.close();
+        this->setResponseBody(line);
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFREG) // is file
     {
+        std::cout << "Open PATH : " << filename << std::endl;
+
         inFile.open(filename, std::ifstream::in);
         while (std::getline(inFile, buffer))
         {
@@ -77,13 +93,66 @@ int get::execute_method(request _request)
         std::cout << "filename [" << _request.getAutoIndex() << "]: " << filename << std::endl;
         if (_request.getAutoIndex() == AUTOINDEX_ON)
             std::cout << "AUTOINDEX_ON\n";
+        else
+            std::cout << "AUTOINDEX_OFF\n";
+
         // if (stat(filename.c_str(), &STATInfo) != 0)
         // {
         //     std::cout << "not foud error" << std::endl;
         // }
+
         inFile.open(filename, std::ifstream::in);
         if (!inFile.is_open() && _request.getAutoIndex() == AUTOINDEX_ON)
         {
+            filename.clear();
+            filename.append(this->getRootPath());
+            filename.append("/srcs/autoIndex.html");
+            line.clear();
+            inFile.open(filename, std::ifstream::in);
+            while (std::getline(inFile, buffer))
+            {
+                // std::cout << buffer << std::endl;
+                if (buffer.find("<title>") != std::string::npos) // title
+                {
+                    std::cout << "TITLE" << buffer << std::endl;
+                    buffer.clear();
+                    buffer.append("     <title>");
+                    buffer.append(pathdir);
+                    buffer.append("</title>\n");
+                }
+                if (buffer.find("<h1 id=") != std::string::npos) // index of
+                {
+                    // <h1 id="header">Index of /Users/mmasstou/Desktop/my-Store/</h1>
+                    std::cout << "parentDirLinkBox" << buffer << std::endl;
+                    buffer.clear();
+                    buffer.append("<h1 id=\"header\">Index of ");
+                    buffer.append(this->getRootPath());
+                    buffer.append("</h1>");
+                }
+                if (buffer.find("<a id=") != std::string::npos) // index of href
+                {
+                    std::cout << "parentDirLinkBox" << buffer << std::endl;
+                    //   <a id="parentDirLink" class="icon up" href="/Users/mmasstou/Desktop/my-Store/..">
+                    buffer.clear();
+                    std::string pathdirTmp;
+                    pathdirTmp.append(pathdir);
+                    buffer.append("<a id=\"parentDirLink\" class=\"icon up\" href=\"");
+                    size_t start = pathdirTmp.find_last_of("/");
+                    pathdirTmp.erase(start, pathdirTmp.length());
+                    pathdirTmp.append("/..");
+                    buffer.append(pathdirTmp);
+                    buffer.append("\">      ");
+                }
+                if (buffer.find("<tbody id=") != std::string::npos) // start of the  table body
+                {
+                    line.append(buffer);
+                    break;
+                }
+                line.append(buffer);
+            }
+
+            inFile.close();
+
             // std::cout << "not foud error" << std::endl;
             // inFile.open("/Users/mmasstou/Desktop/webserV/var/srcs/autoIndex.html", std::ifstream::in)
             // {
@@ -98,9 +167,52 @@ int get::execute_method(request _request)
             }
             std::cout << "Index of : " << pathdir << std::endl;
             std::cout << "parent directory : " << pathdir << std::endl;
+            // adding table fields :
+            std::string request_URITmp;
+
+            request_URITmp.append(this->getRequest_URI());
+            if (request_URITmp.back() == '/')
+                request_URITmp.erase(request_URITmp.length() - 1, request_URITmp.length());
             while ((dp = readdir(dirp)) != NULL)
             {
-                printf("%s/%s\n", pathdir.c_str(), dp->d_name);
+                /*
+                    <tr>
+                        <td data-value="runtime.txt"><a class="icon file" draggable="true"
+                                href="/Users/mmasstou/Desktop/my-Store/runtime.txt">runtime.txt</a></td>
+                        <td class="detailsColumn" data-value="14">14 B</td>
+                        <td class="detailsColumn" data-value="1672423565">12/30/22, 7:06:05 PM</td>
+                    </tr>
+                    ctime(&file_stat.st_mtime)
+                    .st_size
+                **/
+                std::string d_nameTmp(dp->d_name);
+                std::cout << " Name :" << d_nameTmp << std::endl;
+                if (d_nameTmp.compare(".") != 0 || d_nameTmp.compare("..") != 0)
+                {
+                    struct stat STATFile;
+                    std::string filePATH;
+                    filePATH.clear();
+                    filePATH.append(this->getRootPath());
+                    filePATH.append(request_URITmp);
+                    filePATH.append("/");
+                    filePATH.append(dp->d_name);
+                    if (stat(filePATH.c_str(), &STATFile) != 0) {std::cout << " |"<< filePATH <<"| file Not found \n";}
+                    line.append("<tr> <td data-value=\"");
+                    line.append(dp->d_name);
+                    line.append("\"><a class=\"icon file\" draggable=\"true\" href=\"");
+                    line.append(request_URITmp);
+                    line.append("/");
+                    line.append(dp->d_name);
+                    line.append("\">");
+                    line.append(dp->d_name);
+                    line.append("</a></td>");
+                    line.append("<td class=\"detailsColumn\" >");
+                    line.append(std::to_string(STATFile.st_size));
+                    line.append("B</td>");
+                    line.append("<td class=\"detailsColumn\" data-value=\"1672423565\">");
+                    line.append(ctime(&STATFile.st_mtime));
+                    line.append("</td></tr>");
+                }
             }
 
             if (closedir(dirp) == -1)
@@ -108,9 +220,15 @@ int get::execute_method(request _request)
                 perror("closedir");
                 return 1;
             }
+            dp = nullptr;
+            line.append("</tbody></table></body></html>");
+            // std::cout << "</Line >" << std::endl;
+            this->setResponseBody(line);
+            line.clear();
         }
         else if (inFile.is_open())
         {
+            std::cout << "Open PATH : " << filename << std::endl;
             buffer.clear();
             line.clear();
             while (std::getline(inFile, buffer))
@@ -125,28 +243,44 @@ int get::execute_method(request _request)
         else
         {
             // forbiden
+              filename.clear();
+            filename.append("/Users/mmasstou/Desktop/webserV/var/errors/not_allowed.html");
+            inFile.open(filename, std::ifstream::in);
+            while (std::getline(inFile, buffer))
+            {
+                // std::cout << buffer << std::endl;
+                line.append(buffer);
+            }
+            // std::cout << "</Line >" << std::endl;
+            inFile.close();
+            this->setResponseBody(line);
         }
     }
+    else
+    {
+        std::cout << "Chi7aja Khra ************* * * * * * * * * * \n";
+    }
+    std::cout << "Chi7aja Khra 2 ************* * * * * * * * * * \n";
     // std::cout << "Request Path :" << filename << std::endl;
     // read from server :
-    inFile.open(filename, std::ifstream::in);
-    if (!inFile.is_open())
-    {
-        // std::cout << "Ana Hna\n";
-        this->error(404, "Not Found");
-        inFile.open("/Users/mmasstou/projects/WebServ/var/errors/40x.html", std::ifstream::in);
-        // this->setStatuscode(404);
-        // this->setreason_phrase("Not Found");
-    }
+    // inFile.open(filename, std::ifstream::in);
+    // if (!inFile.is_open())
+    // {
+    //     // std::cout << "Ana Hna\n";
+    //     this->error(404, "Not Found");
+    //     inFile.open("/Users/mmasstou/projects/WebServ/var/errors/40x.html", std::ifstream::in);
+    //     // this->setStatuscode(404);
+    //     // this->setreason_phrase("Not Found");
+    // }
     // std::cout << "<Line URi='"<< this->getRequest_URI() <<"' root='"<< this->getRootPath()<<"' filename='"<<filename <<"'>" << std::endl;
-    while (std::getline(inFile, buffer))
-    {
-        // std::cout << buffer << std::endl;
-        line.append(buffer);
-    }
-    // std::cout << "</Line >" << std::endl;
+    // while (std::getline(inFile, buffer))
+    // {
+    //     // std::cout << buffer << std::endl;
+    //     line.append(buffer);
+    // }
+    // // std::cout << "</Line >" << std::endl;
 
-    this->setResponseBody(line);
+    // this->setResponseBody(line);
 
     // std::cout << "\nBody : \n" << this->getResponseBody();
 

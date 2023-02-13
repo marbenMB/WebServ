@@ -114,7 +114,7 @@ public:
     void    Retrieving_requested_resource(Data *server);
     void    GETstatusOfexecution(method * req_method) const;
     std::vector<std::string>  const & create_response();
-
+    int findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >);
     void sand(int socketID, std::string body);
 
     ~request();
@@ -123,6 +123,7 @@ public:
     void checkForIndex(std::vector<std::string> vect);
     void checkForErrorPage(std::vector<std::string> vect);
     bool executeAction();
+    void setAutoIndex(int autoindex);
     int const &getAutoIndex() const;
     std::string getmethod() const
     {
@@ -145,6 +146,11 @@ public:
     void setredirect_URL(std::string redirect_URL);
     std::vector<std::string> const &getRequestBody(void) const;
     void setRequestBody(std::vector<std::string> reqBody);
+
+
+
+    // error pages :
+    std::string const & getDefault_40x( void );
     void print_vectINFO(std::vector<std::string>, std::string);
 };
 std::vector<std::string> split(const std::string &str, const std::string &delimiter);

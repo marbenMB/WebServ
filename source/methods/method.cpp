@@ -168,12 +168,3 @@ void method::setredirect_URL(std::string redirect_URL)
 {
     this->redirect_URL = redirect_URL;
 }
-
-int const &method::getAutoIndex() const
-{
-    return this->autoindex;
-}
-void method::setAutoIndex(int autoindex)
-{
-    this->autoindex = autoindex;
-}

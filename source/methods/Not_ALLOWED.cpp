@@ -8,17 +8,8 @@ NotAllowed::NotAllowed(request rhs)
     this->setStatuscode(405);
     this->setreason_phrase("Not Allowed");
     this->setRootPath(rhs.getroot());
-    this->setContent_Type("text/plain");
-     std::string buffer;
-        std::string line = "";
-        std::ifstream inFilemessage;
-        inFilemessage.open("/Users/mmasstou/Desktop/webserV/var/errors/not_allowed.html", std::ifstream::in);
-        while (std::getline(inFilemessage, buffer))
-        {
-            // std::cout << buffer << std::endl;
-            line.append(buffer);
-        }
-     this->setResponseBody(line);
+    this->execute_method(rhs);
+    
 /**
     *
     *! Verifying_Header that the request method is indeed "GET" and the URI is valid.
@@ -36,5 +27,18 @@ NotAllowed::~NotAllowed()
 int NotAllowed::execute_method(request _request)
 {
     (void)_request;
+    std::string buffer;
+    std::string line;
+    line.clear();
+    buffer.clear();
+    this->setContent_Type("text/html");
+    std::ifstream inFilemessage;
+    inFilemessage.open("/Users/mmasstou/Desktop/webserV/var/errors/not_allowed.html", std::ifstream::in);
+    while (std::getline(inFilemessage, buffer))
+    {
+        // std::cout << buffer << std::endl;
+        line.append(buffer);
+    }
+    this->setResponseBody(line);
     return false;
 }

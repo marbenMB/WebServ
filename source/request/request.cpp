@@ -49,6 +49,7 @@ request::request(int socketID, Data *server, std::string request, std::vector<st
     else
         color_status = RED;
     std::cout << color_status << "127.0.0.1 " << this->getmethod() << " HTTP/1.1 " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase() << " " << this->getrequest_URI() << END_CLR << std::endl;
+    delete reqmethod;
 }
 
 
