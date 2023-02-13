@@ -44,11 +44,14 @@ void    request::Retrieving_requested_resource(Data *server)
    
     //*                                    vars                                    
     /* -------------------------------------------------------------------------- */
-    bool allow = false;
-    bool deny = false;
+    // bool allow = false;
+    // bool deny = false;
     int j = 0;
     int i = 0;
-    bool allow_methods = false;
+    // bool allow_methods = false;
+    // create compare URI
+    std::string compare_URI;
+    //  *|> /srcs/dir001/dir001/test.txt
     int location_size = location.size();
     while (locations_iterator != location.end())
     {
@@ -68,10 +71,10 @@ void    request::Retrieving_requested_resource(Data *server)
                 while (iitt != location_vars["allow"].end())
                 {
                     // std::cout << "      +[allow]>" << *iitt << std::endl;
-                    if ((*iitt).compare(this->req_method) == 0) allow = true;
+                    // if ((*iitt).compare(this->req_method) == 0) allow = true;
                     ++iitt;
                 }
-            } else {allow = true;}
+            } 
             // std::cout << RED << "DENY :\n" << END_CLR ;
             std::cout << RED << "   +>deny" << END_CLR << std::endl;
 
@@ -80,10 +83,10 @@ void    request::Retrieving_requested_resource(Data *server)
                  while (iitt != location_vars["deny"].end())
                 {
                     // std::cout << "      +[deny]>" << *iitt << std::endl;
-                    if ((*iitt).compare(this->req_method) == 0) deny = true;
+                    // if ((*iitt).compare(this->req_method) == 0) deny = true;
                     ++iitt;
                 }
-            } else{ deny = false;}
+            } 
             //  std::cout << RED << "ROOT :\n" << END_CLR ;
             std::cout << RED << "   +>root" << END_CLR << std::endl;
 
@@ -99,7 +102,10 @@ void    request::Retrieving_requested_resource(Data *server)
 
             // autoindex
             iitt = location_vars["autoindex"].begin();
-            if (location_vars["autoindex"][0].compare("on")) this->autoindex = AUTOINDEX_ON;
+            if (location_vars["autoindex"][0].compare("on") == 0) {
+                std::cout << "autoindex :"  << location_vars["autoindex"][0] <<"|"<< std::endl;
+                this->autoindex = AUTOINDEX_ON;
+                }
             std::cout << RED << "   +>redirection" << END_CLR << std::endl;
 
             // redirection :
@@ -132,7 +138,7 @@ void    request::Retrieving_requested_resource(Data *server)
                             if (this->req_method.compare("POST") == 0) {this->__post = ALLOWED;}
                             if (this->req_method.compare("GET") == 0) {this->__get = ALLOWED;}
                             if (this->req_method.compare("DELETE") == 0) {this->__delete = ALLOWED;}
-                            allow_methods = true;
+                            // allow_methods = true;
                         }
                         // std::cout << "      +[allow_methods]["<< j <<"]>" << *iter_allow_methods << std::endl;
                         ++iter_allow_methods;
@@ -140,7 +146,7 @@ void    request::Retrieving_requested_resource(Data *server)
                     ++iitt;
                 }
             }
-            else {allow_methods = true;}
+            // else {allow_methods = true;}
         }
         i++;
         location_size--;
