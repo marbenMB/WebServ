@@ -129,6 +129,7 @@ public:
     {
         return this->req_method;
     }
+    bool getrequirements( void ) const;
     std::string const &gethost() const;
     std::string const &getroot() const;
     std::string const &getdefaultIndex() const;
@@ -146,6 +147,10 @@ public:
     void setredirect_URL(std::string redirect_URL);
     std::vector<std::string> const &getRequestBody(void) const;
     void setRequestBody(std::vector<std::string> reqBody);
+    // Allowed method :
+    int getAllowedPost() const;
+    int getAllowedDelete() const;
+    int getAllowedGet() const;
 
 
 

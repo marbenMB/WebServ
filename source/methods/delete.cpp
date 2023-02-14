@@ -3,7 +3,7 @@
 deleteMethod::deleteMethod(request rhs)
 {
     this->setHost(rhs.gethost());
-    this->setRequest_URI(rhs.getrequest_URI());
+    // this->setRequest_URI(rhs.getrequest_URI());
     this->setHttp_version(rhs.gethttp_version());
     this->setStatuscode(200);
     this->setreason_phrase("OK");
@@ -11,7 +11,7 @@ deleteMethod::deleteMethod(request rhs)
     this->setResponseBody("");
     this->setRedirect_status(rhs.getRedirect_status());
     this->setredirect_URL(rhs.getredirect_URL());
-    this->setContent_Type(rhs.getContent_Type());
+    this->setContent_Type("text/html");
     this->execute_method(rhs);
 }
 
@@ -25,49 +25,49 @@ int deleteMethod::execute_method(request _request)
     std::ifstream inFilemessage;
     std::string line = "";
     std::string buffer;
+    struct stat STATInfo;
     (void)_request;
     // std::string responseBody;
     // check config file if the method is allowed:
-    if (this->getRequest_URI().compare("/") == 0)
-        return 1;
-    if (this->getContent_Type().empty())
-    {
-        this->setContent_Type("text/plain");
-    }
-    std::string filename = "";
+    std::string filename;
+    filename.clear();
     filename.append(this->getRootPath());
-   
-    filename.append(this->getRequest_URI());
-    // inFile.open( "/Users/mmasstou/projects/WebServ/var/errors/20x.html", std::ifstream::in);
-    std::cout << "Delete file  :" << filename << std::endl;
-    // read from server :
-    int i = remove(filename.c_str());
-    if (i)
-    {
-        this->error(404, "Not Found");
-        inFilemessage.open("/Users/mmasstou/projects/WebServ/var/errors/40x.html", std::ifstream::in);
+    filename.append(_request.getrequest_URI());
+
+    if (stat(filename.c_str(), &STATInfo) != 0){ // 404 not Found
+        this->setStatuscode(404);
+        this->setreason_phrase("Not Found");
+        line.clear();
+        line.append("./var/srcs/notfound.html");
     }
-    else
-    {
-        if (this->getRedirect_status() != -1){
-            this->error(301, "redirect");
-            inFilemessage.open(this->getRootPath() + this->getredirect_URL(), std::ifstream::in);
+    else if ((STATInfo.st_mode & S_IFMT) == S_IFREG){ // 202 No Content
+        int remove_status = remove(filename.c_str());
+        if (remove_status != 0){
+            this->setStatuscode(403);
+            this->setreason_phrase("Forbidden");
+            line.clear();
+            line.append("./var/srcs/forbidden.html");
         }
         else{
-            this->error(301, "Delete success");
-            inFilemessage.open("/Users/mmasstou/projects/WebServ/var/errors/success.html", std::ifstream::in);
+            this->setStatuscode(202);
+            this->setreason_phrase("No Content");
+            line.clear();
+            line.append("./var/srcs/NoContent.html");
         }
     }
+    else if ((STATInfo.st_mode & S_IFMT) == S_IFDIR){ // 403 Forbidden
+        this->setStatuscode(403);
+        this->setreason_phrase("Forbidden");
+        line.clear();
+        line.append("./var/srcs/forbidden.html");
+    }
+    inFilemessage.open(line, std::ifstream::in);
+    line.clear();
+    buffer.clear();
     // std::cout << "<Line URi='"<< this->getRequest_URI() <<"' root='"<< this->getRootPath()<<"' filename='"<<filename <<"'>" << std::endl;
-    while (std::getline(inFilemessage, buffer))
-    {
-        // std::cout << buffer << std::endl;
+    while (std::getline(inFilemessage, buffer)){
         line.append(buffer);
     }
-    // std::cout << "</Line >" << std::endl;
-
     this->setResponseBody(line);
-    // exit(1);
-    // std::cout <<"\n\n\n\nresponseBody :\n"<< this->getResponseBody() << std::endl;
     return 1;
 }

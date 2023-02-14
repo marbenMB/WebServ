@@ -52,10 +52,25 @@ void request::setAutoIndex(int autoindex){
     this->autoindex = autoindex;
 }
 
-
+bool request::getrequirements( void ) const{
+    return this->requirements;
+}
 std::string const & request::getDefault_40x( void ){
     return this->default_40x;
 }
+
+
+int request::getAllowedPost() const{
+    return this->__post;
+}
+int request::getAllowedDelete() const{
+    return this->__delete;
+}
+int request::getAllowedGet() const{
+    return this->__get;
+}
+
+
 int request::findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > > location){
     std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator locations_iterator = location.begin();
     int done = -1;
@@ -85,3 +100,5 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
     }
     return done;
 }
+
+

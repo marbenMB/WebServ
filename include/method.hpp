@@ -111,11 +111,11 @@ public:
     void setRequestBody(std::vector<std::string> reqBody);
 };
 
-class NotAllowed : public method
+class NotImplemented : public method
 {
 public:
-    NotAllowed(request rhs);
-    ~NotAllowed();
+    NotImplemented(request rhs);
+    ~NotImplemented();
     int execute_method(request _request);
 };
 

@@ -224,7 +224,7 @@ void ConfigFile::getdata(Data &g_Data) {
             trim(v.value, " \t");
             server_block(g_Data, v);
         }
-        check_validity(g_Data);
+        // check_validity(g_Data);
         // print_Data(g_Data.server_list);
     }
     else

@@ -2,6 +2,8 @@
 
 void    request::Retrieving_requested_resource(Data *server)
 {
+    if (!this->requirements)
+        return
     this->message.push_back(std::to_string(this->socketID));
     /* -------------------------------------------------------------------------- */
     /*                             // !read config file                           */
@@ -104,10 +106,10 @@ void    request::Retrieving_requested_resource(Data *server)
     std::cout << RED << "   +>index" << END_CLR << std::endl;
 
     checkForIndex(location_vars["index"]);
-    if (this->getrequest_URI().compare("/") == 0){
-        // std::cout << RED << this->default_index << END_CLR << std::endl;
-        this->request_URI = "/" + this->default_index;
-    }
+    // if (this->getrequest_URI().compare("/") == 0){
+    //     // std::cout << RED << this->default_index << END_CLR << std::endl;
+    //     this->request_URI = "/" + this->default_index;
+    // }
 
     // autoindex
     iitt = location_vars["autoindex"].begin();

@@ -13,10 +13,11 @@ request::request(int socketID, Data *server, std::string request, std::vector<st
     // * Init vars :
     this->requirements = true;
     this->setsocketID(socketID);
+    this->setRedirect_status(-1);
     // * parse Header :
     // 1 - cheack for Header 
     std::cout << MAUVE << "   @VERIFYING  Header" << END_CLR << std::endl;
-    this->Verifying_Header(request);
+    this->requirements = this->Verifying_Header(request);
     // 2 - check for body 
     std::cout << MAUVE << "   @VERIFYING  Body" << END_CLR << std::endl;
     if (this->getmethod().compare("POST") == 0 && this->requirements)

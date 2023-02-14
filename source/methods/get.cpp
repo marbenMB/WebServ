@@ -4,11 +4,23 @@
 #include <sys/types.h>
 #include <dirent.h>
 
+/*
+
+ TODO 
+  * 1 - AutoIndex √
+  * 2 - allowed method 
+  ! 3 - deny  
+  ! 4 - allow
+  * 5 - redirect
+
+**/  
+
+
 get::get(request rhs)
 {
 
     this->setHost(rhs.gethost());
-    this->setRequest_URI(rhs.getrequest_URI());
+    // this->setRequest_URI(rhs.getrequest_URI());
     this->setHttp_version(rhs.gethttp_version());
     this->setStatuscode(200);
     this->setreason_phrase("OK");
@@ -41,6 +53,7 @@ int get::execute_method(request _request)
     struct stat STATInfo;
     DIR *dirp;
     struct dirent *dp;
+    std::string BaseURL;
     // std::string responseBody;
     // check config file if the method is allowed:
     // if (this->getRequest_URI().compare("/") == 0){
@@ -49,16 +62,34 @@ int get::execute_method(request _request)
     std::string filename;
 
     filename.append(this->getRootPath());
-    filename.append(this->getRequest_URI());
+    //  redirection  |> return 20x ...
+    BaseURL = _request.getrequest_URI();
+    filename.append(BaseURL);
     std::cout << "PATH : " << filename << std::endl;
-    if (stat(filename.c_str(), &STATInfo) != 0)
-    {
+    if (stat(filename.c_str(), &STATInfo) != 0){ // not exist
         filename.clear();
         filename.append(this->getRootPath());
         filename.append("/");
-        filename.append(_request.getDefault_40x());
-        std::cout << "Open PATH : " << filename << std::endl;
-
+        BaseURL.clear();
+        //  redirection  |> return 40x ...
+        (_request.getRedirect_status() >= 400 && _request.getRedirect_status() <= 404) 
+            ? BaseURL = _request.getredirect_URL()
+            : BaseURL = _request.getDefault_40x();
+        filename.append(BaseURL);
+        std::cout << "stat not exist : " << filename << std::endl;
+        this->setStatuscode(404);
+        this->setreason_phrase("Not Found");
+        inFile.open(filename, std::ifstream::in);
+        while (std::getline(inFile, buffer)){
+            line.append(buffer);
+        }
+        inFile.close();
+        this->setResponseBody(line);
+    }
+    else if ((STATInfo.st_mode & S_IFMT) == S_IFREG  ){ // is file   S_ISREG(fileStat.st_mode)
+        std::cout << "stat file : " << filename << std::endl;
+        this->setStatuscode(200);
+        this->setreason_phrase("Ok");
         inFile.open(filename, std::ifstream::in);
         while (std::getline(inFile, buffer))
         {
@@ -69,22 +100,9 @@ int get::execute_method(request _request)
         inFile.close();
         this->setResponseBody(line);
     }
-    else if ((STATInfo.st_mode & S_IFMT) == S_IFREG) // is file
-    {
-        std::cout << "Open PATH : " << filename << std::endl;
+    else if ((STATInfo.st_mode & S_IFMT) == S_IFDIR){ // is dir
+        std::cout << "stat dir : " << filename << std::endl;
 
-        inFile.open(filename, std::ifstream::in);
-        while (std::getline(inFile, buffer))
-        {
-            // std::cout << buffer << std::endl;
-            line.append(buffer);
-        }
-        // std::cout << "</Line >" << std::endl;
-        inFile.close();
-        this->setResponseBody(line);
-    }
-    else if ((STATInfo.st_mode & S_IFMT) == S_IFDIR) // is dir
-    {
         std::string pathdir;
         pathdir.clear();
         pathdir.append(filename);
@@ -104,11 +122,8 @@ int get::execute_method(request _request)
         inFile.open(filename, std::ifstream::in);
         if (!inFile.is_open() && _request.getAutoIndex() == AUTOINDEX_ON)
         {
-            filename.clear();
-            filename.append(this->getRootPath());
-            filename.append("/srcs/autoIndex.html");
             line.clear();
-            inFile.open(filename, std::ifstream::in);
+            inFile.open("./var/srcs/autoIndex.html", std::ifstream::in);
             while (std::getline(inFile, buffer))
             {
                 // std::cout << buffer << std::endl;
@@ -126,7 +141,7 @@ int get::execute_method(request _request)
                     std::cout << "parentDirLinkBox" << buffer << std::endl;
                     buffer.clear();
                     buffer.append("<h1 id=\"header\">Index of ");
-                    buffer.append(this->getRootPath());
+                    buffer.append(pathdir);
                     buffer.append("</h1>");
                 }
                 if (buffer.find("<a id=") != std::string::npos) // index of href
@@ -170,9 +185,10 @@ int get::execute_method(request _request)
             // adding table fields :
             std::string request_URITmp;
 
-            request_URITmp.append(this->getRequest_URI());
-            if (request_URITmp.back() == '/')
-                request_URITmp.erase(request_URITmp.length() - 1, request_URITmp.length());
+            request_URITmp.append(_request.getrequest_URI());
+            (request_URITmp.back() == '/')
+                ? request_URITmp.erase(request_URITmp.length() - 1, request_URITmp.length()) 
+                : request_URITmp;
             while ((dp = readdir(dirp)) != NULL)
             {
                 /*
@@ -203,13 +219,13 @@ int get::execute_method(request _request)
                     line.append(request_URITmp);
                     line.append("/");
                     line.append(dp->d_name);
-                    line.append("\">");
+                    line.append("\">    ");
                     line.append(dp->d_name);
                     line.append("</a></td>");
-                    line.append("<td class=\"detailsColumn\" >");
+                    line.append("<td class=\"detailsColumn\" >  ");
                     line.append(std::to_string(STATFile.st_size));
                     line.append("B</td>");
-                    line.append("<td class=\"detailsColumn\" data-value=\"1672423565\">");
+                    line.append("<td class=\"detailsColumn\" data-value=\"1672423565\"> ");
                     line.append(ctime(&STATFile.st_mtime));
                     line.append("</td></tr>");
                 }
@@ -243,8 +259,10 @@ int get::execute_method(request _request)
         else
         {
             // forbiden
-              filename.clear();
-            filename.append("/Users/mmasstou/Desktop/webserV/var/errors/not_allowed.html");
+            this->setStatuscode(403);
+            this->setreason_phrase("Forbiden");
+            filename.clear();
+            filename.append("./var/srcs/forbidden.html");
             inFile.open(filename, std::ifstream::in);
             while (std::getline(inFile, buffer))
             {
@@ -260,7 +278,7 @@ int get::execute_method(request _request)
     {
         std::cout << "Chi7aja Khra ************* * * * * * * * * * \n";
     }
-    std::cout << "Chi7aja Khra 2 ************* * * * * * * * * * \n";
+    std::cout << "safi salina ************* * * * * * * * * * \n";
     // std::cout << "Request Path :" << filename << std::endl;
     // read from server :
     // inFile.open(filename, std::ifstream::in);
