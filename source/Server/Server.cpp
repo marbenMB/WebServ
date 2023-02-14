@@ -34,33 +34,15 @@ std::vector<std::string>	getStringKeyVal(ServerConf server, std::string key)
 	return	std::vector<std::string>();
 }
 
-template <typename T>
-void	printVector(std::vector<T> vec, std::string forWhat)
-{
-	typename std::vector<T>::iterator	it;
-
-	it = vec.begin();
-	std::cout << forWhat;
-	while (it != vec.end())
-	{
-		std::cout << *it << " ";
-		it++;
-	}
-	std::cout << std::endl;
-}
-
 WebServ	*estabilishServers(Data &g_data)
 {
-	WebServ *servers = new WebServ();
-	std::vector<Server>	vec;
+	WebServ *serv = new WebServ();
 
 	for (std::vector<ServerConf>::iterator it = g_data.server_list.begin(); it != g_data.server_list.end(); it++)
 	{
 
 		Server	newServ(portsExtraction(*it), getStringKeyVal(*it, "server_name"), getStringKeyVal(*it, "host"));
-		printVector(newServ.getListenPorts(), "Server Ports : ");
-		printVector(newServ.getServerHost(), "Server Hosts : ");
-		printVector(newServ.getServerName(), "Server Names : ");
+		serv->servers.push_back(newServ);
 	}
-	return servers;
+	return serv;
 }

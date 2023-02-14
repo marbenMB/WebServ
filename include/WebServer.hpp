@@ -32,7 +32,6 @@ class	Server
 {
 	public	:
 		Server (std::vector<int> ports, std::vector<std::string> name, std::vector<std::string> host);
-		Server (Server &obj);
 		~Server ();
 
 		std::vector<int>			getListenPorts	(void) const;
@@ -55,6 +54,25 @@ class	WebServ
 };
 
 //	****	*********	****	//
+//	****	TEMPLATES	****	//
+//	****	*********	****	//
+
+template <typename T>
+void	printVector(std::vector<T> vec, std::string forWhat)
+{
+	typename std::vector<T>::iterator	it;
+
+	it = vec.begin();
+	std::cout << forWhat;
+	while (it != vec.end())
+	{
+		std::cout << *it << " ";
+		it++;
+	}
+	std::cout << std::endl;
+}
+
+//	****	*********	****	//
 //	****	FUNCTIONS	****	//
 //	****	*********	****	//
 
@@ -62,8 +80,6 @@ class	WebServ
 	//	+++	Server Utils	+++	//
 std::vector<int>			portsExtraction(ServerConf server);
 std::vector<std::string>	getStringKeyVal(ServerConf server, std::string key);
-template <typename T>
-void	printVector(std::vector<T> vec, std::string forWhat);
 WebServ	*estabilishServers(Data &g_data);
 
 #endif

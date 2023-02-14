@@ -15,6 +15,13 @@ int main (int ac, char **av)
 			
 			myServ = estabilishServers(g_Data);
 
+			for (std::vector<Server>::iterator it = myServ->servers.begin(); it != myServ->servers.end(); it++)
+			{
+				printVector(it->getListenPorts(), "Server Ports : ");
+				printVector(it->getServerHost(), "Server Hosts : ");
+				printVector(it->getServerName(), "Server Names : ");
+			}
+
 			delete	myServ;
 		// }
     }

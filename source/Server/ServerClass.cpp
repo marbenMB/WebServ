@@ -22,13 +22,6 @@ std::vector<T>	deepCopyVector(std::vector<T> vec)
 	return newVec;
 }
 
-Server::Server(Server &obj)
-{
-	_listenPorts = deepCopyVector(obj._listenPorts);
-	_serverHost = deepCopyVector(obj._serverHost);
-	_serverName = deepCopyVector(obj._serverName);
-}
-
 Server::~Server ()
 {
 	_listenPorts.clear();
