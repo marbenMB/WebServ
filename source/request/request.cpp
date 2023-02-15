@@ -69,22 +69,41 @@ void request::sand(int socketID, std::string body){
 }
 
 bool request::Verifying_Body(std::string  req){
-    std::string requestheader = split(req,"\r\n\r\n")[0];
-    std::string requestbody = split(req,"\r\n\r\n")[1];
-    std::string buffer;
+    std::vector<std::string> requestheader = split(req,"\r\n\r\n");
+int i = -1;
+while (++i < (int)requestheader.size())
+{
+    std::cout << RED <<"\nreq["<<i<<"] :\n"<<END_CLR << requestheader[i] << std::endl;
+}
 
-    std::cout << "INIT HEADER :\n" << requestheader << std::endl;
-    if ((int)requestbody.length() != this->getContent_Length()){
-        read(this->getsocketID(), buffer.c_str(), this->getContent_Length());
-    }
-    std::cout << "INIT BODY :\n" << requestbody << std::endl;
-
+    // std::cout << "INIT HEADER["<<requestheader.size()<<"] :\n" << requestheader[0] << std::endl;
+    // while ((int)requestbody.length() != this->getContent_Length()){
+    //     char *buffer;
+    //     buffer = (char *)malloc(sizeof(char) * this->getContent_Length() + 2);
+    //     bzero(buffer, this->getContent_Length());
+    //     recv(this->getsocketID(), buffer, this->getContent_Length(), 0);
+    //     requestbody.append(buffer);
+    // }
+    // std::cout << "INIT BODY :\n" << requestbody << std::endl;
+    // std::string  boundary;
+    // boundary.clear();
+    // boundary.append("--");
+    // boundary.append(split(split(this->getContent_Type(), ";")[1],"=")[1]);
+    // std::string fileType = split(this->getContent_Type(), ";")[0];
+    // std::vector<std::string> _bcontent =  split(requestbody, boundary);
+    // std::cout << "boundary |" << split(this->getContent_Type(), ";")[1] << std::endl;
+    // std::cout << "boundary>|" << boundary << std::endl;
+    // std::cout << "fileType :" << fileType << std::endl;
+    // std::cout << "body file size :" << _bcontent.size() << std::endl;
+    // std::cout << "set +> <Content_Type size='" << tmp.size() << "' type='" << tmp[0] << "'   boundary='" << tmp[1] << "'>" << std::endl;
+//    std::cout << "INIT BODYww :\n" << requestbody << std::endl;
+    // this->setRequestBody()
     return true;
 }
 
 bool request::Verifying_Header(std::string req)
 {
-    std::vector<std::string> requestHeaders = split(req, "\r\n");
+    std::vector<std::string> requestHeaders = split(split(req, "\r\n\r\n")[0], "\r\n");
     std::vector<std::string>::iterator itH = requestHeaders.begin();
     std::vector<std::string> spl;
 
@@ -95,6 +114,7 @@ bool request::Verifying_Header(std::string req)
     this->http_version = spl[2];
     while (++itH != requestHeaders.end())
     {
+        spl.clear();
         spl = split((std::string)*itH, ": ");
         if(spl[0].compare("Host") == 0){this->host = spl[1];}
         if(spl[0].compare("User-Agent") == 0){this->User_Agent = spl[1];}

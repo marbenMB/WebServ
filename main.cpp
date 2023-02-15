@@ -102,6 +102,8 @@ int main(int ac, char *av[])
 
     /* First call to socket() function */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    int optval = 1;
+    setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
 
     if (sockfd < 0)
     {
@@ -132,53 +134,53 @@ int main(int ac, char *av[])
     clilen = sizeof(cli_addr);
 
     /* Accept actual connection from the client */
-    while (1)
+
+    newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, &clilen);
+    // close(sockfd);
+    if (newsockfd < 0)
     {
-        newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, &clilen);
-        // close(sockfd);
-        if (newsockfd < 0)
-        {
-            perror("ERROR on accept");
-            continue;
-        }
-
-        /* If connection is established then start communicating */
-        bzero(buffer, maxBayte);
-        // bzero(tmp, maxBayte);
-        std::string Buff = "";
-
-        //  std::string buff[7000];
-        // recv(newsockfd, (char *)tmp.c_str(), sizeof(buff), 0);
-        n = recv(newsockfd, buffer, maxBayte, 0);
-        // while (1)
-        // {
-        //     n = read(newsockfd, (char *)tmp.c_str(), 1024);
-        //     if (tmp.find("\r\n\r\n", 0) != std::string::npos)
-        //         break;
-        //     std::cout << "buff : " << tmp << std::endl;
-        //     Buff.append(tmp);
-        // }
-        // std::cout << "read"<< n <<"- : " << buffer << std::endl << std::endl;
-
-        if (n < 0)
-        {
-            perror("ERROR reading from socket");
-            continue;
-        }
-
-        // std::cout << "byte : " << n << std::endl;
-        // printf("Here is the message: \n%s\n", buffer);
-        // std::vector<std::string> clientrequest = split(buffer, "\r\n\r\n");
-        std::vector<std::string> response_message;
-        request *req = new request(newsockfd, &g_Data, buffer, response_message);
-        // std::cout << "ID : " << atoi(response_message[0].c_str())  << " body :" << response_message[1] << std::endl;
-        // std::vector<std::string>::iterator Buffer = split(buffer, "\r\n\r\n").begin();
-        // response_message = req->execute(clientrequest[1], &g_Data);
-        req->sand(atoi(response_message[0].c_str()), response_message[1]);
-
-        close(newsockfd);
-        delete req;
+        perror("ERROR on accept");
+        return 1;
     }
+
+    /* If connection is established then start communicating */
+    bzero(buffer, maxBayte);
+    // bzero(tmp, maxBayte);
+    std::string Buff = "";
+
+    //  std::string buff[7000];
+    // recv(newsockfd, (char *)tmp.c_str(), sizeof(buff), 0);
+    sleep(5);
+    // n = recv(newsockfd, buffer, maxBayte, 0);
+    n = read(newsockfd, buffer, maxBayte);
+    // while (1)
+    // {
+    //     n = read(newsockfd, (char *)tmp.c_str(), 1024);
+    //     if (tmp.find("\r\n\r\n", 0) != std::string::npos)
+    //         break;
+    //     std::cout << "buff : " << tmp << std::endl;
+    //     Buff.append(tmp);
+    // }
+    // std::cout << "read"<< n <<"- : " << buffer << std::endl << std::endl;
+    // std::cout << buffer << std::endl;
+    if (n < 0)
+    {
+        perror("ERROR reading from socket");
+        return 1;
+    }
+
+    // std::cout << "byte : " << n << std::endl;
+    // printf("Here is the message: \n%s\n", buffer);
+    // std::vector<std::string> clientrequest = split(buffer, "\r\n\r\n");
+    std::vector<std::string> response_message;
+    request *req = new request(newsockfd, &g_Data, buffer, response_message);
+    // std::cout << "ID : " << atoi(response_message[0].c_str())  << " body :" << response_message[1] << std::endl;
+    // std::vector<std::string>::iterator Buffer = split(buffer, "\r\n\r\n").begin();
+    // response_message = req->execute(clientrequest[1], &g_Data);
+    req->sand(atoi(response_message[0].c_str()), response_message[1]);
+
+    close(newsockfd);
+    delete req;
 
     return 0;
 }

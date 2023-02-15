@@ -60,9 +60,9 @@ bool Post::parseBody_Content_Length()
     reqbody = this->getRequestBody();
     // std::cout << "Body size :" <<reqbody.size() << std::endl;
     std::cout << "get +> <Content_Type size='" << tmp.size() << "' type='" << tmp["type"] << "'   boundary='" << tmp["boundary"] << "'>" << std::endl;
-    std::cout << "<body type='Content_Length' size=" << reqbody.size() << "> :\n"
-              << reqbody.begin()[0] << std::endl
-              << "</body>\n\n\n\n";
+    // std::cout << "<body type='Content_Length' size=" << reqbody.size() << "> :\n"
+    //           << reqbody.begin()[0] << std::endl
+    //           << "</body>\n\n\n\n";
 
     
     // std::vector<std::string>::iterator it = reqbody.begin()[0];
@@ -80,6 +80,11 @@ bool Post::parseBody_Content_Length()
      *
      * --------------------------237479391124424959608132
      * ----------------------------237479391124424959608132
+     * 
+     * --------------------------016465078692960373966104
+     * ----------------------------016465078692960373966104
+     * ----------------------------016465078692960373966104
+     * ----------------------------016465078692960373966104--
      */
 
     // if (tmp["type"].compare("text/html") == 0)
