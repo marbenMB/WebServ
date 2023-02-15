@@ -20,8 +20,8 @@ Post::~Post()
 int Post::execute_method(request _request)
 {
     std::string buffff;
-    char  buff[this->getContent_Length()];
-    std::vector<std::string> buff_Body;
+    // char  buff[this->getContent_Length()];
+    // std::vector<std::string> buff_Body;
     (void)_request;
     // while (endbyte <= 0)
     // {
@@ -30,9 +30,9 @@ int Post::execute_method(request _request)
     //     endbyte -= n;
     // }
     // recv(this->getContent_Length(), buff, this->getContent_Length(), 0);
-    printf("\n-----%d----%d----\nBODY:%s\n",this->getsocketID(), this->getContent_Length(), this->getRequestBody()[0].c_str());
-    buff_Body.push_back(buff);
-    this->setRequestBody(buff_Body);
+    // printf("\n-----%d----%d----\nBODY:%s\n",this->getsocketID(), this->getContent_Length(), this->getRequestBody()[0].c_str());
+    // buff_Body.push_back(buff);
+    // this->setRequestBody(buff_Body);
     // check if the method Allowed .
     // if there's content Length :
     // std::cout << "this->getContent_Length() : " << this->getContent_Length() << std::endl;
@@ -63,6 +63,8 @@ bool Post::parseBody_Content_Length()
     std::cout << "<body type='Content_Length' size=" << reqbody.size() << "> :\n"
               << reqbody.begin()[0] << std::endl
               << "</body>\n\n\n\n";
+
+    
     // std::vector<std::string>::iterator it = reqbody.begin()[0];
     // std::vector<std::string>  body = split((, "\r\n");
     // std::vector<std::string>::iterator it = body.begin();
@@ -80,44 +82,45 @@ bool Post::parseBody_Content_Length()
      * ----------------------------237479391124424959608132
      */
 
-    if (tmp["type"].compare("text/html") == 0)
-    {
-        std::ofstream outFile;
+    // if (tmp["type"].compare("text/html") == 0)
+    // {
+    //     std::ofstream outFile;
 
-        std::string filename = this->getRootPath() + this->getRequest_URI();
-        // std::cout << "getRequest_URI   +>" << this->getRequest_URI() << std::endl;
-        // std::cout << "Request Path :" << filename << std::endl;
-        outFile.open(filename, std::ifstream::out);
-        if (!outFile.is_open())
-        {
-            this->setStatuscode(400);
-        }
-        outFile << reqbody.begin()[0];
-        this->setResponseBody("");
-    }
-    else if (tmp["type"].compare("multipart/form-data") == 0)
-    {
-        /**
-         *
-           POST /test HTTP/1.1
-            Host: foo.example
-            Content-Type: multipart/form-data;boundary="boundary"
+    //     std::string filename = this->getRootPath() + this->getRequest_URI();
+    //     // std::cout << "getRequest_URI   +>" << this->getRequest_URI() << std::endl;
+    //     // std::cout << "Request Path :" << filename << std::endl;
+    //     outFile.open(filename, std::ifstream::out);
+    //     if (!outFile.is_open())
+    //     {
+    //         this->setStatuscode(400);
+    //     }
+    //     outFile << reqbody.begin()[0];
+    //     this->setResponseBody("");
+    // }
+    // else if (tmp["type"].compare("multipart/form-data") == 0)
+    // {
+    //     /**
+    //      *
+    //        POST /test HTTP/1.1
+    //         Host: foo.example
+    //         Content-Type: multipart/form-data;boundary="boundary"
 
-            --boundary
-            Content-Disposition: form-data; name="field1"
+    //         --boundary
+    //         Content-Disposition: form-data; name="field1"
 
-            value1
-            --boundary
-            Content-Disposition: form-data; name="field2"; filename="example.txt"
+    //         value1
+    //         --boundary
+    //         Content-Disposition: form-data; name="field2"; filename="example.txt"
 
-            value2
-            --boundary--
-         *
-         *
-         *
-         *
-        */
-    }
+    //         value2
+    //         --boundary--
+    //      *
+    //      *
+    //      *
+    //      *
+    //     */
+    // }
+    
     return 1;
 }
 bool Post::parseBody_Transfer_Encoding()
@@ -125,22 +128,18 @@ bool Post::parseBody_Transfer_Encoding()
     std::cout << "parseBody_Transfer_Encoding\n";
     return 1;
 }
-
 std::vector<std::string> const &Post::getRequestBody(void) const
 {
     return (this->requestBody);
 }
-
 void Post::setRequestBody(std::vector<std::string> reqBody)
 {
     this->requestBody = reqBody;
 }
-
 void method::setContent_Length(int Content_Length)
 {
     this->Content_Length = Content_Length;
 }
-
 void method::setClient_max_body_size(int Client_max_body_size){
     this->client_max_body_size = Client_max_body_size;
 }

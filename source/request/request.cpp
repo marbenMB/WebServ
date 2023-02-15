@@ -21,7 +21,7 @@ request::request(int socketID, Data *server, std::string request, std::vector<st
     // 2 - check for body 
     std::cout << MAUVE << "   @VERIFYING  Body" << END_CLR << std::endl;
     if (this->getmethod().compare("POST") == 0 && this->requirements)
-        this->Verifying_Body(_requestBody);
+        this->Verifying_Body(request);
     // 3 - Retrieving the requested resource [config File and Data] :
     std::cout << MAUVE << "   @RETRIEVING requested resource" << END_CLR << std::endl;
     this->Retrieving_requested_resource(server);
@@ -68,8 +68,17 @@ void request::sand(int socketID, std::string body){
     }
 }
 
-bool request::Verifying_Body(std::string req){
-    (void)req;
+bool request::Verifying_Body(std::string  req){
+    std::string requestheader = split(req,"\r\n\r\n")[0];
+    std::string requestbody = split(req,"\r\n\r\n")[1];
+    std::string buffer;
+
+    std::cout << "INIT HEADER :\n" << requestheader << std::endl;
+    if ((int)requestbody.length() != this->getContent_Length()){
+        read(this->getsocketID(), buffer.c_str(), this->getContent_Length());
+    }
+    std::cout << "INIT BODY :\n" << requestbody << std::endl;
+
     return true;
 }
 
