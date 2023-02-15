@@ -34,15 +34,18 @@ std::vector<std::string>	getStringKeyVal(ServerConf server, std::string key)
 	return	std::vector<std::string>();
 }
 
-WebServ	*estabilishServers(Data &g_data)
+WebServ	*establishServers(Data &g_data)
 {
 	WebServ *serv = new WebServ();
+	int	id = 1;
 
 	for (std::vector<ServerConf>::iterator it = g_data.server_list.begin(); it != g_data.server_list.end(); it++)
 	{
 
-		Server	newServ(portsExtraction(*it), getStringKeyVal(*it, "server_name"), getStringKeyVal(*it, "host"));
+		Server	newServ(id, portsExtraction(*it), getStringKeyVal(*it, "server_name"), getStringKeyVal(*it, "host"));
 		serv->servers.push_back(newServ);
+		id++;
 	}
+	serv->servNums = --id;
 	return serv;
 }

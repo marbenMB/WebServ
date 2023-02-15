@@ -1,5 +1,16 @@
 #include "../include/WebServer.hpp"
 
+void	printWebServ (WebServ *myServ)
+{
+	for (std::vector<Server>::iterator it = myServ->servers.begin(); it != myServ->servers.end(); it++)
+	{
+		std::cout << "Server id : " << it->getID() << std::endl;
+		printVector(it->getListenPorts(), "Server Ports : ");
+		printVector(it->getServerHost(), "Server Hosts : ");
+		printVector(it->getServerName(), "Server Names : ");
+		std::cout << std::endl;
+	}
+}
 
 int main (int ac, char **av)
 {
@@ -9,21 +20,14 @@ int main (int ac, char **av)
         g_Data.configuration.parcing_file(av[1], g_Data);
 		
 		//	***	Creating WebServer :
-		// if (g_Data.error.empty())
-		// {
+		if (g_Data.error.empty())
+		{
 			WebServ	*myServ;
 			
-			myServ = estabilishServers(g_Data);
-
-			for (std::vector<Server>::iterator it = myServ->servers.begin(); it != myServ->servers.end(); it++)
-			{
-				printVector(it->getListenPorts(), "Server Ports : ");
-				printVector(it->getServerHost(), "Server Hosts : ");
-				printVector(it->getServerName(), "Server Names : ");
-			}
-
+			myServ = establishServers(g_Data);
+			printWebServ(myServ);		
 			delete	myServ;
-		// }
+		}
     }
     else
         g_Data.error = "error n number of argument";
