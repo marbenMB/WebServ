@@ -21,6 +21,8 @@ std::vector<int>			Server::getListenPorts(void) const { return _listenPorts; }
 std::vector<std::string>	Server::getServerHost(void) const { return _serverHost; }
 std::vector<std::string>	Server::getServerName(void) const { return _serverName; }
 
+void	Server::setSocket(std::vector<int> sock) { _socketFD = deepCopyVector(sock); }
+
 //	***	---		________	---	***	//
 
 WebServ::WebServ() {}

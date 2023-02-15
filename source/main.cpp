@@ -25,7 +25,10 @@ int main (int ac, char **av)
 			WebServ	*myServ;
 			
 			myServ = establishServers(g_Data);
-			printWebServ(myServ);		
+			// printWebServ(myServ);
+			// printWebServ(myServ);
+			createSockets(myServ);
+
 			delete	myServ;
 		}
     }

@@ -49,3 +49,36 @@ WebServ	*establishServers(Data &g_data)
 	serv->servNums = --id;
 	return serv;
 }
+
+void	createSockets(WebServ *serv)
+{
+	std::vector<int>	vec;
+
+
+	for (std::vector<Server>::iterator itServ = serv->servers.begin(); itServ != serv->servers.end(); itServ++)
+	{
+		for (std::vector<int>::iterator itPort = (itServ->getListenPorts().begin()); itPort != (itServ->getListenPorts().end()); itPort++)
+		{
+			// create socketfd = socket();
+			// int	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+			// set socket option to be reusable and its port = setsockopt()
+			// int	optval = 1;
+			// setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &optval, sizeof(optval));
+			// Define struct sockaddr_in addrss = port + host
+			// struct sockaddr_in	addr;
+
+			// bzero(&addr, sizeof(addr));
+			// addr.sin_family = AF_INET;
+			// addr.sin_port = htons(*itPort);
+			// addr.sin_addr.s_addr = INADDR_ANY;
+			// Binding socketfd with addrss = bind()
+			// listening to sockfd = listen()
+			// pushing sockfd to vec = vec.push_back()
+			// pushing sockfd to queue of I/O Multiplexer
+			// std::cout << *itPort << " ";
+		}
+		std::cout << std::endl;
+		//	set sockfd vector of the server = itServ.setSocket(vec)
+		//	clear vec = vec.clear
+	}
+}

@@ -100,8 +100,10 @@ std::vector<T>	deepCopyVector(std::vector<T> vec)
 
 
 	//	+++	Server Utils	+++	//
+void	printWebServ (WebServ *myServ);
 std::vector<int>			portsExtraction(ServerConf server);
 std::vector<std::string>	getStringKeyVal(ServerConf server, std::string key);
-WebServ	*establishServers(Data &g_data);
+WebServ						*establishServers(Data &g_data);
+void						createSockets(WebServ *serv);
 
 #endif
