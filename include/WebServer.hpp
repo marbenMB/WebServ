@@ -18,6 +18,9 @@
 #include "classes.hpp"
 #include "ConfigFile.hpp"
 
+///////////////////// MACROS ////////////////////
+#define	EXIT_FAILURE 1
+
 ///////////////////// Parent class ////////////////////
 
 class Data {

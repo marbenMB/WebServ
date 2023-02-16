@@ -52,30 +52,55 @@ WebServ	*establishServers(Data &g_data)
 
 void	createSockets(WebServ *serv)
 {
-	std::vector<int>	vec;
+	std::vector<int>	input;
+	std::vector<int>	sockFd;
 
 
 	for (std::vector<Server>::iterator itServ = serv->servers.begin(); itServ != serv->servers.end(); itServ++)
 	{
-		for (std::vector<int>::iterator itPort = (itServ->getListenPorts().begin()); itPort != (itServ->getListenPorts().end()); itPort++)
+		input = itServ->getListenPorts();
+		for (std::vector<int>::iterator itPort = input.begin(); itPort != input.end(); itPort++)
 		{
 			// create socketfd = socket();
-			// int	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-			// set socket option to be reusable and its port = setsockopt()
-			// int	optval = 1;
-			// setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &optval, sizeof(optval));
-			// Define struct sockaddr_in addrss = port + host
-			// struct sockaddr_in	addr;
+			int	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+			if (sockfd < 0)
+			{
+				std::cerr << "Socket() Failed!!" << std::endl;
+				exit (EXIT_FAILURE);
+			}
 
-			// bzero(&addr, sizeof(addr));
-			// addr.sin_family = AF_INET;
-			// addr.sin_port = htons(*itPort);
-			// addr.sin_addr.s_addr = INADDR_ANY;
+			// set socket option to be reusable and its port = setsockopt()
+			int	optval = 1;
+			if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &optval, sizeof(optval)))
+			{
+				std::cerr << "Setsockopt() Failed!!" << std::endl;
+				exit(EXIT_FAILURE);
+			}
+
+			// Define struct sockaddr_in addrss = port + host
+			struct sockaddr_in	addr;
+
+			bzero(&addr, sizeof(addr));
+			addr.sin_family = AF_INET;
+			addr.sin_port = htons(*itPort);
+			addr.sin_addr.s_addr = INADDR_ANY;
+
 			// Binding socketfd with addrss = bind()
+			if (bind(sockfd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+			{
+				std::cerr << "Bind() Failed!!" << std::endl;
+				exit (EXIT_FAILURE);
+			}
+
 			// listening to sockfd = listen()
-			// pushing sockfd to vec = vec.push_back()
+			if (listen(sockfd, 5) < 0)
+			{
+				std::cerr << "Listen() Failed!!" << std::endl;
+				exit (EXIT_FAILURE);
+			}
+
+			// pushing sockfd to vec = sockFd.push_back()
 			// pushing sockfd to queue of I/O Multiplexer
-			// std::cout << *itPort << " ";
 		}
 		std::cout << std::endl;
 		//	set sockfd vector of the server = itServ.setSocket(vec)
