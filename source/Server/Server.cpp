@@ -62,8 +62,8 @@ void	createSockets(WebServ *serv)
 		for (std::vector<int>::iterator itPort = input.begin(); itPort != input.end(); itPort++)
 		{
 			// create socketfd = socket();
-			int	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-			if (sockfd < 0)
+			int	server_sock = socket(AF_INET, SOCK_STREAM, 0);
+			if (server_sock < 0)
 			{
 				std::cerr << "Socket() Failed!!" << std::endl;
 				exit (EXIT_FAILURE);
@@ -71,7 +71,7 @@ void	createSockets(WebServ *serv)
 
 			// set socket option to be reusable and its port = setsockopt()
 			int	optval = 1;
-			if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &optval, sizeof(optval)))
+			if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)))
 			{
 				std::cerr << "Setsockopt() Failed!!" << std::endl;
 				exit(EXIT_FAILURE);
@@ -86,20 +86,35 @@ void	createSockets(WebServ *serv)
 			addr.sin_addr.s_addr = INADDR_ANY;
 
 			// Binding socketfd with addrss = bind()
-			if (bind(sockfd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+			if (bind(server_sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
 			{
 				std::cerr << "Bind() Failed!!" << std::endl;
 				exit (EXIT_FAILURE);
 			}
 
-			// listening to sockfd = listen()
-			if (listen(sockfd, 5) < 0)
+			// listening to server_sock = listen()
+			if (listen(server_sock, 5) < 0)
 			{
 				std::cerr << "Listen() Failed!!" << std::endl;
 				exit (EXIT_FAILURE);
 			}
-
+			
 			// pushing sockfd to vec = sockFd.push_back()
+			sockFd.push_back(server_sock);
+
+			// accepting request = accept()
+			int	client_sock;
+			struct sockaddr_in	client_addr;
+			socklen_t	client_addrSize = sizeof(client_addr);
+
+			client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &client_addrSize);
+			if (client_sock < 0)
+			{
+				std::cerr << "Accept() Failied!!" << std::endl;
+				exit (EXIT_FAILURE);
+			}
+			std::cout << "Request Accepted in port : " << *itPort << std::endl;
+
 			// pushing sockfd to queue of I/O Multiplexer
 		}
 		std::cout << std::endl;
