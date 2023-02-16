@@ -18,7 +18,8 @@ std::vector<std::string> split(const std::string &str, const std::string &delimi
         // trim spaces from the begining and end of the substring
         substring.erase(0, substring.find_first_not_of(" "));
         substring.erase(substring.find_last_not_of(" ") + 1);
-        substrings.push_back(substring);
+        if (substring.length())
+            substrings.push_back(substring);
         start = end + delimiter.length();
         end = str.find(delimiter, start);
         index++;

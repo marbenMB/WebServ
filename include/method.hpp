@@ -98,8 +98,9 @@ class Post : public method
 {
 private:
     std::vector<std::string> requestBody;
-    std::map<std::string, std::string> Content_Disposition;
-    std::string File_Type;
+    std::string _filename;
+    std::string _name;
+    std::string _content;
 
 public:
     Post(request rhs);
@@ -109,6 +110,15 @@ public:
     bool parseBody_Transfer_Encoding();
     std::vector<std::string> const &getRequestBody(void) const;
     void setRequestBody(std::vector<std::string> reqBody);
+
+    // setter :
+    void setFilename(std::string value);
+    void setName(std::string value);
+    void setContent(std::string value);
+    // getter :
+    std::string const &getFilename( void );
+    std::string const &getName( void );
+    std::string const &getContent( void );
 };
 
 class NotImplemented : public method

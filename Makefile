@@ -29,7 +29,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS) $(config_OBJS) $(request_OBJS) $(method_OBJS)
 	${CC}  ${FLAGS} $(config_SRCS) $(SRCS)  $(request_SRCS) $(method_SRCS) -o $(NAME) -g
-	@make clean -C ./
+	# @make clean -C ./
 
 push:fclean
 	@git status

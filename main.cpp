@@ -76,10 +76,11 @@
 
 int main(int ac, char *av[])
 {
-    // system("leaks webServ");
+    // system("leaks webServ"); 
     Data g_Data;
     int sockfd, newsockfd, portno;
-    int maxBayte = 50000;
+    // long maxBayte = 2147483648;
+    long maxBayte = 2147483647;
     socklen_t clilen; // unsigned int
     char *buffer;
     std::string tmp;

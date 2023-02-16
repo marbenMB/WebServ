@@ -160,6 +160,7 @@ public:
 };
 std::vector<std::string> split(const std::string &str, const std::string &delimiter);
 std::string trimFront(const std::string &s, std::string trim);
+std::string trimBack(const std::string &s, std::string trim);
 std::string _CREATEresponse(std::map<std::string, std::string> content_type, int code_status, std::string reason_phrase, std::string body);
 
 #endif

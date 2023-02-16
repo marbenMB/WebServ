@@ -64,7 +64,6 @@ bool Post::parseBody_Content_Length()
     //           << reqbody.begin()[0] << std::endl
     //           << "</body>\n\n\n\n";
 
-    
     // std::vector<std::string>::iterator it = reqbody.begin()[0];
     // std::vector<std::string>  body = split((, "\r\n");
     // std::vector<std::string>::iterator it = body.begin();
@@ -80,7 +79,7 @@ bool Post::parseBody_Content_Length()
      *
      * --------------------------237479391124424959608132
      * ----------------------------237479391124424959608132
-     * 
+     *
      * --------------------------016465078692960373966104
      * ----------------------------016465078692960373966104
      * ----------------------------016465078692960373966104
@@ -125,7 +124,7 @@ bool Post::parseBody_Content_Length()
     //      *
     //     */
     // }
-    
+
     return 1;
 }
 bool Post::parseBody_Transfer_Encoding()
@@ -145,7 +144,8 @@ void method::setContent_Length(int Content_Length)
 {
     this->Content_Length = Content_Length;
 }
-void method::setClient_max_body_size(int Client_max_body_size){
+void method::setClient_max_body_size(int Client_max_body_size)
+{
     this->client_max_body_size = Client_max_body_size;
 }
 void method::setContent_Type(std::string Content_Type)
@@ -159,4 +159,26 @@ void method::setContent_Type(std::string Content_Type)
 void method::setTransfer_Encoding(std::string Transfer_Encoding)
 {
     this->Transfer_Encoding = Transfer_Encoding;
+}
+
+void Post::setFilename(std::string value)
+{
+    this->_filename = value;
+}
+void Post::setName(std::string value)
+{
+    this->_name = value;
+}
+void Post::setContent(std::string value)
+{
+    this->_content = value;
+}
+ std::string const &Post::getFilename( void ){
+    return this->_filename;
+ }
+std::string const &Post::getName( void ){
+    return this->_name;
+}
+std::string const &Post::getContent( void ){
+    return this->_content;
 }
