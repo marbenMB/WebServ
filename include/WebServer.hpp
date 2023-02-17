@@ -12,6 +12,7 @@
 #include <map>
 #include <vector>
 #include <stack>
+#include <libc.h>
 #include <netdb.h>
 #include <cstring>
 #include <sys/stat.h>

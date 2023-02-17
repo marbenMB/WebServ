@@ -27,7 +27,11 @@ int main (int ac, char **av)
 			myServ = establishServers(g_Data);
 			// printWebServ(myServ);
 			// printWebServ(myServ);
-			createSockets(myServ);
+			try {
+				createSockets(myServ);
+			} catch (std::exception &e) {
+				std::cout << e.what() << std::endl;
+			}
 
 			delete	myServ;
 		}
