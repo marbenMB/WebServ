@@ -92,7 +92,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
             // std::cout << "  #|>" << start <<std::endl;
             if (start != std::string::npos && compare_URI.compare("/") != 0){
                 locations_iterator = location.begin();
-                index = 0;
+                index = 0; //93,116,772
                 if (!start){start += 1;}// for the last one
                 compare_URI.erase(start, compare_URI.length() - 1);
             }
@@ -102,3 +102,8 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
 }
 
 
+
+std::vector<std::pair<std::string, std::string> > const & request::getReqBody( void ) const
+{
+    return this->req_body;
+}

@@ -6,52 +6,88 @@ Post::Post(request rhs)
     this->setRequest_URI(rhs.getrequest_URI());
     this->setHttp_version(rhs.gethttp_version());
     this->setsocketID(rhs.getsocketID());
-    this->setStatuscode(200);
     this->setRootPath("/Users/mmasstou/Desktop/webserv/data");
     this->setRequestBody(rhs.getRequestBody());
     this->setContent_Length(rhs.getContent_Length());
     this->setContent_Type(rhs.getContent_Type());
     this->setTransfer_Encoding(rhs.getTransfer_Encoding());
-    this->setStatuscode(this->execute_method(rhs));
+    this->execute_method(rhs);
+    this->setStatuscode(201);
+    this->setreason_phrase("Created");
 }
 Post::~Post()
 {
 }
 int Post::execute_method(request _request)
 {
-    std::string buffff;
-    // char  buff[this->getContent_Length()];
-    // std::vector<std::string> buff_Body;
-    (void)_request;
-    // while (endbyte <= 0)
-    // {
-    //     n = read(this->getContent_Length(), buff, this->getContent_Length());
-    //     buffff.append(buff);
-    //     endbyte -= n;
-    // }
-    // recv(this->getContent_Length(), buff, this->getContent_Length(), 0);
-    // printf("\n-----%d----%d----\nBODY:%s\n",this->getsocketID(), this->getContent_Length(), this->getRequestBody()[0].c_str());
-    // buff_Body.push_back(buff);
-    // this->setRequestBody(buff_Body);
-    // check if the method Allowed .
-    // if there's content Length :
-    // std::cout << "this->getContent_Length() : " << this->getContent_Length() << std::endl;
-    // std::cout << "this->getTransfer_Encoding() : " << this->getTransfer_Encoding() << std::endl;
-    // if there's Transfer Encoding :
-    if (this->getContent_Length() != -1)
+    std::string buffer;
+    std::string body;
+    std::string filename;
+    std::ofstream outFile;
+    std::ifstream inFile;
+    filename.append("./var/srcs/success.html");
+    // bool _execute = false;
+    std::map<std::string, std::string> tmp = this->getContent_Type();
+    this->parseBody();
+    if (tmp["type"].compare("multipart/form-data") == 0)
     {
-        this->parseBody_Content_Length();
-        return true;
+        std::vector<std::pair<std::string, std::string> > file = _request.getReqBody();
+        std::vector<std::pair<std::string, std::string> >::iterator file_It = file.begin();
+        while (file_It != file.end())
+        {
+            filename.clear();
+            filename.append(_request.getroot());
+            filename.append(_request.getrequest_URI());
+            filename.append("/");
+            filename.append((*file_It).first);
+            // std::cout <<" abs path to the file created :" << filename << std::endl;
+            outFile.open(filename, std::ifstream::out);
+            if (!outFile.is_open()){ // cant open this file  Internal Server Error
+                this->setStatuscode(500);
+                this->setreason_phrase("Internal Server Error");
+                filename.clear();
+                filename.append("./var/errors/50x.html");
+                file_It = file.begin();
+                while (file_It != file.end()){
+                    filename.clear();
+                    filename.append(_request.getroot());
+                    filename.append(_request.getrequest_URI());
+                    filename.append("/");
+                    filename.append((*file_It).first);
+                    remove(filename.c_str());
+                    ++file_It;
+                }
+            }
+            outFile << (*file_It).second;
+            std::cout <<RED<< "filenameee =" <<END_CLR<< (*file_It).first << std::endl;
+            // std::cout <<RED<< "Body       =" <<END_CLR<< (*file_It).second << std::endl;
+            outFile.close();
+            ++file_It;
+        }
+        if (file_It == file.end()){
+            // forbiden
+            this->setStatuscode(201);
+            this->setreason_phrase("Created");
+            filename.clear();
+            filename.append("./var/srcs/success.html");
+        }
+
     }
-    else if (!this->getTransfer_Encoding().empty())
+    buffer.clear();
+    body.clear();
+    inFile.open(filename, std::ifstream::in);
+    while (std::getline(inFile, buffer))
     {
-        this->parseBody_Transfer_Encoding();
-        return true;
+        // std::cout << buffer << std::endl;
+        body.append(buffer);
     }
-    return false;
+    // std::cout << "</Line >" << std::endl;
+    inFile.close();
+    this->setResponseBody(body);
+    return true;
 }
 
-bool Post::parseBody_Content_Length()
+bool Post::parseBody()
 {
     // std::cout << "parseBody_Content_Length\n";
     std::vector<std::string> reqbody;

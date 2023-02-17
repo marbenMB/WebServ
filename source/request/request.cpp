@@ -114,6 +114,7 @@ bool request::Verifying_Body(std::string req)
     std::string EndSTRINGSEPARATES;
     std::string request;
     std::vector<std::string> tmp = split(Content_Type, ";");
+    std::pair<std::string, std::string> tmp_fileIt;
     ContentType["type"] = (std::string)tmp[0];
     if (tmp.size() == 2)
         ContentType["boundary"] = trimFront((std::string)tmp[1], "boundary=");
@@ -128,17 +129,17 @@ bool request::Verifying_Body(std::string req)
     // std::cout <<"ContentType['boundary']" << ContentType["boundary"] << std::endl;
     // std::cout <<"STRINGSEPARATES        " << STRINGSEPARATES << std::endl;
     // std::cout <<"EndSTRINGSEPARATES     " << EndSTRINGSEPARATES << std::endl;
-    if ((int)req.length() != this->getContent_Length()){this->requirements = false;}
-    
+    // if ((int)req.length() != this->getContent_Length()){this->requirements = false;return false;}
+    // std::cout << req << std::endl;
     if (ContentType["type"].compare("multipart/form-data") == 0)
     {
+        if (!ContentType["boundary"].length()){this->requirements = false;return false;}
         if (req.find(STRINGSEPARATES) == std::string::npos){this->requirements = false;std::cout << "STRINGSEPARATES: makayen " << std::endl;}
         if (req.find(EndSTRINGSEPARATES) == std::string::npos){this->requirements = false;std::cout << "EndSTRINGSEPARATES: makayen " << std::endl;}
         tmp.clear();
         request = split(req, EndSTRINGSEPARATES)[0];
         STRINGSEPARATES.append("\r\n");
         tmp = split(request, STRINGSEPARATES);
-        // std::cout << "\nBODY :" << tmp[0] ;
         std::vector<std::string>::iterator it = tmp.begin();
         int index = 1;
         std::vector<std::string>::iterator tmp_IT;
@@ -147,7 +148,8 @@ bool request::Verifying_Body(std::string req)
         {
             // std::cout << RED <<"boundary["<<index<<"]"<<END_CLR << it[0] << std::endl;
             std::vector<std::string> _file = split(it[0], "\n\r");
-            std::cout << "_file size :" << _file.size() << std::endl;
+            std::cout << "\nBODY :\n" << _file[0] << std::endl ;
+            // std::cout << "_file size :" << _file.size() << std::endl;
             /**
             *   ! _file[0]
                 Content-Disposition: form-data; name=""; filename="get.cpp"
@@ -164,7 +166,7 @@ bool request::Verifying_Body(std::string req)
             }
             std::vector<std::string> __fileHeader = split(_file[0], "\n");
             // __fileHeader = split(__fileHeader[0], "\n");
-            std::cout << "__fileHeader :" << __fileHeader.size() << std::endl;
+            // std::cout << "__fileHeader :" << __fileHeader.size() << std::endl;
             /**
              * !   __fileHeader[0] :Content-Disposition: form-data; name=""; filename="request.hpp"
              * *   __fileHeader[1] :Content-Type: application/octet-stream
@@ -179,19 +181,25 @@ bool request::Verifying_Body(std::string req)
             }
             std::vector<std::string>::iterator ContentDisposition_iter = ContentDisposition_vect.begin();
             nndex = 1;
+            // std::cout <<RED<< "Name =" <<END_CLR<< ContentDisposition_vect[1] << std::endl;
             while (ContentDisposition_iter != ContentDisposition_vect.end())
             {
-                std::cout << RED << "ContentDisposition[" << nndex << "] :" << END_CLR << *ContentDisposition_iter << std::endl;
+                // std::cout << RED << "ContentDisposition[" << nndex << "] :" << END_CLR << *ContentDisposition_iter << std::endl;
                 /**
                  * *ContentDisposition[1] :form-data
                  * *ContentDisposition[2] :name=""
                  * !ContentDisposition[3] :filename="request.hpp"
                  */
                 if ((*ContentDisposition_iter).find("filename=") != std::string::npos){
-                    std::string filenameee = trimFront((std::string)ContentDisposition_iter[0], "filename=\"");
+                    std::string filenameee(ContentDisposition_iter[0]);
+                    filenameee.erase(0, 10);
                     int filename_length = filenameee.length();
                     filenameee.erase(filename_length - 2, filename_length);
-                    std::cout << "filenameee =" << filenameee << std::endl;
+                    tmp_fileIt.first = filenameee;
+                    tmp_fileIt.second = _file[1];
+                    this->req_body.push_back(tmp_fileIt);
+
+                    // std::cout <<RED<< "Body       =" <<END_CLR<< _file[1] << std::endl;
                 }
                 ContentDisposition_iter++;nndex++;
             }
@@ -208,7 +216,7 @@ bool request::Verifying_Body(std::string req)
 
 bool request::Verifying_Header(std::string req)
 {
-   
+   std::cout << "Header :"<< req << std::endl;
     std::vector<std::string> requestHeaders = split(req, "\r\n");
     std::vector<std::string>::iterator itH = requestHeaders.begin();
     std::vector<std::string> spl;
@@ -236,18 +244,18 @@ bool request::Verifying_Header(std::string req)
         this->requirements = false;
         return false;
     }
-     std::cout << "this->Content_Type :\n"<< RED << this->Content_Type << END_CLR<< std::endl;
     if (this->request_URI.find(".php") != std::string::npos)
         std::cout << RED << "  >PHP CGI" << END_CLR << std::endl;
     if (this->request_URI.find(".py") != std::string::npos)
         std::cout << RED << "  >PY CGI" << END_CLR << std::endl;
+    std::cout << std::endl;
     // std::cout << " this->method : |" << this->req_method << "|" << std::endl;
     // std::cout << " this->host : |" << this->host << "|" << std::endl;
-    // std::cout << " this->request_URI : |" << this->request_URI << "|" << std::endl;
+    std::cout << " this->request_URI : |" << this->request_URI << "|" << std::endl;
     // std::cout << " this->http_version : |" << this->http_version << "|" << std::endl;
     // std::cout << " this->Connection : |" << this->Connection << "|" << std::endl;
     // std::cout << " this->Content_Length : |" << this->Content_Length << "|" << std::endl;
-    // std::cout << " this->Content_Type : |" << this->Content_Type << "|" << std::endl;
+    std::cout << " this->Content_Type : |" << this->Content_Type << "|" << std::endl;
     // std::cout << " this->Transfer_Encoding : |" << this->Transfer_Encoding << "|" << std::endl;
     // std::cout << " this->Accept : |" << this->Accept << "|" << std::endl;
     return true;
