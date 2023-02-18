@@ -148,7 +148,7 @@ bool request::Verifying_Body(std::string req)
         {
             // std::cout << RED <<"boundary["<<index<<"]"<<END_CLR << it[0] << std::endl;
             std::vector<std::string> _file = split(it[0], "\n\r");
-            std::cout << "\nBODY :\n" << _file[0] << std::endl ;
+            std::cout << "\nBODY :\n" << _file[1] << std::endl ;
             // std::cout << "_file size :" << _file.size() << std::endl;
             /**
             *   ! _file[0]
