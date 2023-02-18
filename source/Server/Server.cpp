@@ -91,23 +91,24 @@ void	createSockets(WebServ *serv)
 			std::cout << "Port : " << *itPort << " - Host : " << host << std::endl;
 
 			// getting the address infos
-			// std::stringstream	ss;
-			// std::string			strPort;
-			// struct addrinfo		hints;
-			// struct addrinfo		*res;
-			// int 				addrStat;
+			std::stringstream	ss;
+			std::string			strPort;
+			struct addrinfo		hints;
+			struct addrinfo		*res;
+			int 				addrStat;
 
-			// ss << *itPort;
-			// ss >> strPort;
-			// hints.ai_family = AF_INET;
-			// hints.ai_socktype = SOCK_STREAM;
-			// addrStat = getaddrinfo(host.c_str(), strPort.c_str(), &hints, &res);
-			// if (addrStat != 0)
-			// {
-			// 	std::cerr << "Current Host : " << host << " is not available !!" << std::endl;
-			// 	exit (EXIT_FAILURE);
-			// }
-			// std::cout << host << " - " << addrStat << std::endl;
+			ss << *itPort;
+			ss >> strPort;
+			bzero(&hints, sizeof(hints));
+			hints.ai_family = AF_INET;
+			hints.ai_socktype = SOCK_STREAM;
+			addrStat = getaddrinfo(host.c_str(), strPort.c_str(), &hints, &res);
+			if (addrStat != 0)
+			{
+				std::cerr << "Current Host : " << host << " is not available !!" << std::endl;
+				exit (EXIT_FAILURE);
+			}
+			std::cout << host << " - " << addrStat << std::endl;
 
 			// Binding socketfd with addrss = bind()
 			if (bind(server_sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
