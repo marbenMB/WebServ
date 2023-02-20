@@ -18,6 +18,18 @@
 #include "classes.hpp"
 #include "ConfigFile.hpp"
 
+
+///////////////// config macros ////////
+
+#define WHITE_SPACE " \t"
+#define SPACE ' '
+#define SEMI_COL ";"
+#define IP_NUM "0123456789:."
+#define NUM "0123456789"
+#define SIZE_TYPE "MKGmkg"
+
+///////////////////////////////////////
+
 ///////////////////// Parent class ////////////////////
 
 class Data {

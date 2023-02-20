@@ -4,8 +4,10 @@ void ConfigFile::parcing_file(std::string confilename, Data &g_Data){
     std::string sufx = ".conf";
     this->_in_file.open(confilename.c_str());
     if (this->_in_file.is_open()){
-        if(confilename.rfind(sufx) == confilename.length() - sufx.length())
+        if(confilename.rfind(sufx) == confilename.length() - sufx.length()) {
+            this->filename = confilename;
             getdata(g_Data);
+        }
         else
             g_Data.error = "error in config file";
     }
@@ -29,16 +31,19 @@ void trim(std::string& string, std::string value) {
 }
 
 
-bool ConfigFile::check_braces() {
+bool ConfigFile::check_braces(Data &g_Data) {
     std::string line;
+    int line_index = 0;
     std::stack<char> brace_stack;
 
     while (std::getline(this->_in_file, line)) {
+        line_index++;
         for (unsigned int i = 0; i < line.length(); i++) {
             if (line[i] == '{') {
                 brace_stack.push(line[i]);
             } else if (line[i] == '}') {
-                if (brace_stack.empty() || brace_stack.top() != '{') {
+                if (brace_stack.empty()) {
+                    
                     return false;
                 }
                 brace_stack.pop();
@@ -47,23 +52,13 @@ bool ConfigFile::check_braces() {
     }
     this->_in_file.clear();
     this->_in_file.seekg(0, std::ios::beg);
+    if (!brace_stack.empty()) {
+        g_Data.error = "WebServer: [emerg] unexpected end of file, expecting\"}\" in ";
+        g_Data.error += this->filename + ':' + std::to_string(line_index);
+    }
     return brace_stack.empty();
 }
 
-void key_value(ServerConf &server,Data &g_Data, KeyValue v, char spartor) {
-    std::string variable;
-    (void)g_Data;
-
-    trim(v.value, " \t");
-    while ((v.index = v.value.find(spartor)) != -1) {
-        variable = v.value.substr(0, v.index);
-        trim(variable, " \t");
-        server.server_data[v.key].push_back(variable);
-        v.value.erase(0, v.index + 1);
-    }
-    trim(v.value, " \t;");
-    server.server_data[v.key].push_back(v.value);
-}
 void ConfigFile::location(Data &g_Data, ServerConf &server, KeyValue v)
 {
     std::map<std::string, std::vector<std::string> >                        location_var;
@@ -80,6 +75,7 @@ void ConfigFile::location(Data &g_Data, ServerConf &server, KeyValue v)
     else {
         path = v.value;
         while (std::getline(this->_in_file, v.line)) {
+            this->line_index++;
             trim(v.line, " \t'[]");
             if(v.line.length() == 0)
                 continue;
@@ -90,8 +86,8 @@ void ConfigFile::location(Data &g_Data, ServerConf &server, KeyValue v)
         }
     }
     if (path.length() && v.value == "{") {
-        while (std::getline(this->_in_file, v.line))
-        {
+        while (std::getline(this->_in_file, v.line)){
+            this->line_index++;
             trim(v.line, " \t:;'[]");
             if (v.line == "}")
                 break;
@@ -128,106 +124,66 @@ void ConfigFile::location(Data &g_Data, ServerConf &server, KeyValue v)
 
 }
 
-/////////////////////////////////////////////////////
-
 void ConfigFile::server_block(Data &g_Data, KeyValue v) {
     ServerConf server;
 
     if (v.key == "server" && v.value == "{") {
         while (std::getline(this->_in_file, v.line) && !g_Data.error.length()) {
-            trim(v.line, " \t");
+            this->line_index++;
+            trim(v.line, WHITE_SPACE);
             if(v.line.length() == 0)
                 continue;
             if(v.line == "}")
                 break;
-            v.index = v.line.find(" ");
+            v.index = v.line.find(SPACE);
             if (v.index == -1) {
-                std::cout << "-1 " << v.line << std::endl;
-                continue;
+                g_Data.error = "WebServer: [emerg] invalid number of arguments in \"";
+                g_Data.error += v.line + "\" directive in " + this->filename + ':' + std::to_string(this->line_index);
+                break;
             }
             v.key = v.line.substr(0, v.index);
             v.value = v.line.substr(v.index, v.line.length());
-            if (v.key == "listen")
-                key_value(server, g_Data, v, ',');
-            else if (v.key == "host")
-                key_value(server, g_Data, v, ' ');
-            else if (v.key == "server_name")
-                key_value(server, g_Data, v, ' ');
-            else if (v.key == "root")
-                key_value(server, g_Data, v, ' ');
-            else if (v.key == "index")
-                key_value(server, g_Data, v, ' ');
-            else if (v.key == "error_page")
-                key_value(server, g_Data, v, ' ');
-            else if (v.key == "location")
-                location(g_Data, server, v);
-            else if (v.key == "client_max_body_size")
-                key_value(server, g_Data, v, ' ');
-            else {
-                g_Data.error = "error in config file";
-            }
+            check_semicolon(g_Data, v);
+            fill_vector_variable(g_Data, server, v);
         }
-        
         if (!g_Data.error.length())
             g_Data.server_list.push_back(server);
     }
     else
-    {
-        g_Data.error = "error : server scope not found";
-    }
+        ft_error_server_bloc(g_Data, v, this->filename, this->line_index);
 }
 
-void print_Data(std::vector<ServerConf> server_list) {
 
-    for (std::vector<ServerConf>::iterator it = server_list.begin(); it != server_list.end(); ++it) {
-        for (std::map<std::string, std::vector<std::string> >::iterator server_data_it = it->server_data.begin(); server_data_it != it->server_data.end(); ++server_data_it) {
-            for (std::vector<std::string>::iterator value_it = server_data_it->second.begin(); value_it != server_data_it->second.end(); ++value_it) {
-                std::cout << server_data_it->first << ": " << *value_it << std::endl;
-            }
-        }
-    for (std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator locations_it = it->locations.begin(); locations_it != it->locations.end(); ++locations_it) {
-        for (std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator location_data_it = locations_it->begin(); location_data_it != locations_it->end(); ++location_data_it) {
-            std::cout << "Location: " << location_data_it->first << std::endl;
-            for (std::map<std::string, std::vector<std::string> >::iterator location_data_it2 = location_data_it->second.begin(); location_data_it2 != location_data_it->second.end(); ++location_data_it2) {
-                // std::cout << location_data_it2->first << ": ";
-                for (std::vector<std::string>::iterator value_it2 = location_data_it2->second.begin(); value_it2 != location_data_it2->second.end(); ++value_it2) {
-                    std::cout << location_data_it2->first << ": " << *value_it2 << std::endl;
-                }
-            }
-        }
-    }
-}
-}
+
 
 void ConfigFile::getdata(Data &g_Data) {
     KeyValue v;
 
-    if (check_braces())
-    {
+    if (check_braces(g_Data)) {
         while (std::getline(this->_in_file, v.line) && !g_Data.error.length()) {
-            trim(v.line, " \t");
+            line_index++;
+            trim(v.line, WHITE_SPACE);
             if (v.line.length() == 0)
                 continue;
             v.index = v.line.find(" ");
             v.key = v.line.substr(0, v.index);
             if (v.index == -1) {
                 std::getline(this->_in_file, v.line);
-                v.index = v.line.find_first_not_of(" \t");
+                line_index++;
+                v.index = v.line.find_first_not_of(WHITE_SPACE);
                 while(v.index == -1) {
                     std::getline(this->_in_file, v.line);
-                    v.index = v.line.find_first_not_of(" \t");
+                    line_index++;
+                    v.index = v.line.find_first_not_of(WHITE_SPACE);
                 }
                 v.value = v.line;
             }
             else
                 v.value = v.line.substr(v.index, v.line.length() - 1);
-            trim(v.value, " \t");
+            trim(v.value, WHITE_SPACE);
             server_block(g_Data, v);
         }
         check_validity(g_Data);
         // print_Data(g_Data.server_list);
     }
-    else
-        std::cout << "file not close" << std::endl;
-
 }
