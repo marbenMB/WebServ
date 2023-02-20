@@ -35,13 +35,12 @@ class Data {
 class	Server
 {
 	public	:
-		Server (int id, std::vector<int> ports, std::vector<std::string> name, std::vector<std::string> host);
+		Server (int id, std::vector<int> ports, std::vector<std::string> name);
 		~Server ();
 
 		int							getID			(void) const;
 		std::vector<int>			getListenPorts	(void) const;
 		std::vector<std::string>	getServerName	(void) const;
-		std::vector<std::string>	getServerHost	(void) const;
 		std::vector<int>			getSocketFD		(void) const;
 
 		void						setSocket (std::vector<int> sock);
@@ -50,7 +49,6 @@ class	Server
 		int							_id;
 		std::vector<int>			_listenPorts;
 		std::vector<std::string>	_serverName;
-		std::vector<std::string>	_serverHost;
 		std::vector<int>			_socketFD;
 };
 

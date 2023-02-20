@@ -14,6 +14,7 @@ std::vector<int>	portsExtraction(ServerConf server)
 		{
 			ss << *it;
 			ss >> nPort;
+			std::cout << *it << " - ";
 			// if (ss.fail())
 			// 	throw ...
 			ports.push_back(nPort);
@@ -41,8 +42,9 @@ WebServ	*establishServers(Data &g_data)
 
 	for (std::vector<ServerConf>::iterator it = g_data.server_list.begin(); it != g_data.server_list.end(); it++)
 	{
-
-		Server	newServ(id, portsExtraction(*it), getStringKeyVal(*it, "server_name"), getStringKeyVal(*it, "host"));
+		std::cout << "Server Id : " << id << " -> ";
+		Server	newServ(id, portsExtraction(*it), getStringKeyVal(*it, "server_name"));
+		std::cout << std::endl;
 		serv->servers.push_back(newServ);
 		id++;
 	}
@@ -54,13 +56,16 @@ void	createSockets(WebServ *serv)
 {
 	std::vector<int>	input;
 	std::vector<int>	sockFd;
-	int					idx;
+	std::vector<std::string>	host;
+	int idx = 0;
 
+	host.push_back("127.0.0.1");
+	host.push_back("10.12.9.8");
+	host.push_back("0.0.0.0");
 
 	for (std::vector<Server>::iterator itServ = serv->servers.begin(); itServ != serv->servers.end(); itServ++)
 	{
 		input = itServ->getListenPorts();
-		idx = 0;
 		for (std::vector<int>::iterator itPort = input.begin(); itPort != input.end(); itPort++)
 		{
 			// create socketfd = socket();
@@ -81,14 +86,14 @@ void	createSockets(WebServ *serv)
 
 			// Define struct sockaddr_in addrss = port + host
 			struct sockaddr_in	addr;
-			std::string			host;
 
-			host = itServ->getServerHost()[idx];
 			bzero(&addr, sizeof(addr));
 			addr.sin_family = AF_INET;
 			addr.sin_port = htons(*itPort);
-			addr.sin_addr.s_addr = inet_addr(host.c_str());
-			std::cout << "Port : " << *itPort << " - Host : " << host << std::endl;
+			// addr.sin_addr.s_addr = INADDR_ANY;
+			addr.sin_addr.s_addr = inet_addr(host[idx].c_str());
+			// addr.sin_addr.s_addr = inet_addr(host.c_str());
+			// std::cout << "Port : " << *itPort << " - Host : " << host << std::endl;
 
 			// getting the address infos
 			std::stringstream	ss;
@@ -102,13 +107,13 @@ void	createSockets(WebServ *serv)
 			bzero(&hints, sizeof(hints));
 			hints.ai_family = AF_INET;
 			hints.ai_socktype = SOCK_STREAM;
-			addrStat = getaddrinfo(host.c_str(), strPort.c_str(), &hints, &res);
+			addrStat = getaddrinfo(host[idx].c_str(), strPort.c_str(), &hints, &res);
 			if (addrStat != 0)
 			{
-				std::cerr << "Current Host : " << host << " is not available !!" << std::endl;
+				std::cerr << "Current Host : " << " is not available !!" << std::endl;
 				exit (EXIT_FAILURE);
 			}
-			std::cout << host << " - " << addrStat << std::endl;
+			std::cout << host[idx] << " - " << addrStat << " - Port : " << *itPort << std::endl;
 
 			// Binding socketfd with addrss = bind()
 			if (bind(server_sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
@@ -140,7 +145,6 @@ void	createSockets(WebServ *serv)
 			
 			std::cout << "Request Accepted in port : " << *itPort << std::endl;
 			close(client_sock);
-			idx++;
 		}
 		std::cout << std::endl;
 
@@ -149,5 +153,6 @@ void	createSockets(WebServ *serv)
 
 		//	clear sockFd = sockFd.clear
 		sockFd.clear();
+		idx++;
 	}
 }
