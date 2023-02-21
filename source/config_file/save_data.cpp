@@ -1,18 +1,8 @@
 #include "../../include/WebServer.hpp"
 
-int ConfigFile::valid_error(Data &g_Data, std::string error) {
-    int number = std::stoi(error);
-    if (number >= 300 && number <= 599)
-        return (1);
-    g_Data.error = "WebServer: [emerg] value \"" + error + "\" must be between 300 and 599 in ";
-    g_Data.error += this->filename + ':' + std::to_string(this->line_index);
-    return (0);
-}
-
-void ConfigFile::key_value(ServerConf &server,Data &g_Data, KeyValue v) {
+void ConfigFile::key_value(ServerConf &server, KeyValue v) {
 
     std::string variable;
-    (void) g_Data;
 
     trim(v.value, " \t");
     while ((v.index = v.value.find(' ')) != -1) {
@@ -23,14 +13,11 @@ void ConfigFile::key_value(ServerConf &server,Data &g_Data, KeyValue v) {
         v.value.erase(0, v.index + 1);
     }
     trim(v.value, " \t");
-    if (v.value.length()) {
-        // g_Data.error = "WebServer: [emerg] invalid number of arguments in \"";
-        // g_Data.error += v.key + "\" directive in " + this->filename + ':' + std::to_string(this->line_index);
+    if (v.value.length())
         server.server_data[v.key].push_back(v.value);
-    }
 }
 
-void ConfigFile::key_value_error(ServerConf &server,Data &g_Data, KeyValue v) {
+void ConfigFile::key_value_error_page(ServerConf &server,Data &g_Data, KeyValue v) {
 
     std::string variable;
     int find_error = 0;
@@ -40,7 +27,7 @@ void ConfigFile::key_value_error(ServerConf &server,Data &g_Data, KeyValue v) {
         find_error = 1;
         variable = v.value.substr(0, v.index);
         trim(variable, " \t");
-        if (variable.length() && (variable.find_first_not_of(NUM) == std::string::npos) && valid_error(g_Data, variable))
+        if (variable.length() && (variable.find_first_not_of(NUM) == std::string::npos) && valid_error_page(g_Data, variable))
             server.server_data[v.key].push_back(variable);
         else if (!g_Data.error.length()){
             g_Data.error = "WebServer: [emerg] invalid value \"" + variable + "\" in ";
@@ -53,25 +40,97 @@ void ConfigFile::key_value_error(ServerConf &server,Data &g_Data, KeyValue v) {
         g_Data.error = "WebServer: [emerg] invalid number of arguments in \"";
         g_Data.error += v.key + "\" directive in " + this->filename + ':' + std::to_string(this->line_index);
     }
+    else if (v.value.find(".html") == std::string::npos) {
+        g_Data.error = "WebServer: [emerg] " + v.value + " is not a error file ('file.html') in \"";
+        g_Data.error += this->filename + ':' + std::to_string(this->line_index);
+    }
     else
         server.server_data[v.key].push_back(v.value);
 }
 
+void ConfigFile::location(Data &g_Data, ServerConf &server, KeyValue v)
+{
+    std::map<std::string, std::vector<std::string> >                        location_var;
+    std::map<std::string,std::map<std::string, std::vector<std::string> > > location;
+    std::string                                                             variable;
+    std::string                                                             path;
+
+    trim(v.value, " \t'[]");
+    if (v.value[v.value.length() - 1] == '{') {
+        path = v.value.substr(0, v.value.length() - 1);
+        trim(path, " \t'[]");
+        v.value = "{";
+    }
+    else {
+        path = v.value;
+        while (std::getline(this->_in_file, v.line)) {
+            this->line_index++;
+            trim(v.line, " \t'[]");
+            if(v.line.length() == 0)
+                continue;
+            else {
+                v.value = v.line;
+                break;
+            }
+        }
+    }
+    if (path.length() && v.value == "{") {
+        while (std::getline(this->_in_file, v.line)){
+            this->line_index++;
+            trim(v.line, " \t:'[]");
+            if (v.line == "}")
+                break;
+            v.index = v.line.find(" ");
+            
+            if(v.index == -1) {
+                v.key = v.line;
+                v.value = "NaN";
+                trim(v.key, " \t:'[]");
+                location_var[v.key].push_back(v.value);
+            }
+            else {
+                v.key = v.line.substr(0, v.index);
+                v.line.erase(0, v.index + 1);
+                trim(v.line, " \t:'[]");
+                v.value = v.line;
+                check_semicolon(g_Data, v);
+                v.line = v.value;
+                while ((v.index = v.line.find(" ")) != -1) {
+                    v.value = v.line.substr(0, v.index);
+                    trim(v.value, " \t:',[]");
+                    location_var[v.key].push_back(v.value);
+                    v.line.erase(0, v.index + 1);
+                    trim(v.line, " \t:',[]");
+                }
+                v.value = v.line;
+                location_var[v.key].push_back(v.value);
+            }
+        }
+        location[path] = location_var;
+        server.locations.push_back(location);
+    }
+    else {
+        g_Data.error = "syntax error";
+    }
+
+
+}
+
 void ConfigFile::fill_vector_variable(Data &g_Data, ServerConf &server, KeyValue v) {
     if (v.key == "listen")
-        key_value(server, g_Data, v);
+        key_value(server, v);
     else if (v.key == "server_name")
-        key_value(server, g_Data, v);
+        key_value(server, v);
     else if (v.key == "root")
-        key_value(server, g_Data, v);
+        key_value(server, v);
     else if (v.key == "index")
-        key_value(server, g_Data, v);
+        key_value(server, v);
     else if (v.key == "error_page")
-        key_value_error(server, g_Data, v);
+        key_value_error_page(server, g_Data, v);
     else if (v.key == "location")
         location(g_Data, server, v);
     else if (v.key == "client_max_body_size")
-        key_value(server, g_Data, v);
+        key_value(server, v);
     else if (v.key == "server")
     {
         g_Data.error = "WebServer: [emerg] unexpected end of file, expecting\"}\" in ";

@@ -17,6 +17,7 @@
 #include <cstdlib>
 #include "classes.hpp"
 #include "ConfigFile.hpp"
+#include "ft_tools.hpp"
 
 
 ///////////////// config macros ////////
@@ -26,7 +27,7 @@
 #define SEMI_COL ";"
 #define IP_NUM "0123456789:."
 #define NUM "0123456789"
-#define SIZE_TYPE "MKGmkg"
+#define SIZE_TYPE "MKGBmkgb"
 
 ///////////////////////////////////////
 
@@ -35,7 +36,7 @@
 class Data {
     public:
         Data() {};
-        std::vector<ServerConf> server_list;
+        Vect_Serv server_list;
         ConfigFile configuration;
         std::string error;
 };

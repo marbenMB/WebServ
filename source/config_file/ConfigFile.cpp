@@ -19,18 +19,6 @@ ConfigFile::~ConfigFile() {
     this->_in_file.close();
 }
 
-
-//////////////////////////////////////////////////////
-
-void trim(std::string& string, std::string value) {
-	size_t first = string.find_first_not_of(value);
-	string.erase(0, first);
-	size_t last = string.find_last_not_of(value);
-	size_t len = string.length() - (last - 1);
-	string.erase(last + 1, len);
-}
-
-
 bool ConfigFile::check_braces(Data &g_Data) {
     std::string line;
     int line_index = 0;
@@ -59,70 +47,7 @@ bool ConfigFile::check_braces(Data &g_Data) {
     return brace_stack.empty();
 }
 
-void ConfigFile::location(Data &g_Data, ServerConf &server, KeyValue v)
-{
-    std::map<std::string, std::vector<std::string> >                        location_var;
-    std::map<std::string,std::map<std::string, std::vector<std::string> > > location;
-    std::string                                                             variable;
-    std::string                                                             path;
 
-    trim(v.value, " \t'[]");
-    if (v.value[v.value.length() - 1] == '{') {
-        path = v.value.substr(0, v.value.length() - 1);
-        trim(path, " \t'[]");
-        v.value = "{";
-    }
-    else {
-        path = v.value;
-        while (std::getline(this->_in_file, v.line)) {
-            this->line_index++;
-            trim(v.line, " \t'[]");
-            if(v.line.length() == 0)
-                continue;
-            else {
-                v.value = v.line;
-                break;
-            }
-        }
-    }
-    if (path.length() && v.value == "{") {
-        while (std::getline(this->_in_file, v.line)){
-            this->line_index++;
-            trim(v.line, " \t:;'[]");
-            if (v.line == "}")
-                break;
-            v.index = v.line.find(" ");
-            
-            if(v.index == -1) {
-                v.key = v.line;
-                v.value = "NaN";
-                trim(v.key, " \t:'[]");
-                location_var[v.key].push_back(v.value);
-            }
-            else {
-                v.key = v.line.substr(0, v.index);
-                v.line.erase(0, v.index + 1);
-                trim(v.line, " \t:'[]");
-                while ((v.index = v.line.find(" ")) != -1) {
-                    variable = v.line.substr(0, v.index);
-                    trim(variable, " \t:'[]");
-                    location_var[v.key].push_back(variable);
-                    v.line.erase(0, v.index + 1);
-                    trim(v.line, " \t:'[]");
-                }
-                v.value = v.line;
-                location_var[v.key].push_back(v.value);
-            }
-        }
-        location[path] = location_var;
-        server.locations.push_back(location);
-    }
-    else {
-        g_Data.error = "syntax error";
-    }
-
-
-}
 
 void ConfigFile::server_block(Data &g_Data, KeyValue v) {
     ServerConf server;
@@ -153,9 +78,6 @@ void ConfigFile::server_block(Data &g_Data, KeyValue v) {
         ft_error_server_bloc(g_Data, v, this->filename, this->line_index);
 }
 
-
-
-
 void ConfigFile::getdata(Data &g_Data) {
     KeyValue v;
 
@@ -185,5 +107,8 @@ void ConfigFile::getdata(Data &g_Data) {
         }
         check_validity(g_Data);
         // print_Data(g_Data.server_list);
+    }
+    else {
+        g_Data.error = "WebServer: [emerg] error in syntax missing of '{' or '}' in configfile.conf";
     }
 }

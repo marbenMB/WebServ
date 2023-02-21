@@ -22,8 +22,78 @@ void ConfigFile::check_semicolon(Data &g_Data, KeyValue &v) {
         g_Data.error += v.key + "\" is not terminated by \";\" in " + this->filename + ':' + std::to_string(this->line_index);              
     }
     else
-    {
         trim(v.value, ";");
-        // std::cout << v.value;
+}
+
+int ConfigFile::valid_error_page(Data &g_Data, std::string error) {
+    int number = std::stoi(error);
+    if (number >= 300 && number <= 599)
+        return (1);
+    g_Data.error = "WebServer: [emerg] value \"" + error + "\" must be between 300 and 599 in ";
+    g_Data.error += this->filename + ':' + std::to_string(this->line_index);
+    return (0);
+}
+
+int ConfigFile::valid_return_status(Data &g_Data, std::string status) {
+    int number = std::stoi(status);
+    if (number >= 0 && number <= 999)
+        return (1);
+    g_Data.error = "WebServer: [emerg] invalid return code \"" + status + "\" in ";
+    g_Data.error += this->filename;
+    return (0);
+}
+
+void ConfigFile::check_allow_method(Data &g_Data, map_location_it location_data_it) {
+    for (std::vector<std::string>::iterator value_it = location_data_it->second.begin(); value_it != location_data_it->second.end(); ++value_it) {
+        if (*value_it == "GET" || *value_it == "POST" || *value_it == "DELETE")
+            continue;
+        else {
+            g_Data.error = "WebServer: [emerg] invalid arguments \"" + *value_it + "\" in allow_methods in " + this->filename;
+        }
+    }
+}
+
+void ConfigFile::check_root_location(Data &g_Data, map_location_it location_data_it) {
+    if (!Valid_vector_size(location_data_it->second, 1)) {
+        g_Data.error = "WebServer: [emerg] invalid number of arguments in \"" + location_data_it->first;
+        g_Data.error += "\" in " + this->filename;
+    }
+}
+
+void ConfigFile::check_return_location(Data &g_Data, map_location_it location_data_it) {
+    int index = 0;
+    if (!Valid_vector_return_size(location_data_it->second)) {
+        g_Data.error = "WebServer: [emerg] invalid number of arguments in \"" + location_data_it->first;
+        g_Data.error += "\" in " + this->filename;
+    }
+    else {
+        for (std::vector<std::string>::iterator value_it = location_data_it->second.begin(); value_it != location_data_it->second.end(); ++value_it) {
+            index++;
+            if (index % 2) {
+                if (!valid_return_status(g_Data, *value_it)) {
+                    g_Data.error = "WebServer: [emerg] invalid return code \"" + *value_it;
+                    g_Data.error += "\" in " + this->filename;
+                }
+            }
+            else {
+                if ((*value_it).find(".html") == std::string::npos) {
+                    g_Data.error = "WebServer: [emerg] \"" + *value_it + "\" is not a redection file ('file.html') in ";
+                    g_Data.error += this->filename;
+                }
+            }
+        }
+    }
+}
+
+void ConfigFile::check_autoindex_location(Data &g_Data, map_location_it location_data_it) {
+    if (!Valid_vector_size(location_data_it->second, 1)) {
+        g_Data.error = "WebServer: [emerg] invalid number of arguments in \"" + location_data_it->first;
+        g_Data.error += "\" in " + this->filename;
+    }
+    else {
+        if (*(location_data_it->second.begin()) != "on" && *(location_data_it->second.begin()) != "off") {
+            g_Data.error = "WebServer: [emerg] invalid value \"" + *(location_data_it->second.begin()) + "\" in \"autoindex\" directive, it must be \"on\" or \"off\" in ";
+            g_Data.error += this->filename;
+        }
     }
 }
