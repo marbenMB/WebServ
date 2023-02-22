@@ -26,7 +26,6 @@ request::request(int socketID, Data *server, std::string request, std::vector<st
         // std::cout << RED << "<req id=" << i << " size=" << requestheader[i].size() << ">\n"
         //           << END_CLR << requestheader[i] << RED << "\n</req>" << END_CLR << std::endl;
     }
-
     // * Init vars :
     this->requirements = true;
     this->setsocketID(socketID);
@@ -35,13 +34,13 @@ request::request(int socketID, Data *server, std::string request, std::vector<st
     // 1 - cheack for Header
     std::cout << MAUVE << "   @VERIFYING  Header" << END_CLR << std::endl;
     this->requirements = this->Verifying_Header(_requestHeader);
+    // 3 - Retrieving the requested resource [config File and Data] :
+    std::cout << MAUVE << "   @RETRIEVING requested resource" << END_CLR << std::endl;
+    this->Retrieving_requested_resource(server);
     // 2 - check for body
     std::cout << MAUVE << "   @VERIFYING  Body" << END_CLR << std::endl;
     if (this->getmethod().compare("POST") == 0 && this->requirements)
         this->Verifying_Body(_requestBody);
-    // 3 - Retrieving the requested resource [config File and Data] :
-    std::cout << MAUVE << "   @RETRIEVING requested resource" << END_CLR << std::endl;
-    this->Retrieving_requested_resource(server);
     // 4 - execute request ; if this->requirements = true;
     std::cout << MAUVE << "   @EXECUTE request" << END_CLR << std::endl;
     reqmethod = this->execute_request();
@@ -88,7 +87,8 @@ void request::sand(int socketID, std::string body)
 
 bool request::Verifying_Body(std::string req)
 {
-    /**
+    /** 
+     * ! Body synthax 
         HTTP/1.1 206 Partial Content
         Date: Wed, 15 Nov 1995 06:25:24 GMT
         Last-Modified: Wed, 15 Nov 1995 04:58:08 GMT
@@ -107,6 +107,7 @@ bool request::Verifying_Body(std::string req)
         ...the second range
         --THIS_STRING_SEPARATES--
     */
+    //  ! check redirection && CGI :
 
     // init the boundary
     std::map<std::string, std::string> ContentType;
@@ -119,12 +120,7 @@ bool request::Verifying_Body(std::string req)
     if (tmp.size() == 2)
         ContentType["boundary"] = trimFront((std::string)tmp[1], "boundary=");
 
-    STRINGSEPARATES.clear();
-    STRINGSEPARATES.append("--");
-    STRINGSEPARATES.append(ContentType["boundary"]);
-    EndSTRINGSEPARATES.clear();
-    EndSTRINGSEPARATES.append(STRINGSEPARATES);
-    EndSTRINGSEPARATES.append("--");
+   
     // std::cout <<"ContentType['type']    " << ContentType["type"] << std::endl;
     // std::cout <<"ContentType['boundary']" << ContentType["boundary"] << std::endl;
     // std::cout <<"STRINGSEPARATES        " << STRINGSEPARATES << std::endl;
@@ -133,6 +129,12 @@ bool request::Verifying_Body(std::string req)
     // std::cout << req << std::endl;
     if (ContentType["type"].compare("multipart/form-data") == 0)
     {
+        STRINGSEPARATES.clear();
+        STRINGSEPARATES.append("--");
+        STRINGSEPARATES.append(ContentType["boundary"]);
+        EndSTRINGSEPARATES.clear();
+        EndSTRINGSEPARATES.append(STRINGSEPARATES);
+        EndSTRINGSEPARATES.append("--");
         if (!ContentType["boundary"].length()){this->requirements = false;return false;}
         if (req.find(STRINGSEPARATES) == std::string::npos){this->requirements = false;std::cout << "STRINGSEPARATES: makayen " << std::endl;}
         if (req.find(EndSTRINGSEPARATES) == std::string::npos){this->requirements = false;std::cout << "EndSTRINGSEPARATES: makayen " << std::endl;}

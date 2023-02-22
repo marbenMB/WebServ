@@ -2,13 +2,12 @@
 
 void    request::Retrieving_requested_resource(Data *server)
 {
-    if (!this->requirements)
-        return
     this->message.push_back(std::to_string(this->socketID));
     /* -------------------------------------------------------------------------- */
     /*                             // !read config file                           */
     /*                      // * Create instaence for server                      */
     /* -------------------------------------------------------------------------- */
+    // ! SERVER DATA
     std::vector<ServerConf> serv = server->server_list;
     // *> create iterator for etch srever in config file :
     std::vector<ServerConf>::iterator server_iterator = server->server_list.begin();
@@ -26,20 +25,22 @@ void    request::Retrieving_requested_resource(Data *server)
     // ? set client max body size :
     std::vector<std::string>::iterator client_max_body_size_vect = it["client_max_body_size"].begin();
     if (!client_max_body_size_vect[0].empty() && it["client_max_body_size"].size() == 1){
-        if ((*client_max_body_size_vect).find("G") != std::string::npos)
-        {
-            // storege the value in the obj
-            std::cout << "NOt in string\n";
-        }
+        // if ((*client_max_body_size_vect).find("G") != std::string::npos)
+        // {
+        //     // storege the value in the obj
+        //     std::cout << "NOt in string\n";
+        // }
+        std::cout << "client_max_body_size : " << client_max_body_size_vect[0] << std::endl;
     }
 
      /* -------------------------------------------------------------------------- */
      /*                              // ? error pages                              */
      /* -------------------------------------------------------------------------- */
     this->checkForErrorPage(it["error_page"]);
-    /* -------------------------------------------------------------------------- */
-    /*           // ? Create instance for server Locations all location           */
-    /* -------------------------------------------------------------------------- */
+
+
+    // ! LOCATION
+
     std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > > location = server_iterator->locations;
     // **> Create iterator for etch loation :
     std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator locations_iterator = location.begin();
