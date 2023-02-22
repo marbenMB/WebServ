@@ -53,7 +53,7 @@ void ConfigFile::check_allow_method(Data &g_Data, map_location_it location_data_
     }
 }
 
-void ConfigFile::check_root_location(Data &g_Data, map_location_it location_data_it) {
+void ConfigFile::check_one_arg(Data &g_Data, map_location_it location_data_it) {
     if (!Valid_vector_size(location_data_it->second, 1)) {
         g_Data.error = "WebServer: [emerg] invalid number of arguments in \"" + location_data_it->first;
         g_Data.error += "\" in " + this->filename;

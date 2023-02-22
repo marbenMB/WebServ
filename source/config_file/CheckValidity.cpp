@@ -1,7 +1,7 @@
 #include "../../include/WebServer.hpp"
 
 void ConfigFile::valid_listen(Data &g_Data, std::string value) {
-    struct addrinfo hints ,*res;
+    struct addrinfo hints ,*res = NULL;
     std::string     port, host;
     int             status;
 
@@ -34,7 +34,7 @@ void ConfigFile::valid_listen(Data &g_Data, std::string value) {
             g_Data.error = "WebServer: [emerg] host not found in \"" + value + "\" of the \"listen\" directive in ";
             g_Data.error += this->filename;
         }
-
+    freeaddrinfo(res);
 }
 
 void ConfigFile::valid_body_size(Data &g_Data, map_srv_data_it server_data_it) {
@@ -78,11 +78,23 @@ void ConfigFile::server_location(Data &g_Data) {
                     if (location_data_it->first == "allow_methods")
                         check_allow_method(g_Data, location_data_it);
                     else if (location_data_it->first == "root")
-                        check_root_location(g_Data, location_data_it);
+                        check_one_arg(g_Data, location_data_it);
                     else if (location_data_it->first == "return")
                         check_return_location(g_Data, location_data_it);
                     else if (location_data_it->first == "autoindex")
                         check_autoindex_location(g_Data, location_data_it);
+                    else if (location_data_it->first == "index")
+                        check_one_arg(g_Data, location_data_it);
+                    else if (location_data_it->first == "upload_store")
+                        check_one_arg(g_Data, location_data_it);
+                    else if (location_data_it->first == "fastcgi_index")
+                        check_one_arg(g_Data, location_data_it);
+                    else if (location_data_it->first == "fastcgi_pass")
+                        check_one_arg(g_Data, location_data_it);
+                    else {
+                        g_Data.error = "WebServer: [emerg] unknown directive \"" + location_data_it->first + "\" in ";
+                        g_Data.error += this->filename;
+                    }
                 }
             }
         }
@@ -101,7 +113,7 @@ void ConfigFile::server_data(Data &g_Data) {
     for (Vect_Serv::iterator it = server_list.begin(); it != server_list.end()  && !g_Data.error.length(); ++it) {
         for (map_srv_data_it server_data_it = it->server_data.begin(); server_data_it != it->server_data.end()  && !g_Data.error.length(); ++server_data_it) {
             for (std::vector<std::string>::iterator value_it = server_data_it->second.begin(); value_it != server_data_it->second.end() && !g_Data.error.length(); ++value_it) {
-                if (server_data_it->first == "listen") 
+                if (server_data_it->first == "listen")
                     valid_listen(g_Data, (*value_it));
                 else if (server_data_it->first == "client_max_body_size")
                     valid_body_size(g_Data, server_data_it);

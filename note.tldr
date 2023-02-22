@@ -3130,7 +3130,7 @@
             ],
             "size": [
               358.8,
-              504.81
+              550.26
             ],
             "rotation": 0,
             "style": {
@@ -3230,11 +3230,11 @@
             "parentId": "page",
             "childIndex": 100,
             "point": [
-              -142.06,
+              -142.56,
               1066.48
             ],
             "rotation": 0,
-            "text": "* allow_method",
+            "text": "* allow_methods",
             "style": {
               "color": "lightGray",
               "size": "small",
@@ -3296,11 +3296,11 @@
             "parentId": "page",
             "childIndex": 103,
             "point": [
-              -140.02,
+              -142.52,
               1218.74
             ],
             "rotation": 0,
-            "text": "* auto_index",
+            "text": "* autoindex",
             "style": {
               "color": "lightGray",
               "size": "small",
@@ -3340,11 +3340,55 @@
             "parentId": "page",
             "childIndex": 105,
             "point": [
-              -137.9,
+              -138.9,
               1332.03
             ],
             "rotation": 0,
-            "text": "* upload_location",
+            "text": "* upload_store",
+            "style": {
+              "color": "lightGray",
+              "size": "small",
+              "isFilled": false,
+              "dash": "draw",
+              "scale": 1,
+              "font": "script",
+              "textAlign": "middle"
+            }
+          },
+          "bcb61275-29f7-47b7-19dd-cebe80025e77": {
+            "id": "bcb61275-29f7-47b7-19dd-cebe80025e77",
+            "type": "text",
+            "name": "Text",
+            "parentId": "page",
+            "childIndex": 106,
+            "point": [
+              -138.76,
+              1387.71
+            ],
+            "rotation": 0,
+            "text": "* fastcgi_pass",
+            "style": {
+              "color": "lightGray",
+              "size": "small",
+              "isFilled": false,
+              "dash": "draw",
+              "scale": 1,
+              "font": "script",
+              "textAlign": "middle"
+            }
+          },
+          "221ee928-8209-4624-3d33-59b6e67f5e71": {
+            "id": "221ee928-8209-4624-3d33-59b6e67f5e71",
+            "type": "text",
+            "name": "Text",
+            "parentId": "page",
+            "childIndex": 107,
+            "point": [
+              -141.1,
+              1444.7
+            ],
+            "rotation": 0,
+            "text": "* fastcgi_index",
             "style": {
               "color": "lightGray",
               "size": "small",

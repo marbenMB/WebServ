@@ -40,7 +40,7 @@ class ConfigFile {
         void valid_body_size(Data &g_Data, map_srv_data_it server_data_it);
         void server_location(Data &g_Data);
         void check_allow_method(Data &g_Data, map_location_it location_data_it);
-        void check_root_location(Data &g_Data, map_location_it location_data_it);
+        void check_one_arg(Data &g_Data, map_location_it location_data_it);
         void check_return_location(Data &g_Data, map_location_it location_data_it);
         int  valid_return_status(Data &g_Data, std::string status);
         void check_autoindex_location(Data &g_Data, map_location_it location_data_it);
