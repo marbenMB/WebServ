@@ -4,7 +4,6 @@
 #include "WebServer.hpp"
 #include "classes.hpp"
 
-
 class Data;
 class KeyValue;
 class ServerConf;

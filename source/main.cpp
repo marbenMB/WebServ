@@ -17,6 +17,6 @@ int main (int ac, char **av)
         // system("leaks webserv");
         return (1);
     }
-    system("leaks webserv");
+    // system("leaks webserv");
     return (0);
 }
