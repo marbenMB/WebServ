@@ -2,7 +2,7 @@ CPPFLAGS = -std=c++98 -Wall -Wextra -Werror  -g #-fsanitize=address
 
 NAME = webserv
 CC = c++
-SRCS = ./source/main.cpp ./source/config_file/ConfigFile.cpp ./source/config_file/CheckValidity.cpp
+SRCS = ./source/main.cpp ./source/config_file/ConfigFile.cpp ./source/config_file/CheckValidity.cpp ./source/config_file/ft_error.cpp ./source/config_file/save_data.cpp ./source/config_file/tool.cpp
 
 INC = ./include/WebServer.hpp ./include/ConfigFile.hpp ./include/classes.hpp
 
