@@ -69,7 +69,7 @@ private:
     std::string default_30x;
     std::string default_40x;
     std::string default_50x;
-    int redirect_status;
+    int         redirect_status;
     std::string redirect_URL;
 
     // Requirements Fields :

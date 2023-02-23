@@ -10,22 +10,34 @@ request::request(int socketID, Data *server, std::string request, std::vector<st
     std::string _requestHeader;
     std::string _reaponseBody;
     method *reqmethod;
-    std::vector<std::string> req_vector = split(request, "\r\n\r\n");
-    // std::cout << "BODY****>" << request << std::endl;
-    _requestHeader.clear();
+    // std::vector<std::string> req_vector = split(request, "\r\n\r\n");
+
+    size_t SEPIndex = request.find("\r\n\r\n");
+     _requestHeader.clear();
     _requestBody.clear();
-    _requestHeader.append(req_vector[0]);
-
-    int i = 0;
-
-    while (++i < (int)req_vector.size())
-    {
-        _requestBody.append(req_vector[i]);
-        if (i != (int)req_vector.size() - 1)
-            _requestBody.append("\n\r\n\r");
-        // std::cout << RED << "<req id=" << i << " size=" << requestheader[i].size() << ">\n"
-        //           << END_CLR << requestheader[i] << RED << "\n</req>" << END_CLR << std::endl;
+    if (SEPIndex == std::string::npos){
+        _requestHeader = request.substr(0, request.length());
     }
+    else
+    {
+         _requestHeader = request.substr(0, SEPIndex);
+         _requestBody = request.substr(SEPIndex + 4, request.length());
+    }
+    // std::cout << "BODY****>" << request << std::endl;
+    // _requestHeader.clear();
+    // _requestBody.clear();
+    // _requestHeader.append(req_vector[0]);
+
+    // int i = 0;
+
+    // while (++i < (int)req_vector.size())
+    // {
+    //     _requestBody.append(req_vector[i]);
+    //     if (i != (int)req_vector.size() - 1)
+    //         _requestBody.append("\n\r\n\r");
+    //     // std::cout << RED << "<req id=" << i << " size=" << requestheader[i].size() << ">\n"
+    //     //           << END_CLR << requestheader[i] << RED << "\n</req>" << END_CLR << std::endl;
+    // }
     // * Init vars :
     this->requirements = true;
     this->setsocketID(socketID);
@@ -253,11 +265,11 @@ bool request::Verifying_Header(std::string req)
     std::cout << std::endl;
     // std::cout << " this->method : |" << this->req_method << "|" << std::endl;
     // std::cout << " this->host : |" << this->host << "|" << std::endl;
-    std::cout << " this->request_URI : |" << this->request_URI << "|" << std::endl;
+    // std::cout << " this->request_URI : |" << this->request_URI << "|" << std::endl;
     // std::cout << " this->http_version : |" << this->http_version << "|" << std::endl;
     // std::cout << " this->Connection : |" << this->Connection << "|" << std::endl;
     // std::cout << " this->Content_Length : |" << this->Content_Length << "|" << std::endl;
-    std::cout << " this->Content_Type : |" << this->Content_Type << "|" << std::endl;
+    // std::cout << " this->Content_Type : |" << this->Content_Type << "|" << std::endl;
     // std::cout << " this->Transfer_Encoding : |" << this->Transfer_Encoding << "|" << std::endl;
     // std::cout << " this->Accept : |" << this->Accept << "|" << std::endl;
     return true;

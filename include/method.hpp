@@ -33,7 +33,6 @@ private:
     std::string Content_Transfer_Encoding;
     std::string Transfer_Encoding;
 
-
 public:
     method();
     std::string const &getHost(void) const;

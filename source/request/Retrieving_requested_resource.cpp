@@ -11,10 +11,6 @@ void    request::Retrieving_requested_resource(Data *server)
     std::vector<ServerConf> serv = server->server_list;
     // *> create iterator for etch srever in config file :
     std::vector<ServerConf>::iterator server_iterator = server->server_list.begin();
-
-    /* -------------------------------------------------------------------------- */
-    /*      // ? Create instance for Serevr Data means header of config file      */
-    /* -------------------------------------------------------------------------- */
     std::map<std::string, std::vector<std::string> > it = server_iterator->server_data;
     // ? root :
     std::vector<std::string>::iterator root_vect = it["root"].begin();

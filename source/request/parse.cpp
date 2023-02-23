@@ -14,17 +14,10 @@ void request::print_vectINFO(std::vector<std::string> Data, std::string string)
 void request::checkForIndex(std::vector<std::string> vect){
     if (vect.size()){
         std::vector<std::string>::iterator it = vect.begin();
-        this->default_index = "" ;
-        if (vect.size() && !it[0].empty()){
-            if (it[0].find("/") != std::string::npos){
-                this->default_index.append("/");
-            }
-            this->default_index.append(*it);
+        this->default_index.clear() ;
+        if (!it[0].empty())this->default_index.append(*it);
+        else this->default_index.append("/index.html");
         }
-        else{
-            this->default_index.append("/index.html");
-        }
-    }
     // std::cout << "in Default Index : " << it[0] << std::endl;
     // std::cout << "out Default Index : " << this->default_index << std::endl;
 }
