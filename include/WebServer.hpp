@@ -14,15 +14,29 @@
 #include <netdb.h>
 #include <cstring>
 #include <sys/stat.h>
+#include <cstdlib>
 #include "classes.hpp"
 #include "ConfigFile.hpp"
+#include "ft_tools.hpp"
+
+
+///////////////// config macros ////////
+
+#define WHITE_SPACE " \t"
+#define SPACE ' '
+#define SEMI_COL ";"
+#define IP_NUM "0123456789:."
+#define NUM "0123456789"
+#define SIZE_TYPE "MKGBmkgb"
+
+///////////////////////////////////////
 
 ///////////////////// Parent class ////////////////////
 
 class Data {
     public:
         Data() {};
-        std::vector<ServerConf> server_list;
+        Vect_Serv server_list;
         ConfigFile configuration;
         std::string error;
 };
