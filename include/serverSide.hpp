@@ -87,8 +87,8 @@ std::vector<T>	deepCopyVector(std::vector<T> vec)
 
 	//	+++	Server Utils	+++	//
 void	printWebServ (WebServ *myServ);
-std::vector<int>			portsExtraction(ServerConf server);
-std::vector<std::string>	getStringKeyVal(ServerConf server, std::string key);
+std::multimap<std::string, int>			portsExtraction(ServerConf server);
+std::vector<std::string>	getStringKeyVal(std::map<std::string, std::vector<std::string> > myMap, std::string key);
 WebServ						*establishServers(Data &g_data);
 void						createSockets(WebServ *serv);
 
