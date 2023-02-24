@@ -136,6 +136,7 @@ public:
     std::string const &getroot() const;
     std::string const &getdefaultIndex() const;
     std::string const &getrequest_URI() const;
+    void setrequest_URI(std::string);
     std::string const &gethttp_version() const;
     int const &getsocketID(void) const;
     void setsocketID(int socketId);

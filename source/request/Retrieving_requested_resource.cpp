@@ -26,7 +26,7 @@ void    request::Retrieving_requested_resource(Data *server)
         //     // storege the value in the obj
         //     std::cout << "NOt in string\n";
         // }
-        std::cout << "client_max_body_size : " << client_max_body_size_vect[0] << std::endl;
+        // std::cout << "client_max_body_size : " << client_max_body_size_vect[0] << std::endl;
     }
 
      /* -------------------------------------------------------------------------- */
@@ -58,7 +58,7 @@ void    request::Retrieving_requested_resource(Data *server)
         if (this->req_method.compare("GET") == 0) {this->__get = ALLOWED;}
         return;
     }
-    std::cout << "locationIndex :" << locationIndex << std::endl;
+    // std::cout << "locationIndex :" << locationIndex << std::endl;
     // int location_size = location.size();
     // while (locations_iterator != location.end())
     // {
@@ -66,7 +66,7 @@ void    request::Retrieving_requested_resource(Data *server)
     j++;
     // ***> Create iterator for location Data
     std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator location_iterator = locations_iterator->begin();
-    std::cout << "  +>" << location_iterator->first << std::endl;
+    // std::cout << "  +Location > :" << location_iterator->first << std::endl;
     std::string str = location_iterator->first;
     // if (str.compare(this->request_URI) == 0)
     // {
@@ -74,7 +74,7 @@ void    request::Retrieving_requested_resource(Data *server)
     std::map<std::string, std::vector<std::string> > location_vars = location_iterator->second;
     std::vector<std::string>::iterator iitt = location_vars["allow"].begin();
     // std::cout << RED << "ALLOW :\n" << END_CLR ;
-    std::cout << RED << "   +>Allow" << END_CLR << std::endl;
+    // std::cout << RED << "   +>Allow" << END_CLR << std::endl;
     if (location_vars["allow"].size()){
         while (iitt != location_vars["allow"].end())
         {
@@ -84,7 +84,7 @@ void    request::Retrieving_requested_resource(Data *server)
         }
     } 
     // std::cout << RED << "DENY :\n" << END_CLR ;
-    std::cout << RED << "   +>deny" << END_CLR << std::endl;
+    // std::cout << RED << "   +>deny" << END_CLR << std::endl;
 
     iitt = location_vars["deny"].begin();
     if (location_vars["deny"].size()){
@@ -96,11 +96,11 @@ void    request::Retrieving_requested_resource(Data *server)
         }
     } 
     //  std::cout << RED << "ROOT :\n" << END_CLR ;
-    std::cout << RED << "   +>root" << END_CLR << std::endl;
+    // std::cout << RED << "   +>root" << END_CLR << std::endl;
 
     iitt = location_vars["root"].begin();
     if (location_vars["root"].size()) this->root = *iitt;
-    std::cout << RED << "   +>index" << END_CLR << std::endl;
+    // std::cout << RED << "   +>index" << END_CLR << std::endl;
 
     checkForIndex(location_vars["index"]);
     // if (this->getrequest_URI().compare("/") == 0){
@@ -111,10 +111,10 @@ void    request::Retrieving_requested_resource(Data *server)
     // autoindex
     iitt = location_vars["autoindex"].begin();
     if (location_vars["autoindex"].size() > 0 &&  location_vars["autoindex"][0].compare("on") == 0) {
-        std::cout << "autoindex :"  << location_vars["autoindex"][0] <<"|"<< std::endl;
+        // std::cout << "autoindex :"  << location_vars["autoindex"][0] <<"|"<< std::endl;
         this->autoindex = AUTOINDEX_ON;
         }
-    std::cout << RED << "   +>redirection" << END_CLR << std::endl;
+    // std::cout << RED << "   +>redirection" << END_CLR << std::endl;
 
     // redirection :
     iitt = location_vars["return"].begin();
@@ -132,7 +132,7 @@ void    request::Retrieving_requested_resource(Data *server)
         this->setRedirect_status(-1);
         this->setredirect_URL("");
     }
-    std::cout << RED << "   +>allow_methods" << END_CLR << std::endl;
+    // std::cout << RED << "   +>allow_methods" << END_CLR << std::endl;
 
     //    allow_methods
     iitt = location_vars["allow_methods"].begin();

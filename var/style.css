@@ -1,16 +1,18 @@
 body {
-    background-color: lightblue;
+    background-color: rgb(17, 133, 171);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: verdana;
   }
   
   h1 {
-    color: white;
     text-align: center;
   }
   h3 {
-    color: rgb(44, 108, 226);
     text-align: center;
   }
   p {
-    font-family: verdana;
     font-size: 20px;
   }

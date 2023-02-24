@@ -12,16 +12,16 @@ request::request(int socketID, Data *server, std::string request, std::vector<st
     method *reqmethod;
     // std::vector<std::string> req_vector = split(request, "\r\n\r\n");
 
-    size_t SEPIndex = request.find("\r\n\r\n");
+    size_t splitIndex = request.find("\r\n\r\n");
      _requestHeader.clear();
     _requestBody.clear();
-    if (SEPIndex == std::string::npos){
+    if (splitIndex == std::string::npos){
         _requestHeader = request.substr(0, request.length());
     }
     else
     {
-         _requestHeader = request.substr(0, SEPIndex);
-         _requestBody = request.substr(SEPIndex + 4, request.length());
+         _requestHeader = request.substr(0, splitIndex);
+         _requestBody = request.substr(splitIndex + 4, request.length());
     }
     // std::cout << "BODY****>" << request << std::endl;
     // _requestHeader.clear();
@@ -44,30 +44,30 @@ request::request(int socketID, Data *server, std::string request, std::vector<st
     this->setRedirect_status(-1);
     // * parse Header :
     // 1 - cheack for Header
-    std::cout << MAUVE << "   @VERIFYING  Header" << END_CLR << std::endl;
-    this->requirements = this->Verifying_Header(_requestHeader);
+    // std::cout << MAUVE << "   @VERIFYING  Header" << END_CLR << std::endl;
+    this->Verifying_Header(_requestHeader);
     // 3 - Retrieving the requested resource [config File and Data] :
-    std::cout << MAUVE << "   @RETRIEVING requested resource" << END_CLR << std::endl;
+    // std::cout << MAUVE << "   @RETRIEVING requested resource" << END_CLR << std::endl;
     this->Retrieving_requested_resource(server);
     // 2 - check for body
-    std::cout << MAUVE << "   @VERIFYING  Body" << END_CLR << std::endl;
+    // std::cout << MAUVE << "   @VERIFYING  Body" << END_CLR << std::endl;
     if (this->getmethod().compare("POST") == 0 && this->requirements)
         this->Verifying_Body(_requestBody);
     // 4 - execute request ; if this->requirements = true;
-    std::cout << MAUVE << "   @EXECUTE request" << END_CLR << std::endl;
+    // std::cout << MAUVE << "   @EXECUTE request" << END_CLR << std::endl;
     reqmethod = this->execute_request();
     // 5 - get status of execution :
 
     // 6 - create response ;
-    std::cout << MAUVE << "   @CREATE response" << END_CLR << std::endl;
+    // std::cout << MAUVE << "   @CREATE response" << END_CLR << std::endl;
     _reaponseBody = _CREATEresponse(
         reqmethod->getContent_Type(),
         reqmethod->getStatuscode(),
         reqmethod->getreason_phrase(),
         reqmethod->getResponseBody());
-    std::cout << MAUVE << "   @PUSH socket Id" << END_CLR << std::endl;
+    // std::cout << MAUVE << "   @PUSH socket Id" << END_CLR << std::endl;
     response.push_back(std::to_string(this->getsocketID()));
-    std::cout << MAUVE << "   @PUSH response Body" << END_CLR << std::endl;
+    // std::cout << MAUVE << "   @PUSH response Body" << END_CLR << std::endl;
     response.push_back(_reaponseBody);
     // response = this->create_response();
     // 7 - print server status
@@ -76,7 +76,7 @@ request::request(int socketID, Data *server, std::string request, std::vector<st
         color_status = GREEN;
     else
         color_status = RED;
-    std::cout << color_status << "127.0.0.1 " << this->getmethod() << " HTTP/1.1 " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase() << " " << this->getrequest_URI() << END_CLR << std::endl;
+    std::cout << color_status << "127.0.0.1 " << this->getmethod() << " HTTP/1.1 " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase() << " " << this->getrequest_URI() << END_CLR ;
     delete reqmethod;
 }
 
@@ -162,7 +162,7 @@ bool request::Verifying_Body(std::string req)
         {
             // std::cout << RED <<"boundary["<<index<<"]"<<END_CLR << it[0] << std::endl;
             std::vector<std::string> _file = split(it[0], "\n\r");
-            std::cout << "\nBODY :\n" << _file[1] << std::endl ;
+            // std::cout << "\nBODY :\n" << _file[1] << std::endl ;
             // std::cout << "_file size :" << _file.size() << std::endl;
             /**
             *   ! _file[0]
@@ -230,7 +230,7 @@ bool request::Verifying_Body(std::string req)
 
 bool request::Verifying_Header(std::string req)
 {
-   std::cout << "Header :"<< req << std::endl;
+//    std::cout << "Header :"<< req << std::endl;
     std::vector<std::string> requestHeaders = split(req, "\r\n");
     std::vector<std::string>::iterator itH = requestHeaders.begin();
     std::vector<std::string> spl;

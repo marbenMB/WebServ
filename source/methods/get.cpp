@@ -6,15 +6,14 @@
 
 /*
 
- TODO 
+ TODO
   * 1 - AutoIndex √
-  * 2 - allowed method 
-  ! 3 - deny  
+  * 2 - allowed method
+  ! 3 - deny
   ! 4 - allow
   * 5 - redirect
 
-**/  
-
+**/
 
 get::get(request rhs)
 {
@@ -61,33 +60,49 @@ int get::execute_method(request _request)
     // }
     std::string filename;
 
-    filename.append(this->getRootPath());
+    if (_request.getRedirect_status() != -1)
+        _request.setrequest_URI(_request.getredirect_URL());
+    
+    /**
+     *
+     *
+     * if (connect(sockfd, (struct sockaddr *)&their_addr, sizeof(struct sockaddr)) == -1) {
+            perror("connect");
+            exit(1);
+            }
+     *
+     * */
+ 
+    filename.append(_request.getroot());
     //  redirection  |> return 20x ...
     BaseURL = _request.getrequest_URI();
     filename.append(BaseURL);
     std::cout << "PATH : " << filename << std::endl;
-    if (stat(filename.c_str(), &STATInfo) != 0){ // not exist
+    if (stat(filename.c_str(), &STATInfo) != 0)
+    { // not exist
         filename.clear();
         filename.append(this->getRootPath());
         filename.append("/");
         BaseURL.clear();
         //  redirection  |> return 40x ...
-        (_request.getRedirect_status() >= 400 && _request.getRedirect_status() <= 404) 
+        (_request.getRedirect_status() >= 400 && _request.getRedirect_status() <= 404)
             ? BaseURL = _request.getredirect_URL()
             : BaseURL = _request.getDefault_40x();
         filename.append(BaseURL);
-        std::cout << "stat not exist : " << filename << std::endl;
+        // std::cout << "stat not exist : " << filename << std::endl;
         this->setStatuscode(404);
         this->setreason_phrase("Not Found");
         inFile.open(filename, std::ifstream::in);
-        while (std::getline(inFile, buffer)){
+        while (std::getline(inFile, buffer))
+        {
             line.append(buffer);
         }
         inFile.close();
         this->setResponseBody(line);
     }
-    else if ((STATInfo.st_mode & S_IFMT) == S_IFREG  ){ // is file   S_ISREG(fileStat.st_mode)
-        std::cout << "stat file : " << filename << std::endl;
+    else if ((STATInfo.st_mode & S_IFMT) == S_IFREG)
+    { // is file   S_ISREG(fileStat.st_mode)
+        // std::cout << "stat file : " << filename << std::endl;
         this->setStatuscode(200);
         this->setreason_phrase("Ok");
         inFile.open(filename, std::ifstream::in);
@@ -100,15 +115,16 @@ int get::execute_method(request _request)
         inFile.close();
         this->setResponseBody(line);
     }
-    else if ((STATInfo.st_mode & S_IFMT) == S_IFDIR){ // is dir
-        std::cout << "stat dir : " << filename << std::endl;
+    else if ((STATInfo.st_mode & S_IFMT) == S_IFDIR)
+    { // is dir
+        // std::cout << "stat dir : " << filename << std::endl;
 
         std::string pathdir;
         pathdir.clear();
         pathdir.append(filename);
         filename.append("/");
         filename.append(_request.getdefaultIndex());
-        std::cout << "filename [" << _request.getAutoIndex() << "]: " << filename << std::endl;
+        // std::cout << "filename [" << _request.getAutoIndex() << "]: " << filename << std::endl;
         if (_request.getAutoIndex() == AUTOINDEX_ON)
             std::cout << "AUTOINDEX_ON\n";
         else
@@ -129,7 +145,7 @@ int get::execute_method(request _request)
                 // std::cout << buffer << std::endl;
                 if (buffer.find("<title>") != std::string::npos) // title
                 {
-                    std::cout << "TITLE" << buffer << std::endl;
+                    // std::cout << "TITLE" << buffer << std::endl;
                     buffer.clear();
                     buffer.append("     <title>");
                     buffer.append(pathdir);
@@ -138,7 +154,7 @@ int get::execute_method(request _request)
                 if (buffer.find("<h1 id=") != std::string::npos) // index of
                 {
                     // <h1 id="header">Index of /Users/mmasstou/Desktop/my-Store/</h1>
-                    std::cout << "parentDirLinkBox" << buffer << std::endl;
+                    // std::cout << "parentDirLinkBox" << buffer << std::endl;
                     buffer.clear();
                     buffer.append("<h1 id=\"header\">Index of ");
                     buffer.append(pathdir);
@@ -146,7 +162,7 @@ int get::execute_method(request _request)
                 }
                 if (buffer.find("<a id=") != std::string::npos) // index of href
                 {
-                    std::cout << "parentDirLinkBox" << buffer << std::endl;
+                    // std::cout << "parentDirLinkBox" << buffer << std::endl;
                     //   <a id="parentDirLink" class="icon up" href="/Users/mmasstou/Desktop/my-Store/..">
                     buffer.clear();
                     std::string pathdirTmp;
@@ -173,21 +189,21 @@ int get::execute_method(request _request)
             // {
 
             // }
-            std::cout << GREEN << " AutoIndex On" << END_CLR << std::endl;
+            // std::cout << GREEN << " AutoIndex On" << END_CLR << std::endl;
             dirp = opendir(pathdir.c_str());
             if (dirp == NULL)
             {
                 perror("opendir");
                 return 1;
             }
-            std::cout << "Index of : " << pathdir << std::endl;
-            std::cout << "parent directory : " << pathdir << std::endl;
+            // std::cout << "Index of : " << pathdir << std::endl;
+            // std::cout << "parent directory : " << pathdir << std::endl;
             // adding table fields :
             std::string request_URITmp;
 
             request_URITmp.append(_request.getrequest_URI());
             (request_URITmp.back() == '/')
-                ? request_URITmp.erase(request_URITmp.length() - 1, request_URITmp.length()) 
+                ? request_URITmp.erase(request_URITmp.length() - 1, request_URITmp.length())
                 : request_URITmp;
             while ((dp = readdir(dirp)) != NULL)
             {
@@ -202,7 +218,7 @@ int get::execute_method(request _request)
                     .st_size
                 **/
                 std::string d_nameTmp(dp->d_name);
-                std::cout << " Name :" << d_nameTmp << std::endl;
+                // std::cout << " Name :" << d_nameTmp << std::endl;
                 if (d_nameTmp.compare(".") != 0 || d_nameTmp.compare("..") != 0)
                 {
                     struct stat STATFile;
@@ -212,7 +228,10 @@ int get::execute_method(request _request)
                     filePATH.append(request_URITmp);
                     filePATH.append("/");
                     filePATH.append(dp->d_name);
-                    if (stat(filePATH.c_str(), &STATFile) != 0) {std::cout << " |"<< filePATH <<"| file Not found \n";}
+                    if (stat(filePATH.c_str(), &STATFile) != 0)
+                    {
+                        std::cout << " |" << filePATH << "| file Not found \n";
+                    }
                     line.append("<tr> <td data-value=\"");
                     line.append(dp->d_name);
                     line.append("\"><a class=\"icon file\" draggable=\"true\" href=\"");
@@ -244,7 +263,7 @@ int get::execute_method(request _request)
         }
         else if (inFile.is_open())
         {
-            std::cout << "Open PATH : " << filename << std::endl;
+            // std::cout << "Open PATH : " << filename << std::endl;
             buffer.clear();
             line.clear();
             while (std::getline(inFile, buffer))
@@ -278,7 +297,7 @@ int get::execute_method(request _request)
     {
         std::cout << "Chi7aja Khra ************* * * * * * * * * * \n";
     }
-    std::cout << "safi salina ************* * * * * * * * * * \n";
+    // std::cout << "safi salina ************* * * * * * * * * * \n";
     // std::cout << "Request Path :" << filename << std::endl;
     // read from server :
     // inFile.open(filename, std::ifstream::in);

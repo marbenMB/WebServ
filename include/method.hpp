@@ -71,6 +71,7 @@ public:
     void setRedirect_status(int redirect_status);
     std::string const &getredirect_URL(void) const;
     void setredirect_URL(std::string redirect_URL);
+    
 
     // virtual bool intmethod(void) = 0;
 };

@@ -240,6 +240,8 @@
 #include "./include/request.hpp"
 #include "./include/method.hpp"
 
+#define CRLF ""
+
 int main(int ac, char *av[])
 {
     // system("leaks webServ");
@@ -319,7 +321,7 @@ int main(int ac, char *av[])
 
         //  std::string buff[7000];
         // recv(newsockfd, (char *)tmp.c_str(), sizeof(buff), 0);
-        sleep(5);
+        // sleep(5);
         // n = recv(newsockfd, buffer, maxBayte, 0);
         n = read(newsockfd, buffer, maxBayte);
         // while (1)

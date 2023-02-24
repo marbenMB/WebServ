@@ -107,3 +107,7 @@ std::vector<std::pair<std::string, std::string> > const & request::getReqBody( v
 {
     return this->req_body;
 }
+
+void request::setrequest_URI(std::string uri){
+    this->request_URI = uri;
+}
