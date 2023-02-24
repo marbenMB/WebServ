@@ -1,11 +1,11 @@
-#include "../include/WebServer.hpp"
+#include "../include/header.hpp"
 
 void	printWebServ (WebServ *myServ)
 {
 	for (std::vector<Server>::iterator it = myServ->servers.begin(); it != myServ->servers.end(); it++)
 	{
 		std::cout << "Server id : " << it->getID() << std::endl;
-		printVector(it->getListenPorts(), "Server Ports : ");
+		printVector(it->getCombIpPort(), "Server Ports : ");
 		// printVector(it->getServerHost(), "Server Hosts : ");
 		printVector(it->getServerName(), "Server Names : ");
 		std::cout << std::endl;

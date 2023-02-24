@@ -5,7 +5,7 @@ CC = c++
 SRCS = ./source/main.cpp ./source/config_file/ConfigFile.cpp ./source/config_file/CheckValidity.cpp \
 		./source/Server/Server.cpp ./source/Server/ServerClass.cpp
 
-INC = ./include/WebServer.hpp ./include/ConfigFile.hpp ./include/classes.hpp
+INC = ./include/WebServer.hpp ./include/ConfigFile.hpp ./include/classes.hpp ./include/serverSide.hpp ./include/header.hpp
 
 OBJS = $(SRCS:.cpp=.o)
 

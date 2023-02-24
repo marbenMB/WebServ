@@ -1,4 +1,4 @@
-#include "../../include/WebServer.hpp"
+#include "../../include/serverSide.hpp"
 
 std::vector<int>	portsExtraction(ServerConf server)
 {
@@ -14,7 +14,6 @@ std::vector<int>	portsExtraction(ServerConf server)
 		{
 			ss << *it;
 			ss >> nPort;
-			std::cout << *it << " - ";
 			// if (ss.fail())
 			// 	throw ...
 			ports.push_back(nPort);
@@ -40,10 +39,11 @@ WebServ	*establishServers(Data &g_data)
 	WebServ *serv = new WebServ();
 	int	id = 1;
 
-	for (std::vector<ServerConf>::iterator it = g_data.server_list.begin(); it != g_data.server_list.end(); it++)
+	serv->servNums = 0;
+	for (Vect_Serv::iterator it = g_data.server_list.begin(); it != g_data.server_list.end(); it++)
 	{
 		std::cout << "Server Id : " << id << " -> ";
-		Server	newServ(id, portsExtraction(*it), getStringKeyVal(*it, "server_name"));
+		Server	newServ(id, getStringKeyVal(*it, "listen"), getStringKeyVal(*it, "server_name"));
 		std::cout << std::endl;
 		serv->servers.push_back(newServ);
 		id++;
@@ -54,7 +54,7 @@ WebServ	*establishServers(Data &g_data)
 
 void	createSockets(WebServ *serv)
 {
-	std::vector<int>	input;
+	std::vector<std::string>	input;
 	std::vector<int>	sockFd;
 	std::vector<std::string>	host;
 	int idx = 0;
@@ -65,8 +65,8 @@ void	createSockets(WebServ *serv)
 
 	for (std::vector<Server>::iterator itServ = serv->servers.begin(); itServ != serv->servers.end(); itServ++)
 	{
-		input = itServ->getListenPorts();
-		for (std::vector<int>::iterator itPort = input.begin(); itPort != input.end(); itPort++)
+		input = itServ->getCombIpPort();
+		for (std::vector<std::string>::iterator itPort = input.begin(); itPort != input.end(); itPort++)
 		{
 			// create socketfd = socket();
 			int	server_sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -85,66 +85,21 @@ void	createSockets(WebServ *serv)
 			}
 
 			// Define struct sockaddr_in addrss = port + host
-			struct sockaddr_in	addr;
-
-			bzero(&addr, sizeof(addr));
-			addr.sin_family = AF_INET;
-			addr.sin_port = htons(*itPort);
-			// addr.sin_addr.s_addr = INADDR_ANY;
-			addr.sin_addr.s_addr = inet_addr(host[idx].c_str());
-			// addr.sin_addr.s_addr = inet_addr(host.c_str());
-			// std::cout << "Port : " << *itPort << " - Host : " << host << std::endl;
+			
 
 			// getting the address infos
-			std::stringstream	ss;
-			std::string			strPort;
-			struct addrinfo		hints;
-			struct addrinfo		*res;
-			int 				addrStat;
-
-			ss << *itPort;
-			ss >> strPort;
-			bzero(&hints, sizeof(hints));
-			hints.ai_family = AF_INET;
-			hints.ai_socktype = SOCK_STREAM;
-			addrStat = getaddrinfo(host[idx].c_str(), strPort.c_str(), &hints, &res);
-			if (addrStat != 0)
-			{
-				std::cerr << "Current Host : " << " is not available !!" << std::endl;
-				exit (EXIT_FAILURE);
-			}
-			std::cout << host[idx] << " - " << addrStat << " - Port : " << *itPort << std::endl;
-
+			
 			// Binding socketfd with addrss = bind()
-			if (bind(server_sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-				throw	std::runtime_error("Bind Failed!!");
+			
 
 			// listening to server_sock = listen()
-			if (listen(server_sock, 5) < 0)
-			{
-				std::cerr << "Listen() Failed!!" << std::endl;
-				exit (EXIT_FAILURE);
-			}
+			
 			
 			// pushing sockfd to vec = sockFd.push_back()
-			sockFd.push_back(server_sock);
+			
 			
 			// pushing sockfd to queue of I/O Multiplexer
 
-			// accepting request = accept()
-			int	client_sock;
-			struct sockaddr_in	client_addr;
-			socklen_t	client_addrSize = sizeof(client_addr);
-
-			client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &client_addrSize);
-			if (client_sock < 0)
-			{
-				std::cerr << "Accept() Failied!!" << std::endl;
-				exit (EXIT_FAILURE);
-			}
-			
-			std::cout << "Request Accepted in port : " << *itPort << std::endl;
-			close(client_sock);
 		}
 		std::cout << std::endl;
 
