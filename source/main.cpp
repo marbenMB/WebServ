@@ -4,9 +4,11 @@ void	printWebServ (WebServ *myServ)
 {
 	for (std::vector<Server>::iterator it = myServ->servers.begin(); it != myServ->servers.end(); it++)
 	{
-		std::cout << "Server id : " << it->getID() << std::endl;
+		std::cout << "------------ Server ID : " << it->getID() << " ------------" << std::endl;
 		printVector(it->getCombIpPort(), "Server Ports : ");
 		printVector(it->getServerName(), "Server Names : ");
+		printMultiMap(it->getIpPort());
+		std::cout << "---------------------------------------" << std::endl;
 		std::cout << std::endl;
 	}
 }
@@ -26,7 +28,7 @@ int main (int ac, char **av)
 			try {
 				myServ = establishServers(g_Data);
 
-				// printWebServ(myServ);
+				printWebServ(myServ);
 				// createSockets(myServ);
 				delete	myServ;
 			} catch (std::exception &e) {
