@@ -38,7 +38,7 @@ int main (int ac, char **av)
 		}
     }
     else
-        g_Data.error = "error n number of argument";
+        g_Data.error = "error in number of argument";
     if (!g_Data.error.empty())
     {
         std::cout << RED << g_Data.error << END_CLR << std::endl;
