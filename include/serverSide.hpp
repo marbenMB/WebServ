@@ -6,6 +6,8 @@
 
 ///////////////////// MACROS ////////////////////
 #define	EXIT_FAILURE 1
+#define	DUP_PORT	2
+
 #define DEFAULT_IP "0.0.0.0"
 #define	DEFAULT_PORT 80
 
@@ -92,11 +94,14 @@ std::vector<T>	deepCopyVector(std::vector<T> vec)
 
 	//	+++	 Utils	+++	//
 void	printMultiMap(std::multimap<std::string, int> mmap);
+std::vector<std::string>	getStringKeyVal(std::map<std::string, std::vector<std::string> > myMap, std::string key);
+
+	//	+++	Checkint functions +++	//
+int	checkDuplicatePort(std::multimap<std::string, int> Map);
 
 	//	+++	Server Utils	+++	//
 void	printWebServ (WebServ *myServ);
 std::multimap<std::string, int>	extractionIpPort(std::vector<std::string> combIpPort);
-std::vector<std::string>	getStringKeyVal(std::map<std::string, std::vector<std::string> > myMap, std::string key);
 WebServ						*establishServers(Data &g_data);
 void						createSockets(WebServ *serv);
 

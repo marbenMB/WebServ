@@ -23,17 +23,16 @@ int main (int ac, char **av)
 		{
 			WebServ	*myServ;
 			
-			myServ = establishServers(g_Data);
-
-			printWebServ(myServ);
-
 			try {
+				myServ = establishServers(g_Data);
+
+				// printWebServ(myServ);
 				// createSockets(myServ);
+				delete	myServ;
 			} catch (std::exception &e) {
 				std::cout << e.what() << std::endl;
 			}
 
-			delete	myServ;
 		}
     }
     else
