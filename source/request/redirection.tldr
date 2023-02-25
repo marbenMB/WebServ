@@ -192,13 +192,15 @@
     "pageStates": {
       "page": {
         "id": "page",
-        "selectedIds": [],
+        "selectedIds": [
+          "b60cb5df-0d29-4c2d-2c24-8def345c0ea8"
+        ],
         "camera": {
           "point": [
-            0,
-            0
+            754.62,
+            1026.4
           ],
-          "zoom": 1
+          "zoom": 0.36454456353835785
         }
       }
     },

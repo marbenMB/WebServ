@@ -52,7 +52,12 @@ void    request::Retrieving_requested_resource(Data *server)
     int locationIndex;
     //  *|> /srcs/dir001/dir0011/test.txt
     locationIndex = this->findLocation(location);
-    if (locationIndex == -1)
+    if (locationIndex == _NO_CGI_LOCATION){
+        std::cout << "CGI location Not Found ...!" << std::endl;
+        this->req_method.append(" ");
+        return ;
+    }
+    else if (locationIndex == -1)
     {
         this->setAutoIndex(AUTOINDEX_OFF);
         if (this->req_method.compare("GET") == 0) {this->__get = ALLOWED;}

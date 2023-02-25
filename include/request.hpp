@@ -12,6 +12,7 @@
 
 #define AUTOINDEX_ON 548
 #define AUTOINDEX_OFF 549
+#define _NO_CGI_LOCATION 1337
 
 #include <iostream>
 #include <unistd.h>
@@ -76,6 +77,7 @@ private:
     std::string req_method;
     std::string host;
     std::string request_URI;
+    std::string query_string;
     std::string http_version;
 
     // Optional Fields :
@@ -137,6 +139,8 @@ public:
     std::string const &getdefaultIndex() const;
     std::string const &getrequest_URI() const;
     void setrequest_URI(std::string);
+    std::string const &getquery_string() const;
+    void setquery_string(std::string);
     std::string const &gethttp_version() const;
     int const &getsocketID(void) const;
     void setsocketID(int socketId);

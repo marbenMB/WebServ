@@ -65,6 +65,7 @@ request::request(int socketID, Data *server, std::string request, std::vector<st
         reqmethod->getStatuscode(),
         reqmethod->getreason_phrase(),
         reqmethod->getResponseBody());
+
     // std::cout << MAUVE << "   @PUSH socket Id" << END_CLR << std::endl;
     response.push_back(std::to_string(this->getsocketID()));
     // std::cout << MAUVE << "   @PUSH response Body" << END_CLR << std::endl;
@@ -237,8 +238,18 @@ bool request::Verifying_Header(std::string req)
 
     spl = split((std::string)itH[0], " ");
     this->req_method = spl[0];
-    this->request_URI = spl[1];
+
+    std::string _request_URI = spl[1];
+    size_t spliteRequestURI =  _request_URI.find("?");
+    if (spliteRequestURI != std::string::npos){
+
+        this->setquery_string(_request_URI.substr(spliteRequestURI + 1, _request_URI.length()));
+        this->setrequest_URI(_request_URI.substr(0, spliteRequestURI));
+    }
+    else{this->setrequest_URI(_request_URI); }
     this->http_version = spl[2];
+    std::cout << "\nsetquery_string :" << this->getquery_string() << std::endl;
+    std::cout << "setrequest_URI :" << this->getrequest_URI() << std::endl;
     while (++itH != requestHeaders.end())
     {
         spl.clear();
@@ -258,14 +269,14 @@ bool request::Verifying_Header(std::string req)
         this->requirements = false;
         return false;
     }
-    if (this->request_URI.find(".php") != std::string::npos)
-        std::cout << RED << "  >PHP CGI" << END_CLR << std::endl;
+    if (this->request_URI.find(".go") != std::string::npos)
+        std::cout << RED << "  >Go CGI" << END_CLR << std::endl;
     if (this->request_URI.find(".py") != std::string::npos)
         std::cout << RED << "  >PY CGI" << END_CLR << std::endl;
     std::cout << std::endl;
     // std::cout << " this->method : |" << this->req_method << "|" << std::endl;
     // std::cout << " this->host : |" << this->host << "|" << std::endl;
-    // std::cout << " this->request_URI : |" << this->request_URI << "|" << std::endl;
+    std::cout << " this->request_URI : |" << this->request_URI << "|" << std::endl;
     // std::cout << " this->http_version : |" << this->http_version << "|" << std::endl;
     // std::cout << " this->Connection : |" << this->Connection << "|" << std::endl;
     // std::cout << " this->Content_Length : |" << this->Content_Length << "|" << std::endl;

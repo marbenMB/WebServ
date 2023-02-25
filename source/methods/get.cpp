@@ -61,7 +61,10 @@ int get::execute_method(request _request)
     std::string filename;
 
     if (_request.getRedirect_status() != -1)
+    {
+        this->setStatuscode(_request.);
         _request.setrequest_URI(_request.getredirect_URL());
+    }
     
     /**
      *
@@ -85,9 +88,9 @@ int get::execute_method(request _request)
         filename.append("/");
         BaseURL.clear();
         //  redirection  |> return 40x ...
-        (_request.getRedirect_status() >= 400 && _request.getRedirect_status() <= 404)
-            ? BaseURL = _request.getredirect_URL()
-            : BaseURL = _request.getDefault_40x();
+        // (_request.getRedirect_status() >= 400 && _request.getRedirect_status() <= 404)
+        //     ? BaseURL = _request.getredirect_URL()
+        //     : BaseURL = _request.getDefault_40x();
         filename.append(BaseURL);
         // std::cout << "stat not exist : " << filename << std::endl;
         this->setStatuscode(404);
@@ -100,8 +103,7 @@ int get::execute_method(request _request)
         inFile.close();
         this->setResponseBody(line);
     }
-    else if ((STATInfo.st_mode & S_IFMT) == S_IFREG)
-    { // is file   S_ISREG(fileStat.st_mode)
+    else if ((STATInfo.st_mode & S_IFMT) == S_IFREG) { // is file   S_ISREG(fileStat.st_mode)
         // std::cout << "stat file : " << filename << std::endl;
         this->setStatuscode(200);
         this->setreason_phrase("Ok");
