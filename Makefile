@@ -7,6 +7,7 @@ SERVSRC = ./source/Server/Server.cpp ./source/Server/ServerClass.cpp ./source/Se
 			./source/Server/Check.cpp
 
 SRCS = ./source/main.cpp ./source/config_file/ConfigFile.cpp ./source/config_file/CheckValidity.cpp \
+		./source/config_file/ft_error.cpp ./source/config_file/save_data.cpp ./source/config_file/tool.cpp \
 		$(SERVSRC)
 		
 
