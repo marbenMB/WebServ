@@ -3,7 +3,8 @@ CPPFLAGS = -std=c++98 -Wall -Wextra -Werror  -g -fsanitize=address
 NAME = webserv
 CC = c++
 
-SERVSRC = ./source/Server/Server.cpp ./source/Server/ServerClass.cpp ./source/Server/utils.cpp
+SERVSRC = ./source/Server/Server.cpp ./source/Server/ServerClass.cpp ./source/Server/utils.cpp \
+			./source/Server/Check.cpp
 
 SRCS = ./source/main.cpp ./source/config_file/ConfigFile.cpp ./source/config_file/CheckValidity.cpp \
 		$(SERVSRC)

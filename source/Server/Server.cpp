@@ -58,16 +58,6 @@ std::multimap<std::string, int>	extractionIpPort(std::vector<std::string> combIp
 	// return std::multimap<std::string, int>();
 }
 
-std::vector<std::string>	getStringKeyVal(std::map<std::string, std::vector<std::string> > myMap, std::string key)
-{
-	std::string		value;
-	std::stringstream	ss;
-
-	if (myMap.find(key) != myMap.end())
-		return myMap[key];
-	return	std::vector<std::string>();
-}
-
 WebServ	*establishServers(Data &g_data)
 {
 	WebServ 					*serv = new WebServ();
@@ -82,7 +72,16 @@ WebServ	*establishServers(Data &g_data)
 		Server newServ = Server(id, *itServ, getStringKeyVal(itServ->server_data, "listen"), getStringKeyVal(itServ->server_data, "server_name"));
 
 		newServ.setIpPort(extractionIpPort(newServ.getCombIpPort()));
+		if (checkDuplicatePort(newServ.getIpPort()))
+			throw	std::invalid_argument("+> Duplicated Port!!");
+
 		printMultiMap(newServ.getIpPort());
+		std::cout << "----------------------------" << std::endl
+		<< "Server ID : " << newServ.getID() << std::endl;
+		printVector(newServ.getCombIpPort(), "Server Ports : ");
+		printVector(newServ.getServerName(), "Server Name : ");
+		std::cout << "----------------------------" << std::endl;
+
 		id++;
 		serv->servers.push_back(newServ);
 	}
