@@ -1,11 +1,61 @@
 #include "../../include/serverSide.hpp"
 
-std::multimap<std::string, int>	portsExtraction(ServerConf server)
+std::multimap<std::string, int>	extractionIpPort(std::vector<std::string> combIpPort)
 {
 	//	...
-	//	Loop all servers Ports and IPs.
-	//	each IP with its Port | if Port has no IP then 0.0.0.0 is set by default.
-	//	Return multimap.
+	//	Loop IP PORT combination and insert it as string-int (ip-Port) pairs .
+	//	if PORT is not specified then 80 is default
+	//	if IP is not specified then 0.0.0.0 is default
+	std::string	ip;
+	int			port;
+	std::multimap<std::string, int>	listen;
+	size_t	nFind;
+
+	for (std::vector<std::string>::iterator it = combIpPort.begin(); it != combIpPort.end(); it++)
+	{
+		nFind = it->find(':');
+		if (nFind != std::string::npos)
+		{
+			ip = it->substr(0, nFind);
+			try
+			{
+				port = std::stoi(it->substr((nFind + 1), it->length()));
+			}	catch (std::exception &e)
+			{
+				std::cout << e.what() << std::endl;
+			}
+		}
+		else
+		{
+			nFind = it->find('.');
+			if (nFind != std::string::npos)
+			{
+				ip = std::string(*it);
+				port = DEFAULT_PORT;
+			}
+			else
+			{
+				try
+				{
+					port = std::stoi(it->substr((nFind + 1), it->length()));
+				}	catch (std::exception &e)
+				{
+					std::cout << e.what() << std::endl;
+				}
+				ip = std::string(DEFAULT_IP);
+			}
+		}
+
+		// std::cout << "IP : " << ip << "	" << "PORT : " << port << std::endl;
+
+		listen.insert(std::make_pair(ip, port));
+	}
+	// std::cout << "-------------------" << std::endl;
+
+	return listen;
+
+	// (void)combIpPort;
+	// return std::multimap<std::string, int>();
 }
 
 std::vector<std::string>	getStringKeyVal(std::map<std::string, std::vector<std::string> > myMap, std::string key)
@@ -20,12 +70,23 @@ std::vector<std::string>	getStringKeyVal(std::map<std::string, std::vector<std::
 
 WebServ	*establishServers(Data &g_data)
 {
-	WebServ *serv = new WebServ();
+	WebServ 					*serv = new WebServ();
+	std::vector<std::string>	servName;
+	int							id = 1;
 
 	//	...
 	//	Creating Severs
 	//	puch them to WebServ vector.
-	
+	for (Vect_Serv::iterator itServ = g_data.server_list.begin(); itServ != g_data.server_list.end(); itServ++)
+	{
+		Server newServ = Server(id, *itServ, getStringKeyVal(itServ->server_data, "listen"), getStringKeyVal(itServ->server_data, "server_name"));
+
+		newServ.setIpPort(extractionIpPort(newServ.getCombIpPort()));
+		printMultiMap(newServ.getIpPort());
+		id++;
+		serv->servers.push_back(newServ);
+	}
+
 	return serv;
 }
 
@@ -60,4 +121,5 @@ void	createSockets(WebServ *serv)
 
 
 	//	clear sockFd = sockFd.clear
+	(void)serv;
 }

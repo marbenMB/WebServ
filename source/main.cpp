@@ -6,7 +6,6 @@ void	printWebServ (WebServ *myServ)
 	{
 		std::cout << "Server id : " << it->getID() << std::endl;
 		printVector(it->getCombIpPort(), "Server Ports : ");
-		// printVector(it->getServerHost(), "Server Hosts : ");
 		printVector(it->getServerName(), "Server Names : ");
 		std::cout << std::endl;
 	}
@@ -25,8 +24,11 @@ int main (int ac, char **av)
 			WebServ	*myServ;
 			
 			myServ = establishServers(g_Data);
+
+			printWebServ(myServ);
+
 			try {
-				createSockets(myServ);
+				// createSockets(myServ);
 			} catch (std::exception &e) {
 				std::cout << e.what() << std::endl;
 			}
