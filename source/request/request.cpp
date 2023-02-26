@@ -1,6 +1,6 @@
 #include "../../include/request.hpp"
 
-request::request(int socketID, Data *server, std::string request, std::vector<std::string> &response) : Content_Length(-1),
+request::request(int socketID, Data *server, std::string _request, std::vector<std::string> &response) : Content_Length(-1),
                                                                                                         autoindex(AUTOINDEX_OFF),
                                                                                                         __post(NOT_ALLOWED),
                                                                                                         __delete(NOT_ALLOWED),
@@ -12,16 +12,16 @@ request::request(int socketID, Data *server, std::string request, std::vector<st
     method *reqmethod;
     // std::vector<std::string> req_vector = split(request, "\r\n\r\n");
 
-    size_t splitIndex = request.find("\r\n\r\n");
+    size_t splitIndex = _request.find("\r\n\r\n");
      _requestHeader.clear();
     _requestBody.clear();
     if (splitIndex == std::string::npos){
-        _requestHeader = request.substr(0, request.length());
+        _requestHeader = _request.substr(0, _request.length());
     }
     else
     {
-         _requestHeader = request.substr(0, splitIndex);
-         _requestBody = request.substr(splitIndex + 4, request.length());
+         _requestHeader = _request.substr(0, splitIndex);
+         _requestBody = _request.substr(splitIndex + 4, _request.length());
     }
     // std::cout << "BODY****>" << request << std::endl;
     // _requestHeader.clear();
@@ -39,27 +39,39 @@ request::request(int socketID, Data *server, std::string request, std::vector<st
     //     //           << END_CLR << requestheader[i] << RED << "\n</req>" << END_CLR << std::endl;
     // }
     // * Init vars :
-    this->requirements = true;
+    // this->requirements = true;
     this->setsocketID(socketID);
     this->setRedirect_status(-1);
+    try
+    {
+        this->Retrieving_requested_resource(server);
+        this->Verifying_Header(_requestHeader);
+        if (this->getmethod().compare("POST") == 0)
+            this->Verifying_Body(_requestBody);
+        reqmethod = this->execute_request();
+
+    }
+    catch(request::BadRequest & e){ reqmethod = e.createError(*this);}
+    catch(request::NotImplemented & e){ reqmethod = e.createError(*this);}
+    catch(request::NotAllowed & e){ reqmethod = e.createError(*this);}
+    catch(request::NotFound & e){ reqmethod = e.createError(*this);}
+    catch(request::Forbiden & e){ reqmethod = e.createError(*this);}
+    catch(request::InternalServerError & e){ reqmethod = e.createError(*this);}
+    
     // * parse Header :
     // 1 - cheack for Header
     // std::cout << MAUVE << "   @VERIFYING  Header" << END_CLR << std::endl;
-    this->Verifying_Header(_requestHeader);
     // 3 - Retrieving the requested resource [config File and Data] :
     // std::cout << MAUVE << "   @RETRIEVING requested resource" << END_CLR << std::endl;
-    this->Retrieving_requested_resource(server);
     // 2 - check for body
     // std::cout << MAUVE << "   @VERIFYING  Body" << END_CLR << std::endl;
-    if (this->getmethod().compare("POST") == 0 && this->requirements)
-        this->Verifying_Body(_requestBody);
     // 4 - execute request ; if this->requirements = true;
     // std::cout << MAUVE << "   @EXECUTE request" << END_CLR << std::endl;
-    reqmethod = this->execute_request();
     // 5 - get status of execution :
 
     // 6 - create response ;
     // std::cout << MAUVE << "   @CREATE response" << END_CLR << std::endl;
+    // exit(1);
     _reaponseBody = _CREATEresponse(
         reqmethod->getContent_Type(),
         reqmethod->getStatuscode(),
@@ -148,9 +160,10 @@ bool request::Verifying_Body(std::string req)
         EndSTRINGSEPARATES.clear();
         EndSTRINGSEPARATES.append(STRINGSEPARATES);
         EndSTRINGSEPARATES.append("--");
-        if (!ContentType["boundary"].length()){this->requirements = false;return false;}
-        if (req.find(STRINGSEPARATES) == std::string::npos){this->requirements = false;std::cout << "STRINGSEPARATES: makayen " << std::endl;}
-        if (req.find(EndSTRINGSEPARATES) == std::string::npos){this->requirements = false;std::cout << "EndSTRINGSEPARATES: makayen " << std::endl;}
+        if (!ContentType["boundary"].length() || req.find(STRINGSEPARATES) == std::string::npos || req.find(EndSTRINGSEPARATES) == std::string::npos){
+            throw BadRequest();
+        }
+
         tmp.clear();
         request = split(req, EndSTRINGSEPARATES)[0];
         STRINGSEPARATES.append("\r\n");
@@ -225,7 +238,6 @@ bool request::Verifying_Body(std::string req)
     }
     else{ // theres no boundary
     }
-
     return true;
 }
 
@@ -238,7 +250,7 @@ bool request::Verifying_Header(std::string req)
 
     spl = split((std::string)itH[0], " ");
     this->req_method = spl[0];
-
+   
     std::string _request_URI = spl[1];
     size_t spliteRequestURI =  _request_URI.find("?");
     if (spliteRequestURI != std::string::npos){
@@ -247,9 +259,16 @@ bool request::Verifying_Header(std::string req)
         this->setrequest_URI(_request_URI.substr(0, spliteRequestURI));
     }
     else{this->setrequest_URI(_request_URI); }
+
+    // this->_error.setCode_status(404);
+    // this->_error.setReason_phrase("Bad Request");
+    // this->_error = Error(401, "Bad Request");
+
     this->http_version = spl[2];
-    std::cout << "\nsetquery_string :" << this->getquery_string() << std::endl;
-    std::cout << "setrequest_URI :" << this->getrequest_URI() << std::endl;
+    if (this->http_version.compare("HTTP/1.1") != 0)
+        throw BadRequest();
+    // std::cout << "\nsetquery_string :" << this->getquery_string() << std::endl;
+    // std::cout << "setrequest_URI :" << this->getrequest_URI() << std::endl;
     while (++itH != requestHeaders.end())
     {
         spl.clear();
@@ -266,17 +285,21 @@ bool request::Verifying_Header(std::string req)
     }
     if (this->req_method.empty() || this->host.empty() || this->request_URI.empty() || this->http_version.empty())
     {
+        // this->_error = Error(401, "Bad Request");
         this->requirements = false;
+        throw BadRequest();
         return false;
     }
-    if (this->request_URI.find(".go") != std::string::npos)
-        std::cout << RED << "  >Go CGI" << END_CLR << std::endl;
-    if (this->request_URI.find(".py") != std::string::npos)
-        std::cout << RED << "  >PY CGI" << END_CLR << std::endl;
-    std::cout << std::endl;
+
+
+    // if (this->request_URI.find(".go") != std::string::npos)
+    //     std::cout << RED << "  >Go CGI" << END_CLR << std::endl;
+    // if (this->request_URI.find(".py") != std::string::npos)
+    //     std::cout << RED << "  >PY CGI" << END_CLR << std::endl;
+    // std::cout << std::endl;
     // std::cout << " this->method : |" << this->req_method << "|" << std::endl;
     // std::cout << " this->host : |" << this->host << "|" << std::endl;
-    std::cout << " this->request_URI : |" << this->request_URI << "|" << std::endl;
+    // std::cout << " this->request_URI : |" << this->request_URI << "|" << std::endl;
     // std::cout << " this->http_version : |" << this->http_version << "|" << std::endl;
     // std::cout << " this->Connection : |" << this->Connection << "|" << std::endl;
     // std::cout << " this->Content_Length : |" << this->Content_Length << "|" << std::endl;
@@ -289,3 +312,4 @@ bool request::Verifying_Header(std::string req)
 request::~request()
 {
 }
+

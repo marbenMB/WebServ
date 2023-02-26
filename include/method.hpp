@@ -1,5 +1,5 @@
-#ifndef METHOD_HPP
-#define METHOD_HPP
+#ifndef _METHOD_HPP_
+#define _METHOD_HPP_
 
 #include <iostream>
 #include <cstring>
@@ -9,24 +9,29 @@
 
 #include "./request.hpp"
 
+
 class request;
 class method
 {
 private:
+
+    std::map<std::string, std::string> _Headers;
+    std::string responseBody;
+
+    // errors vars
+    int statuscode;
+    std::string reason_phrase;
+
     // ? config file :
-    int isAllowed;
     int client_max_body_size;
     int redirect_status;
     std::string redirect_URL;
 
-    int statuscode;
     int socketID;
     std::string host;
-    std::string reason_phrase;
     std::string request_URI;
     std::string http_version;
     std::string root_path;
-    std::string responseBody;
 
     int Content_Length;
     std::map<std::string, std::string> Content_Type;
@@ -121,11 +126,11 @@ public:
     std::string const &getContent( void );
 };
 
-class NotImplemented : public method
+class Error : public method
 {
 public:
-    NotImplemented(request rhs);
-    ~NotImplemented();
+    Error(request rhs);
+    ~Error(){};
     int execute_method(request _request);
 };
 

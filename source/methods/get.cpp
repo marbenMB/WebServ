@@ -62,7 +62,8 @@ int get::execute_method(request _request)
 
     if (_request.getRedirect_status() != -1)
     {
-        this->setStatuscode(_request.);
+        this->setStatuscode(_request.getRedirect_status());
+        this->setreason_phrase("Moved Permanently");
         _request.setrequest_URI(_request.getredirect_URL());
     }
     
@@ -80,7 +81,7 @@ int get::execute_method(request _request)
     //  redirection  |> return 20x ...
     BaseURL = _request.getrequest_URI();
     filename.append(BaseURL);
-    std::cout << "PATH : " << filename << std::endl;
+    // std::cout << "PATH : " << filename << std::endl;
     if (stat(filename.c_str(), &STATInfo) != 0)
     { // not exist
         filename.clear();
@@ -105,8 +106,11 @@ int get::execute_method(request _request)
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFREG) { // is file   S_ISREG(fileStat.st_mode)
         // std::cout << "stat file : " << filename << std::endl;
-        this->setStatuscode(200);
-        this->setreason_phrase("Ok");
+        if (_request.getRedirect_status() == -1)
+        {
+            this->setStatuscode(200);
+            this->setreason_phrase("Ok");
+        }
         inFile.open(filename, std::ifstream::in);
         while (std::getline(inFile, buffer))
         {
@@ -127,10 +131,10 @@ int get::execute_method(request _request)
         filename.append("/");
         filename.append(_request.getdefaultIndex());
         // std::cout << "filename [" << _request.getAutoIndex() << "]: " << filename << std::endl;
-        if (_request.getAutoIndex() == AUTOINDEX_ON)
-            std::cout << "AUTOINDEX_ON\n";
-        else
-            std::cout << "AUTOINDEX_OFF\n";
+        // if (_request.getAutoIndex() == AUTOINDEX_ON)
+        //     std::cout << "AUTOINDEX_ON\n";
+        // else
+        //     std::cout << "AUTOINDEX_OFF\n";
 
         // if (stat(filename.c_str(), &STATInfo) != 0)
         // {
@@ -230,10 +234,10 @@ int get::execute_method(request _request)
                     filePATH.append(request_URITmp);
                     filePATH.append("/");
                     filePATH.append(dp->d_name);
-                    if (stat(filePATH.c_str(), &STATFile) != 0)
-                    {
-                        std::cout << " |" << filePATH << "| file Not found \n";
-                    }
+                    // if (stat(filePATH.c_str(), &STATFile) != 0)
+                    // {
+                    //     std::cout << " |" << filePATH << "| file Not found \n";
+                    // }
                     line.append("<tr> <td data-value=\"");
                     line.append(dp->d_name);
                     line.append("\"><a class=\"icon file\" draggable=\"true\" href=\"");

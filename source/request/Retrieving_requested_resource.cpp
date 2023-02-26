@@ -53,8 +53,9 @@ void    request::Retrieving_requested_resource(Data *server)
     //  *|> /srcs/dir001/dir0011/test.txt
     locationIndex = this->findLocation(location);
     if (locationIndex == _NO_CGI_LOCATION){
-        std::cout << "CGI location Not Found ...!" << std::endl;
+        // std::cout << "CGI location Not Found ...!" << std::endl;
         this->req_method.append(" ");
+        throw NotImplemented();
         return ;
     }
     else if (locationIndex == -1)

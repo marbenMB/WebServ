@@ -25,7 +25,6 @@
 
 #include "./method.hpp"
 
-
 /*
 
 There are many header fields that can be included in an HTTP/1.1 request, here are some of the most commonly used ones:
@@ -57,6 +56,10 @@ class method;
 class request
 {
 private:
+   
+
+
+
     bool requirements;
     int socketID;
     std::string root;
@@ -110,7 +113,7 @@ private:
     int __get;
     request(){};
     std::vector<std::string> message;
-
+    //  error 
 public:
     request(int , Data *, std::string, std::vector<std::string> &);
     std::vector<std::string> &execute(std::string body, Data *_confdata);
@@ -166,7 +169,43 @@ public:
 
     // error pages :
     std::string const & getDefault_40x( void );
+    std::string const & getDefault_50x( void );
+    std::string const & getDefault_30x( void );
     void print_vectINFO(std::vector<std::string>, std::string);
+
+
+
+    class BadRequest 
+    {
+        public:
+            method * createError(request req) const throw();
+    };
+    class NotImplemented 
+    {
+        public:
+            
+            method * createError(request req) const throw();
+    };
+    class NotAllowed 
+    {
+        public:
+            method * createError(request req) const throw();
+    };
+
+    class NotFound 
+    {
+        public:
+            method * createError(request req) const throw();
+    };
+    class Forbiden 
+    {
+        public:
+            method * createError(request req) const throw();
+    };
+    class InternalServerError{
+         public:
+            method * createError(request req) const throw();
+    };
 };
 std::vector<std::string> split(const std::string &str, const std::string &delimiter);
 std::string trimFront(const std::string &s, std::string trim);

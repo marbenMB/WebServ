@@ -60,7 +60,12 @@ std::string const & request::getDefault_40x( void ){
     return this->default_40x;
 }
 
-
+std::string const & request::getDefault_30x( void ){
+    return this->default_30x;
+}
+std::string const & request::getDefault_50x( void ){
+    return this->default_50x;
+}
 int request::getAllowedPost() const{
     return this->__post;
 }
@@ -96,7 +101,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
     else  compare_URI.append(this->request_URI);
     // compare_URI.append(this->request_URI);
      //  * init string |> /srcs/dir001/dir0011/test.txt
-    std::cout << "++> URI :" << compare_URI << std::endl;
+    // std::cout << "++> URI :" << compare_URI << std::endl;
 
     while (locations_iterator != location.end())
     {
@@ -129,7 +134,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
 
 
 
-    std::cout << "URI :" << str << std::endl;
+    // std::cout << "URI :" << str << std::endl;
 
     return locationId;
 }

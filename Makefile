@@ -10,9 +10,9 @@ FLAGS =  -Wall -Wextra -Werror -std=c++98  -fsanitize=address
 config_SRCS = $(CONFIGFILE_PATH)ConfigFile.cpp $(CONFIGFILE_PATH)CheckValidity.cpp $(CONFIGFILE_PATH)ft_error.cpp $(CONFIGFILE_PATH)save_data.cpp $(CONFIGFILE_PATH)tool.cpp
 
 
-method_SRCS =  $(METHODS_PATH)get.cpp  $(METHODS_PATH)method.cpp $(METHODS_PATH)delete.cpp  $(METHODS_PATH)post.cpp  $(METHODS_PATH)Not_ALLOWED.cpp $(METHODS_PATH)error.cpp
+method_SRCS =  $(METHODS_PATH)get.cpp  $(METHODS_PATH)method.cpp $(METHODS_PATH)delete.cpp  $(METHODS_PATH)post.cpp  $(METHODS_PATH)error.cpp
 request_SRCS =  $(REQUEST_PATH)request.cpp $(REQUEST_PATH)split.cpp $(REQUEST_PATH)trimFront.cpp $(REQUEST_PATH)parse.cpp $(REQUEST_PATH)request_getters.cpp $(REQUEST_PATH)redirection.cpp $(REQUEST_PATH)execute_request.cpp $(REQUEST_PATH)Retrieving_requested_resource.cpp $(REQUEST_PATH)create_response.cpp $(REQUEST_PATH)GETstatusOfexecution.cpp
-SRCS =  main.cpp 
+SRCS =  main.cpp $(REQUEST_PATH)request_errors.cpp
 
 method_OBJS	= $(method_SRCS:.cpp=.o)
 request_OBJS = $(request_SRCS:.cpp=.o)
