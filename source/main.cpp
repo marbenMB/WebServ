@@ -13,7 +13,7 @@ void	printWebServ (WebServ *myServ)
 	}
 }
 
-int main (int ac, char **av)
+int _main (int ac, char **av)
 {
     Data g_Data;
     if (ac == 2)
@@ -48,4 +48,10 @@ int main (int ac, char **av)
 	std::cout << GREEN << "+> Parsing Done!!" << END_CLR << std::endl << std::endl;
     // system("leaks webserv");
     return (0);
+}
+
+int main(int ac, char **av)
+{
+	_main(ac, av);
+    system("leaks webserv");
 }

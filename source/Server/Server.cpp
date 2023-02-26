@@ -70,7 +70,7 @@ WebServ	*establishServers(Data &g_data)
 		id++;
 		serv->servers.push_back(newServ);
 	}
-
+	serv->servNums = id - 1;
 	return serv;
 }
 
