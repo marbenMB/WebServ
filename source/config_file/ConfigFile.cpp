@@ -115,7 +115,8 @@ void ConfigFile::getdata(Data &g_Data) {
             server_block(g_Data, v);
         }
         check_validity(g_Data);
-        print_Data(g_Data.server_list);
+        if (g_Data.error.empty())
+            print_Data(g_Data.server_list);
     }
     else {
         g_Data.error = "WebServer: [emerg] error in syntax missing of '{' or '}' in configfile.conf";

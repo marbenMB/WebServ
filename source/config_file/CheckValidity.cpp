@@ -128,21 +128,33 @@ bool check_exist_server_data(map_vector server_data, std::string key) {
     return (false);
 }
 
+
 void set_default_error_vector(std::vector<std::string> &error_page) {
+    error_page.push_back("300");
+    error_page.push_back("./var/errors/30x.html");
     error_page.push_back("400");
-    error_page.push_back("40x.html");
+    error_page.push_back("./var/errors/40x.html");
     error_page.push_back("500");
-    error_page.push_back("50x.html");
+    error_page.push_back("./var/errors/50x.html");
 }
 
 void ConfigFile::set_default(Data &g_Data) {
-    std::vector<std::string> default_error;
+    std::vector<std::string> error_value;
+    std::vector<std::string> index_value;
     Vect_Serv &server_list = g_Data.server_list; 
     
     for (Vect_Serv::iterator it = server_list.begin(); it != server_list.end()  && !g_Data.error.length(); ++it) {
         if (!check_exist_server_data(it->server_data, "error_page")) {
-            set_default_error_vector(default_error);
-            it->server_data.insert(std::make_pair("error_page",default_error) );
+            set_default_error_vector(error_value);
+            it->server_data.insert(std::make_pair("error_page",error_value));
+        }
+        if (!check_exist_server_data(it->server_data, "listen"))
+            g_Data.error = "WebServer: [emerg] need to define listen directive in the " + this->filename;
+        if (!check_exist_server_data(it->server_data, "root"))
+            g_Data.error = "WebServer: [emerg] need to define root directive in the " + this->filename;
+        if (!check_exist_server_data(it->server_data, "index")) {
+            index_value.push_back("index.html");
+            it->server_data.insert(std::make_pair("index", index_value));
         }
     }
 }
@@ -152,7 +164,5 @@ void ConfigFile::check_validity(Data &g_Data) {
         server_data(g_Data);
         server_location(g_Data);
         set_default(g_Data);
-
     }
-    
 }
