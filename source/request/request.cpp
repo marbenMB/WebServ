@@ -241,6 +241,28 @@ bool request::Verifying_Body(std::string req)
     return true;
 }
 
+void request::url_decode(std::string &url) {
+    std::ostringstream unescaped;
+    int i = 0;
+    while (url[i++]) {
+        if (url[i] == '%') {
+            std::string hex;
+            char *end;
+            hex += url[++i];
+            hex += url[++i];
+            char decoded = strtol(hex.c_str(), &end, 16);
+            if (*end != '\0')
+                throw BadRequest();
+            unescaped << decoded;
+        }
+        else if (url[i] == '+')
+            unescaped << ' ';
+        else
+            unescaped << url[i];
+    }
+    url = unescaped.str();
+}
+
 bool request::Verifying_Header(std::string req)
 {
 //    std::cout << "Header :"<< req << std::endl;
@@ -252,6 +274,7 @@ bool request::Verifying_Header(std::string req)
     this->req_method = spl[0];
    
     std::string _request_URI = spl[1];
+    url_decode(_request_URI);
     size_t spliteRequestURI =  _request_URI.find("?");
     if (spliteRequestURI != std::string::npos){
 

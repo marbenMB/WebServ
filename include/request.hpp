@@ -115,6 +115,7 @@ private:
     std::vector<std::string> message;
     //  error 
 public:
+    void url_decode(std::string &url);
     request(int , Data *, std::string, std::vector<std::string> &);
     std::vector<std::string> &execute(std::string body, Data *_confdata);
     method *   execute_request( void );
