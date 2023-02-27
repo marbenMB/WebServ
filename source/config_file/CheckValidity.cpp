@@ -117,6 +117,10 @@ void ConfigFile::server_data(Data &g_Data) {
                     valid_listen(g_Data, (*value_it));
                 else if (server_data_it->first == "client_max_body_size")
                     valid_body_size(g_Data, server_data_it);
+                else if (server_data_it->first == "root")
+                    check_one_arg(g_Data, server_data_it);
+                else if (server_data_it->first == "index")
+                    check_one_arg(g_Data, server_data_it);
             }
         }
     }
@@ -139,22 +143,27 @@ void set_default_error_vector(std::vector<std::string> &error_page) {
 }
 
 void ConfigFile::set_default(Data &g_Data) {
-    std::vector<std::string> error_value;
-    std::vector<std::string> index_value;
+    std::vector<std::string> vector_value;
     Vect_Serv &server_list = g_Data.server_list; 
     
     for (Vect_Serv::iterator it = server_list.begin(); it != server_list.end()  && !g_Data.error.length(); ++it) {
         if (!check_exist_server_data(it->server_data, "error_page")) {
-            set_default_error_vector(error_value);
-            it->server_data.insert(std::make_pair("error_page",error_value));
+            set_default_error_vector(vector_value);
+            it->server_data.insert(std::make_pair("error_page",vector_value));
         }
         if (!check_exist_server_data(it->server_data, "listen"))
             g_Data.error = "WebServer: [emerg] need to define listen directive in the " + this->filename;
         if (!check_exist_server_data(it->server_data, "root"))
             g_Data.error = "WebServer: [emerg] need to define root directive in the " + this->filename;
         if (!check_exist_server_data(it->server_data, "index")) {
-            index_value.push_back("index.html");
-            it->server_data.insert(std::make_pair("index", index_value));
+            vector_value.clear();
+            vector_value.push_back("index.html");
+            it->server_data.insert(std::make_pair("index", vector_value));
+        }
+        if (!check_exist_server_data(it->server_data, "client_max_body_size")) {
+            vector_value.clear();
+            vector_value.push_back("2147483648");
+            it->server_data.insert(std::make_pair("client_max_body_size", vector_value));
         }
     }
 }
