@@ -44,8 +44,8 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
     this->setRedirect_status(-1);
     try
     {
-        this->Retrieving_requested_resource(server);
         this->Verifying_Header(_requestHeader);
+        this->Retrieving_requested_resource(server);
         if (this->getmethod().compare("POST") == 0)
             this->Verifying_Body(_requestBody);
         reqmethod = this->execute_request();
@@ -89,7 +89,7 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
         color_status = GREEN;
     else
         color_status = RED;
-    std::cout << color_status << "127.0.0.1 " << this->getmethod() << " HTTP/1.1 " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase() << " " << this->getrequest_URI() << END_CLR ;
+    std::cout << color_status << "127.0.0.1 " << this->getmethod() << " HTTP/1.1 " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase() << " " << this->getrequest_URI() << END_CLR <<std::endl ;
     delete reqmethod;
 }
 
@@ -260,6 +260,8 @@ bool request::Verifying_Header(std::string req)
     }
     else{this->setrequest_URI(_request_URI); }
 
+    if (!is__subDir("./var",this->getrequest_URI()))
+        throw BadRequest();
     // this->_error.setCode_status(404);
     // this->_error.setReason_phrase("Bad Request");
     // this->_error = Error(401, "Bad Request");

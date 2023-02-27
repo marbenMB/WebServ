@@ -4,6 +4,7 @@ method * request::BadRequest::createError(request req) const throw(){
     std::ifstream inFile;
     std::string buffer;
     std::string _body;
+    std::string _filename;
     method *resp;
 
 
@@ -12,7 +13,8 @@ method * request::BadRequest::createError(request req) const throw(){
     resp->setStatuscode(404);
     resp->setreason_phrase("Not Found");
     resp->setContent_Type("html/text");
-    inFile.open(req.getDefault_40x(), std::ifstream::in);
+    _filename = req.getDefault_40x().empty() ? "var/errors/40x.html" : req.getDefault_40x();
+    inFile.open(_filename, std::ifstream::in);
     while (std::getline(inFile, buffer))
     {
         _body.append(buffer);
