@@ -1,4 +1,5 @@
 #include "../../include/request.hpp"
+#include <stdlib.h>
 std::string const &request::gethost() const
 {
     return (this->host);
@@ -78,6 +79,8 @@ int request::getAllowedGet() const{
 
 
 int request::findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > > location){
+    char _dir[PATH_MAX];
+    // char* _subdir;
     std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator locations_iterator = location.begin();
     int locationId = -1;
     int index = 0;
@@ -125,7 +128,24 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
         }
     }
     if (!_cgi) // remove the mutch string 
-        this->setrequest_URI(this->getrequest_URI().substr(str.length(), this->getrequest_URI().length()));
+    {
+        std::string _tmp;
+        std::cout << "----befor :" << this->getrequest_URI() << std::endl;
+        _tmp.append(this->getroot());
+        _tmp.append("/");
+        _tmp.append(this->getrequest_URI());
+        realpath(_tmp.c_str(), _dir);
+        // if (realpath_status == NULL)
+        //     throw InternalServerError();
+        std::cout << "----after :" << _dir << std::endl;
+        _tmp.clear();
+        _tmp.append(this->getroot());
+
+        _tmp.append(this->getrequest_URI().substr(str.length(), this->getrequest_URI().length()));
+        this->setrequest_URI(_tmp);
+        std::cout << "result_URI :" << this->getrequest_URI() << std::endl;
+
+    }
     if (_cgi && locationId == -1)
         locationId = _NO_CGI_LOCATION ; 
     

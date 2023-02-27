@@ -10,8 +10,8 @@ method * request::BadRequest::createError(request req) const throw(){
 
     resp = new Error(req);
     // std::cout << "Bad Request***" << std::endl;
-    resp->setStatuscode(404);
-    resp->setreason_phrase("Not Found");
+    resp->setStatuscode(400);
+    resp->setreason_phrase("Bad Request");
     resp->setContent_Type("html/text");
     _filename = req.getDefault_40x().empty() ? "var/errors/40x.html" : req.getDefault_40x();
     inFile.open(_filename, std::ifstream::in);

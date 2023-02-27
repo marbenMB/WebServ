@@ -252,6 +252,7 @@ bool request::Verifying_Header(std::string req)
     this->req_method = spl[0];
    
     std::string _request_URI = spl[1];
+    std::cout << "request URI : " << _request_URI << std::endl;
     size_t spliteRequestURI =  _request_URI.find("?");
     if (spliteRequestURI != std::string::npos){
 
@@ -260,8 +261,8 @@ bool request::Verifying_Header(std::string req)
     }
     else{this->setrequest_URI(_request_URI); }
 
-    if (!is__subDir("./var",this->getrequest_URI()))
-        throw BadRequest();
+    // if (!is__subDir("./var",this->getrequest_URI()))
+    //     throw NotAllowed();
     // this->_error.setCode_status(404);
     // this->_error.setReason_phrase("Bad Request");
     // this->_error = Error(401, "Bad Request");
