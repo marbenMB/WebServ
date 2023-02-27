@@ -43,7 +43,7 @@ int ConfigFile::valid_return_status(Data &g_Data, std::string status) {
     return (0);
 }
 
-void ConfigFile::check_allow_method(Data &g_Data, map_location_it location_data_it) {
+void ConfigFile::check_allow_method(Data &g_Data, map_vector_it location_data_it) {
     for (std::vector<std::string>::iterator value_it = location_data_it->second.begin(); value_it != location_data_it->second.end(); ++value_it) {
         if (*value_it == "GET" || *value_it == "POST" || *value_it == "DELETE")
             continue;
@@ -53,14 +53,14 @@ void ConfigFile::check_allow_method(Data &g_Data, map_location_it location_data_
     }
 }
 
-void ConfigFile::check_one_arg(Data &g_Data, map_location_it location_data_it) {
+void ConfigFile::check_one_arg(Data &g_Data, map_vector_it location_data_it) {
     if (!Valid_vector_size(location_data_it->second, 1)) {
         g_Data.error = "WebServer: [emerg] invalid number of arguments in \"" + location_data_it->first;
         g_Data.error += "\" in " + this->filename;
     }
 }
 
-void ConfigFile::check_return_location(Data &g_Data, map_location_it location_data_it) {
+void ConfigFile::check_return_location(Data &g_Data, map_vector_it location_data_it) {
     int index = 0;
     if (!Valid_vector_return_size(location_data_it->second)) {
         g_Data.error = "WebServer: [emerg] invalid number of arguments in \"" + location_data_it->first;
@@ -85,7 +85,7 @@ void ConfigFile::check_return_location(Data &g_Data, map_location_it location_da
     }
 }
 
-void ConfigFile::check_autoindex_location(Data &g_Data, map_location_it location_data_it) {
+void ConfigFile::check_autoindex_location(Data &g_Data, map_vector_it location_data_it) {
     if (!Valid_vector_size(location_data_it->second, 1)) {
         g_Data.error = "WebServer: [emerg] invalid number of arguments in \"" + location_data_it->first;
         g_Data.error += "\" in " + this->filename;
