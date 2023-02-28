@@ -57,6 +57,7 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
     catch(request::NotFound & e){ reqmethod = e.createError(*this);}
     catch(request::Forbiden & e){ reqmethod = e.createError(*this);}
     catch(request::InternalServerError & e){ reqmethod = e.createError(*this);}
+     catch(request::CGI & e){ reqmethod = e.runCGI(*this);}
     
     // * parse Header :
     // 1 - cheack for Header

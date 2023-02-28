@@ -183,8 +183,7 @@ int get::execute_method(request _request)
             {
                 /*
                     <tr>
-                        <td data-value="runtime.txt"><a class="icon file" draggable="true"
-                                href="/Users/mmasstou/Desktop/my-Store/runtime.txt">runtime.txt</a></td>
+                        <td data-value="runtime.txt"><a class="icon file" draggable="true" href="/Users/mmasstou/Desktop/my-Store/runtime.txt">runtime.txt</a></td>
                         <td class="detailsColumn" data-value="14">14 B</td>
                         <td class="detailsColumn" data-value="1672423565">12/30/22, 7:06:05 PM</td>
                     </tr>
@@ -211,6 +210,7 @@ int get::execute_method(request _request)
                     line.append("<tr> <td data-value=\"");
                     line.append(dp->d_name);
                     line.append("\">\n\r<a class=\"icon file\" draggable=\"true\" href=\"");
+                    request_URITmp.erase(0, strlen(_request.getroot().c_str()));
                     line.append(request_URITmp);
                     line.append("/");
                     line.append(dp->d_name);

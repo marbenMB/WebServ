@@ -19,6 +19,7 @@ method * request::CGI::runCGI(request req) const throw(){
     resp->addHeader("Content-Type", "html/text");
     resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
     resp->addHeader("Set-Cooki", "");
+    return resp;
 }
 
 method * request::BadRequest::createError(request req) const throw(){
