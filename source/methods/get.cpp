@@ -17,15 +17,6 @@
 
 get::get(request rhs)
 {
-
-    this->setHost(rhs.gethost());
-    // this->setRequest_URI(rhs.getrequest_URI());
-    this->setHttp_version(rhs.gethttp_version());
-    this->setStatuscode(200);
-    this->setreason_phrase("OK");
-    this->setRootPath(rhs.getroot());
-    this->setResponseBody("");
-    this->setContent_Type("text/html");
     this->execute_method(rhs);
     /**
      *
@@ -52,68 +43,24 @@ int get::execute_method(request _request)
     struct stat STATInfo;
     DIR *dirp;
     struct dirent *dp;
-    std::string BaseURL;
     // std::string responseBody;
     // check config file if the method is allowed:
     // if (this->getRequest_URI().compare("/") == 0){
     //     this->setRequest_URI("/index.html");
     // }
     std::string filename;
-
+    filename.clear();
+    filename.append(_request.getrequest_URI());
     if (_request.getRedirect_status() != -1)
     {
         this->setStatuscode(_request.getRedirect_status());
         this->setreason_phrase("Moved Permanently");
-        _request.setrequest_URI(_request.getredirect_URL());
-    }
-    
-    /**
-     *
-     *
-     * if (connect(sockfd, (struct sockaddr *)&their_addr, sizeof(struct sockaddr)) == -1) {
-            perror("connect");
-            exit(1);
-            }
-     *
-     * */
- 
-    // filename.append(_request.getroot());
-    //  redirection  |> return 20x ...
-    BaseURL = _request.getrequest_URI();
-    filename.clear();
-    filename.append(_request.getrequest_URI());
-    // std::cout << "PATH : " << filename << std::endl;
-    if (stat(filename.c_str(), &STATInfo) != 0)
-    { // not exist
-        throw request::NotFound();
-        // filename.clear();
-        // filename.append(this->getRootPath());
-        // filename.append("/");
-        // BaseURL.clear();
-        // //  redirection  |> return 40x ...
-        // // (_request.getRedirect_status() >= 400 && _request.getRedirect_status() <= 404)
-        // //     ? BaseURL = _request.getredirect_URL()
-        // //     : BaseURL = _request.getDefault_40x();
-        // filename.append(BaseURL);
-        // // std::cout << "stat not exist : " << filename << std::endl;
-        // this->setStatuscode(404);
-        // this->setreason_phrase("Not Found");
-        // inFile.open(filename, std::ifstream::in);
-        // while (std::getline(inFile, buffer))
-        // {
-        //     line.append(buffer);
-        // }
-        // inFile.close();
-        // this->setResponseBody(line);
-    }
-    else if ((STATInfo.st_mode & S_IFMT) == S_IFREG) { // is file   S_ISREG(fileStat.st_mode)
-        // // std::cout << "stat file : " << filename << std::endl;
-        // if (_request.getRedirect_status() == -1)
-        // {
-        
-        this->setStatuscode(200);
-        this->setreason_phrase("Ok");
-        // }
+        filename.clear();
+        filename.append(_request.getroot());
+        filename.append(_request.getredirect_URL());
+        _request.setrequest_URI(filename);
+        // set Header : 
+        this->addHeader("Location", _request.getredirect_URL());
         inFile.open(filename, std::ifstream::in);
         while (std::getline(inFile, buffer))
         {
@@ -122,7 +69,21 @@ int get::execute_method(request _request)
         }
         // std::cout << "</Line >" << std::endl;
         inFile.close();
-        this->setResponseBody(line);
+    }
+    else if (stat(filename.c_str(), &STATInfo) != 0)
+    { // not exist
+        throw request::NotFound();
+    }
+    else if ((STATInfo.st_mode & S_IFMT) == S_IFREG) { // is file   S_ISREG(fileStat.st_mode)
+        this->setStatuscode(200);
+        this->setreason_phrase("Ok");
+        inFile.open(filename, std::ifstream::in);
+        while (std::getline(inFile, buffer))
+        {
+            // std::cout << buffer << std::endl;
+            line.append(buffer);
+        }
+        inFile.close();
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFDIR)
     { // is dir
@@ -149,6 +110,8 @@ int get::execute_method(request _request)
         {
             line.clear();
             inFile.open("./var/srcs/autoIndex.html", std::ifstream::in);
+            if (!inFile.is_open())
+                throw request::InternalServerError();
             while (std::getline(inFile, buffer))
             {
                 // std::cout << buffer << std::endl;
@@ -177,7 +140,7 @@ int get::execute_method(request _request)
                     std::string pathdirTmp;
                     pathdirTmp.append(pathdir);
                     buffer.append("<a id=\"parentDirLink\" class=\"icon up\" href=\"");
-                    size_t start = pathdirTmp.find_last_of("/");
+                    size_t start = pathdirTmp.rfind("/");
                     pathdirTmp.erase(start, pathdirTmp.length());
                     pathdirTmp.append("/..");
                     buffer.append(pathdirTmp);
@@ -204,7 +167,7 @@ int get::execute_method(request _request)
             dirp = opendir(pathdir.c_str());
             if (dirp == NULL)
             {
-                perror("opendir");
+                throw request::InternalServerError();
                 return 1;
             }
             // std::cout << "Index of : " << pathdir << std::endl;
@@ -239,10 +202,12 @@ int get::execute_method(request _request)
                     filePATH.append(request_URITmp);
                     filePATH.append("/");
                     filePATH.append(dp->d_name);
-                    // if (stat(filePATH.c_str(), &STATFile) != 0)
-                    // {
-                    //     std::cout << " |" << filePATH << "| file Not found \n";
-                    // }
+                    std::cout << "FILE PATH :" << filePATH << std::endl;
+                    if (stat(filePATH.c_str(), &STATFile) != 0)
+                    {
+                        std::cout << " |" << filePATH << "| file Not found \n";
+                        continue;
+                    }
                     line.append("<tr> <td data-value=\"");
                     line.append(dp->d_name);
                     line.append("\">\n\r<a class=\"icon file\" draggable=\"true\" href=\"");
@@ -264,13 +229,15 @@ int get::execute_method(request _request)
             if (closedir(dirp) == -1)
             {
                 perror("closedir");
+                throw request::InternalServerError();
                 return 1;
             }
             dp = nullptr;
             line.append("</tbody></table></body></html>");
             // std::cout << "</Line >" << std::endl;
-            this->setResponseBody(line);
-            line.clear();
+            this->setStatuscode(200);
+            this->setreason_phrase("Ok");
+           
         }
         else if (inFile.is_open())
         {
@@ -284,7 +251,6 @@ int get::execute_method(request _request)
             }
             // std::cout << "</Line >" << std::endl;
             inFile.close();
-            this->setResponseBody(line);
         }
         else
         {
@@ -301,7 +267,6 @@ int get::execute_method(request _request)
             }
             // std::cout << "</Line >" << std::endl;
             inFile.close();
-            this->setResponseBody(line);
         }
     }
     else
@@ -333,5 +298,8 @@ int get::execute_method(request _request)
     // std::cout << "\nBody : \n" << this->getResponseBody();
 
     // std::cout <<"\n\n\n\nresponseBody :\n"<< this->getResponseBody() << std::endl;
+    this->setResponseBody(line);
+    this->addHeader("Content-Type", "html/text");
+    this->addHeader("Content-Length", std::to_string(strlen(this->getResponseBody().c_str())));
     return 1;
 }

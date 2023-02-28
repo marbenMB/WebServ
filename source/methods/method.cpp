@@ -127,30 +127,36 @@ void method::createresponse(void /*  content_type, code_status, reason_phrase, b
     this->setResponseBody(status_line);
 }
 
-std::string _CREATEresponse(std::map<std::string, std::string> content_type, int code_status, std::string reason_phrase, std::string body)
+std::string _CREATEresponse(std::map<std::string, std::string> _header, int code_status, std::string reason_phrase, std::string body)
 {
     std::string fields;
+    std::map<std::string, std::string>::iterator it = _header.begin();
     // status Line :
     std::string status_line = "HTTP/1.1";
     status_line.append(" ");
     status_line.append(std::to_string(code_status)); // c++11
     status_line.append(" ");
     status_line.append(reason_phrase);
-    status_line.append("\n\r");
-
+    status_line.append(CRLF);
     // Fields :
-    fields.append("Content-Type: ");
-    fields.append(content_type["type"]);
-    fields.append("\n\r");
-    fields.append("Content-Length: ");
-    fields.append(std::to_string(body.size()));
-    fields.append(CRLF);
+    while (it != _header.end())
+    {
+        fields.append(it->first.c_str());
+        fields.append(": ");
+        fields.append(it->second.c_str());
+        ++it;
+        if (it != _header.end())
+            fields.append(CRLF);
+    }
     status_line.append(fields);
-
+    status_line.append(CRLF);
+    status_line.append(CRLF);
     // Body :
     status_line.append(body);
 
-    std::cout <<MAUVE << "Response :\n\r" <<  status_line << END_CLR << std::endl;
+
+    // std::cout << status_line;
+    // std::cout << MAUVE << "Response :\n\r" << status_line << END_CLR << std::endl;
     return (status_line);
 }
 
@@ -169,4 +175,14 @@ std::string const &method::getredirect_URL(void) const
 void method::setredirect_URL(std::string redirect_URL)
 {
     this->redirect_URL = redirect_URL;
+}
+
+void method::addHeader(std::string key, std::string value)
+{
+    this->_Headers[key] = value;
+}
+
+std::map<std::string, std::string> const &method::getHeader(void) const
+{
+    return this->_Headers;
 }

@@ -1,6 +1,6 @@
 #include "../../include/request.hpp"
 
-method * request::BadRequest::createError(request req) const throw(){
+method * request::CGI::runCGI(request req) const throw(){
     std::ifstream inFile;
     std::string buffer;
     std::string _body;
@@ -8,6 +8,26 @@ method * request::BadRequest::createError(request req) const throw(){
     std::string error_disc("This page isn't available");
     method *resp;
 
+    resp = new Error(req);
+    resp->setStatuscode(200);
+    resp->setreason_phrase("OK");
+    resp->setContent_Type("html/text");
+
+
+
+    resp->setResponseBody(_body);
+    resp->addHeader("Content-Type", "html/text");
+    resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
+    resp->addHeader("Set-Cooki", "");
+}
+
+method * request::BadRequest::createError(request req) const throw(){
+    std::ifstream inFile;
+    std::string buffer;
+    std::string _body;
+    std::string _filename;
+    std::string error_disc("This page isn't available");
+    method *resp;
 
     resp = new Error(req);
     // std::cout << "Bad Request***" << std::endl;
@@ -42,6 +62,9 @@ method * request::BadRequest::createError(request req) const throw(){
     }
     inFile.close();
     resp->setResponseBody(_body);
+    resp->addHeader("Content-Type", "html/text");
+    resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
+
     return resp;
 }
 method * request::NotImplemented::createError(request req) const throw(){
@@ -83,7 +106,8 @@ method * request::NotImplemented::createError(request req) const throw(){
     }
     inFile.close();
     resp->setResponseBody(_body);
-
+ resp->addHeader("Content-Type", "html/text");
+    resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
     return resp;
 
 }
@@ -125,6 +149,8 @@ method * request::NotAllowed::createError(request req) const throw(){
     }
     inFile.close();
     resp->setResponseBody(_body);
+    resp->addHeader("Content-Type", "html/text");
+    resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
     return resp;
 
 }
@@ -169,9 +195,10 @@ method * request::NotFound::createError(request req) const throw(){
     }
     inFile.close();
     resp->setResponseBody(_body);
+     resp->addHeader("Content-Type", "html/text");
+    resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
     return resp;
 }
-
 method * request::Forbiden::createError(request req) const throw(){
     method *resp = new Error(req);
     // std::cout << "Forbiden" << std::endl;
@@ -210,9 +237,10 @@ method * request::Forbiden::createError(request req) const throw(){
     }
     inFile.close();
     resp->setResponseBody(_body);
+     resp->addHeader("Content-Type", "html/text");
+    resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
     return resp;
 }
-
 method * request::InternalServerError::createError(request req) const throw(){
     method *resp = new Error(req);
     // std::cout << "Internal Server Error" << std::endl;
@@ -251,5 +279,7 @@ method * request::InternalServerError::createError(request req) const throw(){
     }
     inFile.close();
     resp->setResponseBody(_body);
+    resp->addHeader("Content-Type", "html/text");
+    resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
     return resp;
 }

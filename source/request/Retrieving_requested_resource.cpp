@@ -52,13 +52,7 @@ void    request::Retrieving_requested_resource(Data *server)
     int locationIndex;
     //  *|> /srcs/dir001/dir0011/test.txt
     locationIndex = this->findLocation(location);
-    if (locationIndex == _NO_CGI_LOCATION){
-        // std::cout << "CGI location Not Found ...!" << std::endl;
-        this->req_method.append(" ");
-        throw NotImplemented();
-        return ;
-    }
-    else if (locationIndex == -1)
+    if (locationIndex == -1)
     {
         this->setAutoIndex(AUTOINDEX_OFF);
         if (this->req_method.compare("GET") == 0) {this->__get = ALLOWED;}
@@ -78,33 +72,7 @@ void    request::Retrieving_requested_resource(Data *server)
     // {
 
     std::map<std::string, std::vector<std::string> > location_vars = location_iterator->second;
-    std::vector<std::string>::iterator iitt = location_vars["allow"].begin();
-    // std::cout << RED << "ALLOW :\n" << END_CLR ;
-    // std::cout << RED << "   +>Allow" << END_CLR << std::endl;
-    if (location_vars["allow"].size()){
-        while (iitt != location_vars["allow"].end())
-        {
-            // std::cout << "      +[allow]>" << *iitt << std::endl;
-            // if ((*iitt).compare(this->req_method) == 0) allow = true;
-            ++iitt;
-        }
-    } 
-    // std::cout << RED << "DENY :\n" << END_CLR ;
-    // std::cout << RED << "   +>deny" << END_CLR << std::endl;
-
-    iitt = location_vars["deny"].begin();
-    if (location_vars["deny"].size()){
-            while (iitt != location_vars["deny"].end())
-        {
-            // std::cout << "      +[deny]>" << *iitt << std::endl;
-            // if ((*iitt).compare(this->req_method) == 0) deny = true;
-            ++iitt;
-        }
-    } 
-    //  std::cout << RED << "ROOT :\n" << END_CLR ;
-    // std::cout << RED << "   +>root" << END_CLR << std::endl;
-
-    iitt = location_vars["root"].begin();
+    std::vector<std::string>::iterator iitt = location_vars["root"].begin();
     if (location_vars["root"].size()) this->root = *iitt;
     // std::cout << RED << "   +>index" << END_CLR << std::endl;
 
@@ -128,6 +96,7 @@ void    request::Retrieving_requested_resource(Data *server)
     int vect_size = location_vars["return"].size();
     // std::cout << "redirect :" << vect_size << std::endl;
     if (vect_size == 2){
+       
         // std::cout << "  +>redirect :" << location_vars["return"][0] << std::endl;
         // std::cout << "  +>redirect :" << location_vars["return"][1] << std::endl;
         this->setRedirect_status(atoi(location_vars["return"][0].c_str()));

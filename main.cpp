@@ -240,7 +240,6 @@
 #include "./include/request.hpp"
 #include "./include/method.hpp"
 
-#define CRLF ""
 
 int main(int ac, char *av[])
 {

@@ -80,6 +80,7 @@ int request::getAllowedGet() const{
 
 int request::findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > > location){
     char _dir[PATH_MAX];
+    char _ABSdir[PATH_MAX];
     // char* _subdir;
     std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator locations_iterator = location.begin();
     int locationId = -1;
@@ -135,52 +136,38 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
     }
     if (!_cgi) // remove the mutch string 
     {
-        std::cout << "locationId :" << locationId << std::endl;
-        std::cout << "----URI1 (str) :" << str << std::endl;
+        // std::cout << "locationId :" << locationId << std::endl;
+        // std::cout << "----URI1 (str) :" << str << std::endl;
         if (locationId != -1)
         {
             // std::cout << "----URI :" << this->getrequest_URI() << std::endl;
             // std::cout << "----URI2 (str) :" << str << std::endl;
             std::string __erraseTmp(this->getrequest_URI()) ;
-            if (__erraseTmp.compare("/") != 0)
-                __erraseTmp.erase(0,str.length());
             std::string __URI(this->getroot());
-            __URI.append("/");
+            if (__erraseTmp.compare("/") != 0)
+            {
+                __erraseTmp.erase(0,str.length());
+                __URI.append("/");
+            }
             __URI.append(__erraseTmp);
+            realpath("./", _ABSdir);
+            // std::cout << "./ :" << _ABSdir << std::endl;
             realpath(__URI.c_str(), _dir);
-            std::cout << "__erraseTmp : |" << _dir << std::endl; 
-            this->setrequest_URI(_dir);
-
+            // std::cout << "__URI.c_str() :" << _dir << std::endl;
+            __erraseTmp.clear();
+            __erraseTmp.append(_dir);
+            __erraseTmp.erase(0, strlen(_ABSdir));
+            __URI.clear();
+            __URI.append(".");
+            __URI.append(__erraseTmp);
+            // free(_dir);
+            // free(_ABSdir);
+            // std::cout << "ABS : |" << __URI << std::endl; 
+            this->setrequest_URI(__URI);
         }
-
-        // std::string _tmp;
-        // // std::cout << "----befor :" << this->getrequest_URI() << std::endl;
-        // _tmp.append(this->getroot());
-        // _tmp.append("/");
-        // _tmp.append(this->getrequest_URI());
-        // // realpath(_tmp.c_str(), _dir);
-        // std::string __reqURI(_dir);
-        // // if (realpath_status == NULL)
-        // //     throw InternalServerError();
-        // std::cout << "realpath :" << _dir << std::endl;
-        // _tmp.clear();
-        // _tmp.append(this->getroot());
-
-        // _tmp.append(this->getrequest_URI().substr(str.length(), this->getrequest_URI().length()));
-        // this->setrequest_URI(__reqURI);
-        std::cout << "Final request_URI :" << this->getrequest_URI() << std::endl;
-
     }
     if (_cgi && locationId == -1)
-        locationId = _NO_CGI_LOCATION ; 
-    
-    //  if location is -1 that means request is not CGI and , location not found
-    //  if location is _CGI that means request is  CGI and , location not found
-
-
-
-    // std::cout << "URI :" << str << std::endl;
-
+        throw NotImplemented();
     return locationId;
 }
 

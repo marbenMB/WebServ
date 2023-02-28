@@ -77,6 +77,9 @@ public:
     std::string const &getredirect_URL(void) const;
     void setredirect_URL(std::string redirect_URL);
     
+    // ! Header for response :
+    void addHeader(std::string, std::string);
+    std::map<std::string, std::string> const &getHeader(void) const;
 
     // virtual bool intmethod(void) = 0;
 };

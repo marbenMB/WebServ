@@ -13,7 +13,9 @@
 #define AUTOINDEX_ON 548
 #define AUTOINDEX_OFF 549
 #define _NO_CGI_LOCATION 1337
-# define CRLF "\n\r\n\r"
+# define LF "\n"
+# define CR "\r"
+# define CRLF "\n\r"
 
 #include <iostream>
 #include <unistd.h>
@@ -207,6 +209,10 @@ public:
     class InternalServerError{
          public:
             method * createError(request req) const throw();
+    };
+    class CGI{
+         public:
+            method * runCGI(request req) const throw();
     };
 };
 std::vector<std::string> split(const std::string &str, const std::string &delimiter);

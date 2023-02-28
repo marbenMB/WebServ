@@ -75,7 +75,7 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
     // std::cout << RED << "NOT :|" << reqmethod->getResponseBody() << std::endl;
 
     _reaponseBody = _CREATEresponse(
-        reqmethod->getContent_Type(),
+        reqmethod->getHeader(),
         reqmethod->getStatuscode(),
         reqmethod->getreason_phrase(),
         reqmethod->getResponseBody());
