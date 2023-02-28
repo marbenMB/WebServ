@@ -77,40 +77,43 @@ int get::execute_method(request _request)
      *
      * */
  
-    filename.append(_request.getroot());
+    // filename.append(_request.getroot());
     //  redirection  |> return 20x ...
     BaseURL = _request.getrequest_URI();
-    filename.append(BaseURL);
+    filename.clear();
+    filename.append(_request.getrequest_URI());
     // std::cout << "PATH : " << filename << std::endl;
     if (stat(filename.c_str(), &STATInfo) != 0)
     { // not exist
-        filename.clear();
-        filename.append(this->getRootPath());
-        filename.append("/");
-        BaseURL.clear();
-        //  redirection  |> return 40x ...
-        // (_request.getRedirect_status() >= 400 && _request.getRedirect_status() <= 404)
-        //     ? BaseURL = _request.getredirect_URL()
-        //     : BaseURL = _request.getDefault_40x();
-        filename.append(BaseURL);
-        // std::cout << "stat not exist : " << filename << std::endl;
-        this->setStatuscode(404);
-        this->setreason_phrase("Not Found");
-        inFile.open(filename, std::ifstream::in);
-        while (std::getline(inFile, buffer))
-        {
-            line.append(buffer);
-        }
-        inFile.close();
-        this->setResponseBody(line);
+        throw request::NotFound();
+        // filename.clear();
+        // filename.append(this->getRootPath());
+        // filename.append("/");
+        // BaseURL.clear();
+        // //  redirection  |> return 40x ...
+        // // (_request.getRedirect_status() >= 400 && _request.getRedirect_status() <= 404)
+        // //     ? BaseURL = _request.getredirect_URL()
+        // //     : BaseURL = _request.getDefault_40x();
+        // filename.append(BaseURL);
+        // // std::cout << "stat not exist : " << filename << std::endl;
+        // this->setStatuscode(404);
+        // this->setreason_phrase("Not Found");
+        // inFile.open(filename, std::ifstream::in);
+        // while (std::getline(inFile, buffer))
+        // {
+        //     line.append(buffer);
+        // }
+        // inFile.close();
+        // this->setResponseBody(line);
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFREG) { // is file   S_ISREG(fileStat.st_mode)
-        // std::cout << "stat file : " << filename << std::endl;
-        if (_request.getRedirect_status() == -1)
-        {
-            this->setStatuscode(200);
-            this->setreason_phrase("Ok");
-        }
+        // // std::cout << "stat file : " << filename << std::endl;
+        // if (_request.getRedirect_status() == -1)
+        // {
+        
+        this->setStatuscode(200);
+        this->setreason_phrase("Ok");
+        // }
         inFile.open(filename, std::ifstream::in);
         while (std::getline(inFile, buffer))
         {
@@ -183,9 +186,11 @@ int get::execute_method(request _request)
                 if (buffer.find("<tbody id=") != std::string::npos) // start of the  table body
                 {
                     line.append(buffer);
+                    line.append("\n\r");
                     break;
                 }
                 line.append(buffer);
+                line.append("\n\r");
             }
 
             inFile.close();
@@ -240,19 +245,19 @@ int get::execute_method(request _request)
                     // }
                     line.append("<tr> <td data-value=\"");
                     line.append(dp->d_name);
-                    line.append("\"><a class=\"icon file\" draggable=\"true\" href=\"");
+                    line.append("\">\n\r<a class=\"icon file\" draggable=\"true\" href=\"");
                     line.append(request_URITmp);
                     line.append("/");
                     line.append(dp->d_name);
-                    line.append("\">    ");
+                    line.append("\">");
                     line.append(dp->d_name);
-                    line.append("</a></td>");
-                    line.append("<td class=\"detailsColumn\" >  ");
+                    line.append("</a>\n\r</td>");
+                    line.append("<td class=\"detailsColumn\" >");
                     line.append(std::to_string(STATFile.st_size));
-                    line.append("B</td>");
+                    line.append("B</td>\n\r");
                     line.append("<td class=\"detailsColumn\" data-value=\"1672423565\"> ");
                     line.append(ctime(&STATFile.st_mtime));
-                    line.append("</td></tr>");
+                    line.append("</td>\n\r</tr>\n\r");
                 }
             }
 

@@ -11,6 +11,8 @@ method *request::execute_request(void)
         reqmethod = new deleteMethod(*this);
     else if (this->req_method.compare("POST") == 0 && this->__post == ALLOWED)
         reqmethod = new Post(*this);
+    else if (this->__get || this->__delete || this->__post)
+        throw NotAllowed();
     else
         throw NotImplemented();
     return reqmethod;

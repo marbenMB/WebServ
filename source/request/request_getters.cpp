@@ -101,7 +101,12 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
          _cgi = true;
         compare_URI.append("\%.go$");
     }
-    else  compare_URI.append(this->request_URI);
+    else  
+    {
+        // compare_URI.append("/");
+        // if (!this->request_URI.empty())
+        compare_URI.append(this->request_URI);
+    }
     // compare_URI.append(this->request_URI);
      //  * init string |> /srcs/dir001/dir0011/test.txt
     // std::cout << "++> URI :" << compare_URI << std::endl;
@@ -113,6 +118,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
         // std::cout << "  +>" << location_iterator->first << "<| >compare_URI :" << compare_URI<<"<|" << std::endl;
         str.clear();
         str.append(location_iterator->first);
+        // std::cout << "str : |" << str << "| compare_URI : |" << compare_URI <<"| " <<  std::endl;
         if (str.compare(compare_URI) == 0){locationId = index;break;}
         ++locations_iterator;
         index++;
@@ -129,21 +135,40 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
     }
     if (!_cgi) // remove the mutch string 
     {
-        std::string _tmp;
-        std::cout << "----befor :" << this->getrequest_URI() << std::endl;
-        _tmp.append(this->getroot());
-        _tmp.append("/");
-        _tmp.append(this->getrequest_URI());
-        realpath(_tmp.c_str(), _dir);
-        // if (realpath_status == NULL)
-        //     throw InternalServerError();
-        std::cout << "----after :" << _dir << std::endl;
-        _tmp.clear();
-        _tmp.append(this->getroot());
+        std::cout << "locationId :" << locationId << std::endl;
+        std::cout << "----URI1 (str) :" << str << std::endl;
+        if (locationId != -1)
+        {
+            // std::cout << "----URI :" << this->getrequest_URI() << std::endl;
+            // std::cout << "----URI2 (str) :" << str << std::endl;
+            std::string __erraseTmp(this->getrequest_URI()) ;
+            if (__erraseTmp.compare("/") != 0)
+                __erraseTmp.erase(0,str.length());
+            std::string __URI(this->getroot());
+            __URI.append("/");
+            __URI.append(__erraseTmp);
+            realpath(__URI.c_str(), _dir);
+            std::cout << "__erraseTmp : |" << _dir << std::endl; 
+            this->setrequest_URI(_dir);
 
-        _tmp.append(this->getrequest_URI().substr(str.length(), this->getrequest_URI().length()));
-        this->setrequest_URI(_tmp);
-        std::cout << "result_URI :" << this->getrequest_URI() << std::endl;
+        }
+
+        // std::string _tmp;
+        // // std::cout << "----befor :" << this->getrequest_URI() << std::endl;
+        // _tmp.append(this->getroot());
+        // _tmp.append("/");
+        // _tmp.append(this->getrequest_URI());
+        // // realpath(_tmp.c_str(), _dir);
+        // std::string __reqURI(_dir);
+        // // if (realpath_status == NULL)
+        // //     throw InternalServerError();
+        // std::cout << "realpath :" << _dir << std::endl;
+        // _tmp.clear();
+        // _tmp.append(this->getroot());
+
+        // _tmp.append(this->getrequest_URI().substr(str.length(), this->getrequest_URI().length()));
+        // this->setrequest_URI(__reqURI);
+        std::cout << "Final request_URI :" << this->getrequest_URI() << std::endl;
 
     }
     if (_cgi && locationId == -1)

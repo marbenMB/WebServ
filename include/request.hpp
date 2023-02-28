@@ -13,6 +13,7 @@
 #define AUTOINDEX_ON 548
 #define AUTOINDEX_OFF 549
 #define _NO_CGI_LOCATION 1337
+# define CRLF "\n\r\n\r"
 
 #include <iostream>
 #include <unistd.h>
@@ -115,6 +116,7 @@ private:
     std::vector<std::string> message;
     //  error 
 public:
+    void url_decode(std::string &url);
     request(int , Data *, std::string, std::vector<std::string> &);
     std::vector<std::string> &execute(std::string body, Data *_confdata);
     method *   execute_request( void );

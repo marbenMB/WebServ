@@ -136,19 +136,21 @@ std::string _CREATEresponse(std::map<std::string, std::string> content_type, int
     status_line.append(std::to_string(code_status)); // c++11
     status_line.append(" ");
     status_line.append(reason_phrase);
-    status_line.append("\r\n");
+    status_line.append("\n\r");
 
     // Fields :
     fields.append("Content-Type: ");
     fields.append(content_type["type"]);
-    fields.append("\r\n");
+    fields.append("\n\r");
     fields.append("Content-Length: ");
     fields.append(std::to_string(body.size()));
-    fields.append("\r\n\r\n");
+    fields.append(CRLF);
     status_line.append(fields);
 
     // Body :
     status_line.append(body);
+
+    std::cout <<MAUVE << "Response :\n\r" <<  status_line << END_CLR << std::endl;
     return (status_line);
 }
 
