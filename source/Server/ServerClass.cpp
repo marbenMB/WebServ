@@ -28,3 +28,6 @@ void						Server::setIpPort (std::multimap<std::string, int> listen)
 
 WebServ::WebServ() {}
 WebServ::~WebServ() { servers.clear(); }
+
+//	***	---		________	---	***	//
+

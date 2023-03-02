@@ -28,8 +28,9 @@ int _main (int ac, char **av)
 			try {
 				myServ = establishServers(g_Data);
 
+				std::cout << "--> Num of Servers : " << myServ->servNums << std::endl << "\n";
 				printWebServ(myServ);
-				// createSockets(myServ);
+				createSockets(myServ);
 				delete	myServ;
 			} catch (std::exception &e) {
 				std::cout << e.what() << std::endl;
@@ -53,5 +54,5 @@ int _main (int ac, char **av)
 int main(int ac, char **av)
 {
 	_main(ac, av);
-    system("leaks webserv");
+    // system("leaks webserv");
 }
