@@ -19,6 +19,10 @@ typedef std::map<std::string, std::map<std::string, std::vector<std::string> > >
 typedef std::map<std::string, std::vector<std::string> >::iterator map_location_it;
 ///////////////////// ***** ////////////////////
 
+//	****	*********	****	//
+//	****	 CLASSES	****	//
+//	****	*********	****	//
+
 class	Server
 {
 	public	:
