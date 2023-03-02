@@ -9,14 +9,24 @@ method * request::CGI::runCGI(request req) const throw(){
     method *resp;
 
     resp = new Error(req);
-    resp->setStatuscode(200);
-    resp->setreason_phrase("OK");
-    resp->setContent_Type("html/text");
+    if (req.getRedirect_status() == -1){
+        resp->setStatuscode(200);
+        resp->setreason_phrase("OK");
+        resp->setContent_Type("text/html");
+    }else{
+        resp->setStatuscode(req.getRedirect_status());
+        resp->setreason_phrase("Moved Permanently");
+        resp->setContent_Type("text/html");
+    }
 
-
-
+    inFile.open("var/cgi.html", std::ifstream::in);
+    while (std::getline(inFile, buffer))
+    {
+        _body.append(buffer);
+        _body.append("\n\r");
+    }
     resp->setResponseBody(_body);
-    resp->addHeader("Content-Type", "html/text");
+    resp->addHeader("Content-Type", "text/html");
     resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
     resp->addHeader("Set-Cooki", "");
     return resp;
@@ -34,7 +44,7 @@ method * request::BadRequest::createError(request req) const throw(){
     // std::cout << "Bad Request***" << std::endl;
     resp->setStatuscode(400);
     resp->setreason_phrase("Bad Request");
-    resp->setContent_Type("html/text");
+    resp->setContent_Type("text/html");
     _filename = req.getDefault_40x().empty() ? "./var/errors/40x.html" : req.getDefault_40x();
     inFile.open(_filename, std::ifstream::in);
     while (std::getline(inFile, buffer))
@@ -46,9 +56,10 @@ method * request::BadRequest::createError(request req) const throw(){
             buffer.append(resp->getreason_phrase());
             buffer.append("</title>\n\r");
         }
-        if (buffer.find("<h1 id=\"error_title\">") != std::string::npos){
+        if (buffer.find("id=\"error_title\"") != std::string::npos){
             buffer.clear();
             buffer.append("<h1 id=\"error_title\">");
+            buffer.append("405 ");
             buffer.append(resp->getreason_phrase());
             buffer.append("</h1>\n\r");
         }
@@ -63,7 +74,7 @@ method * request::BadRequest::createError(request req) const throw(){
     }
     inFile.close();
     resp->setResponseBody(_body);
-    resp->addHeader("Content-Type", "html/text");
+    resp->addHeader("Content-Type", "text/html");
     resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
 
     return resp;
@@ -79,7 +90,7 @@ method * request::NotImplemented::createError(request req) const throw(){
     // std::cout << "Not Implemented" << std::endl;
     resp->setStatuscode(501);
     resp->setreason_phrase("Not Implemented");
-    resp->setContent_Type("html/text");
+    resp->setContent_Type("text/html");
     inFile.open("var/srcs/Notimplimented.html", std::ifstream::in);
     while (std::getline(inFile, buffer))
     {
@@ -90,9 +101,10 @@ method * request::NotImplemented::createError(request req) const throw(){
             buffer.append(resp->getreason_phrase());
             buffer.append("</title>\n\r");
         }
-        if (buffer.find("<h1 id=\"error_title\">") != std::string::npos){
+       if (buffer.find("id=\"error_title\"") != std::string::npos){
             buffer.clear();
             buffer.append("<h1 id=\"error_title\">");
+            buffer.append("405 ");
             buffer.append(resp->getreason_phrase());
             buffer.append("</h1>\n\r");
         }
@@ -107,7 +119,7 @@ method * request::NotImplemented::createError(request req) const throw(){
     }
     inFile.close();
     resp->setResponseBody(_body);
- resp->addHeader("Content-Type", "html/text");
+ resp->addHeader("Content-Type", "text/html");
     resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
     return resp;
 
@@ -122,7 +134,7 @@ method * request::NotAllowed::createError(request req) const throw(){
 
     resp->setStatuscode(405);
     resp->setreason_phrase("Not Allowed");
-    resp->setContent_Type("html/text");
+    resp->setContent_Type("text/html");
     inFile.open("./var/errors/40x.html", std::ifstream::in);
     while (std::getline(inFile, buffer))
     {
@@ -133,9 +145,10 @@ method * request::NotAllowed::createError(request req) const throw(){
             buffer.append(resp->getreason_phrase());
             buffer.append("</title>\n\r");
         }
-        if (buffer.find("<h1 id=\"error_title\">") != std::string::npos){
+       if (buffer.find("id=\"error_title\"") != std::string::npos){
             buffer.clear();
             buffer.append("<h1 id=\"error_title\">");
+            buffer.append("405 ");
             buffer.append(resp->getreason_phrase());
             buffer.append("</h1>\n\r");
         }
@@ -150,7 +163,7 @@ method * request::NotAllowed::createError(request req) const throw(){
     }
     inFile.close();
     resp->setResponseBody(_body);
-    resp->addHeader("Content-Type", "html/text");
+    resp->addHeader("Content-Type", "text/html");
     resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
     return resp;
 
@@ -166,9 +179,9 @@ method * request::NotFound::createError(request req) const throw(){
 
     resp->setStatuscode(404);
     resp->setreason_phrase("Not Found");
-    resp->setContent_Type("html/text");
+    resp->setContent_Type("text/html");
     realpath("./var/errors/40x.html", _dir);
-    std::cout <<"*****> |" << _dir << std::endl;
+    // std::cout <<"*****> |" << _dir << std::endl;
     inFile.open(_dir, std::ifstream::in);
     while (std::getline(inFile, buffer))
     {
@@ -179,9 +192,10 @@ method * request::NotFound::createError(request req) const throw(){
             buffer.append(resp->getreason_phrase());
             buffer.append("</title>\n\r");
         }
-        if (buffer.find("<h1 id=\"error_title\">") != std::string::npos){
+       if (buffer.find("id=\"error_title\"") != std::string::npos){
             buffer.clear();
             buffer.append("<h1 id=\"error_title\">");
+            buffer.append("405 ");
             buffer.append(resp->getreason_phrase());
             buffer.append("</h1>\n\r");
         }
@@ -196,7 +210,7 @@ method * request::NotFound::createError(request req) const throw(){
     }
     inFile.close();
     resp->setResponseBody(_body);
-     resp->addHeader("Content-Type", "html/text");
+     resp->addHeader("Content-Type", "text/html");
     resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
     return resp;
 }
@@ -210,7 +224,7 @@ method * request::Forbiden::createError(request req) const throw(){
 
     resp->setStatuscode(403);
     resp->setreason_phrase("Forbiden");
-    resp->setContent_Type("html/text");
+    resp->setContent_Type("text/html");
     inFile.open("./var/errors/40x.html", std::ifstream::in);
     while (std::getline(inFile, buffer))
     {
@@ -221,9 +235,10 @@ method * request::Forbiden::createError(request req) const throw(){
             buffer.append(resp->getreason_phrase());
             buffer.append("</title>\n\r");
         }
-        if (buffer.find("<h1 id=\"error_title\">") != std::string::npos){
+       if (buffer.find("id=\"error_title\"") != std::string::npos){
             buffer.clear();
             buffer.append("<h1 id=\"error_title\">");
+            buffer.append("405 ");
             buffer.append(resp->getreason_phrase());
             buffer.append("</h1>\n\r");
         }
@@ -238,7 +253,7 @@ method * request::Forbiden::createError(request req) const throw(){
     }
     inFile.close();
     resp->setResponseBody(_body);
-     resp->addHeader("Content-Type", "html/text");
+     resp->addHeader("Content-Type", "text/html");
     resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
     return resp;
 }
@@ -252,7 +267,7 @@ method * request::InternalServerError::createError(request req) const throw(){
 
     resp->setStatuscode(500);
     resp->setreason_phrase("Internal Server Error");
-    resp->setContent_Type("html/text");
+    resp->setContent_Type("text/html");
     inFile.open("./var/errors/50x.html", std::ifstream::in);
     while (std::getline(inFile, buffer))
     {
@@ -263,9 +278,10 @@ method * request::InternalServerError::createError(request req) const throw(){
             buffer.append(resp->getreason_phrase());
             buffer.append("</title>\n\r");
         }
-        if (buffer.find("<h1 id=\"error_title\">") != std::string::npos){
+       if (buffer.find("id=\"error_title\"") != std::string::npos){
             buffer.clear();
             buffer.append("<h1 id=\"error_title\">");
+            buffer.append("405 ");
             buffer.append(resp->getreason_phrase());
             buffer.append("</h1>\n\r");
         }
@@ -280,7 +296,7 @@ method * request::InternalServerError::createError(request req) const throw(){
     }
     inFile.close();
     resp->setResponseBody(_body);
-    resp->addHeader("Content-Type", "html/text");
+    resp->addHeader("Content-Type", "text/html");
     resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
     return resp;
 }

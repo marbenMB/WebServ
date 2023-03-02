@@ -79,8 +79,8 @@ int request::getAllowedGet() const{
 
 
 int request::findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > > location){
-    char _dir[PATH_MAX];
-    char _ABSdir[PATH_MAX];
+    char realPATH_dir[PATH_MAX];
+    char realPATH_subdir[PATH_MAX];
     // char* _subdir;
     std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator locations_iterator = location.begin();
     int locationId = -1;
@@ -90,6 +90,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
     std::string str;
     compare_URI.clear();
     size_t pos = 0;
+    // std::cout << "request_URI : |" << this->getrequest_URI() << std::endl; 
     // size_t pos = this->getrequest_URI().find_last_of(".py");
     // pos = this->getrequest_URI().find_last_of(".go");
     if ((pos = this->getrequest_URI().rfind(".py")) != std::string::npos && (pos + 3) == this->getrequest_URI().length())
@@ -149,20 +150,21 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
                 __erraseTmp.erase(0,str.length());
                 __URI.append("/");
             }
+
             __URI.append(__erraseTmp);
-            realpath("./", _ABSdir);
-            // std::cout << "./ :" << _ABSdir << std::endl;
-            realpath(__URI.c_str(), _dir);
-            // std::cout << "__URI.c_str() :" << _dir << std::endl;
+            realpath("./", realPATH_subdir);
+            // std::cout << "realPATH_subdir :" << realPATH_subdir << std::endl;
+            std::cout << "*****this->getroot() :" << this->getroot() << std::endl;
+            realpath(__URI.c_str(), realPATH_dir);
+            // std::cout << "realPATH_dir :" << realPATH_dir << std::endl;
             __erraseTmp.clear();
-            __erraseTmp.append(_dir);
-            __erraseTmp.erase(0, strlen(_ABSdir));
+            __erraseTmp.append(realPATH_dir);
+            __erraseTmp.erase(0, strlen(realPATH_subdir));
             __URI.clear();
             __URI.append(".");
             __URI.append(__erraseTmp);
-            // free(_dir);
-            // free(_ABSdir);
-            // std::cout << "ABS : |" << __URI << std::endl; 
+            // free(realPATH_dir);
+            // free(realPATH_subdir);
             this->setrequest_URI(__URI);
         }
     }

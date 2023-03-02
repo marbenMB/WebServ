@@ -15,7 +15,7 @@
 #define _NO_CGI_LOCATION 1337
 # define LF "\n"
 # define CR "\r"
-# define CRLF "\n\r"
+# define CRLF "\r\n"
 
 #include <iostream>
 #include <unistd.h>
@@ -220,4 +220,5 @@ std::string trimFront(const std::string &s, std::string trim);
 std::string trimBack(const std::string &s, std::string trim);
 std::string _CREATEresponse(std::map<std::string, std::string> content_type, int code_status, std::string reason_phrase, std::string body);
 bool is__subDir(const std::string , const std::string );
+bool Is_cgi(std::string);
 #endif

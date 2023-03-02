@@ -27,6 +27,7 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
     // _requestHeader.clear();
     // _requestBody.clear();
     // _requestHeader.append(req_vector[0]);
+    std::cout << _requestHeader << std::endl;
 
     // int i = 0;
 
@@ -277,7 +278,16 @@ bool request::Verifying_Header(std::string req)
     this->req_method = spl[0];
    
     std::string _request_URI = spl[1];
+
+    std::cout << "request_URI : |" << _request_URI << std::endl; 
     url_decode(_request_URI);
+    // char _ABSdir[PATH_MAX];
+    // char _SubDir[PATH_MAX];
+    // realpath("./var", _ABSdir);
+    // std::string Tmp("./var");
+    // Tmp.append(_request_URI);
+    // realpath(Tmp.c_str(), _SubDir);
+    // _ABSdir
     size_t spliteRequestURI =  _request_URI.find("?");
     if (spliteRequestURI != std::string::npos){
 
@@ -286,6 +296,7 @@ bool request::Verifying_Header(std::string req)
     }
     else{this->setrequest_URI(_request_URI); }
 
+    std::cout << "request_URI : |" << this->getrequest_URI() << std::endl; 
     // if (!is__subDir("./var",this->getrequest_URI()))
     //     throw NotAllowed();
     // this->_error.setCode_status(404);

@@ -146,7 +146,7 @@ std::string _CREATEresponse(std::map<std::string, std::string> _header, int code
         fields.append(it->second.c_str());
         ++it;
         if (it != _header.end())
-            fields.append(CRLF);
+            fields.append(LF);
     }
     status_line.append(fields);
     status_line.append(CRLF);
@@ -155,7 +155,7 @@ std::string _CREATEresponse(std::map<std::string, std::string> _header, int code
     status_line.append(body);
 
 
-    // std::cout << status_line;
+    // std::cout << status_line << std::endl;;
     // std::cout << MAUVE << "Response :\n\r" << status_line << END_CLR << std::endl;
     return (status_line);
 }
