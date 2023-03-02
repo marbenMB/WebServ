@@ -109,6 +109,8 @@ void	createSockets(WebServ *serv)
 			hints.ai_protocol = SOCK_STREAM;
 			ss << it->second;
 			ss >> strPort;
+			ss << "";
+			ss.clear();
 			if (getaddrinfo(it->first.c_str(), strPort.c_str(), &hints, &res))
 			{
 				std::cerr << it->first << " : " << strPort << std::endl;
