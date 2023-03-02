@@ -47,6 +47,7 @@ class	WebServ
 	public :
 		std::vector<Server>	servers;
 		int					servNums;
+		size_t				nSocketServer;
 		// std::vector<struct pollFd>	fds;
 		
 		WebServ ();

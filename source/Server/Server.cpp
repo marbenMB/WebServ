@@ -71,25 +71,71 @@ WebServ	*establishServers(Data &g_data)
 		serv->servers.push_back(newServ);
 	}
 	serv->servNums = id - 1;
+	serv->nSocketServer = 0;
 	return serv;
 }
 
 void	createSockets(WebServ *serv)
 {
+	std::multimap<std::string, int>	mmap;
+	
+	int		sockFd;
+	int		optval = 1;
+
+	struct addrinfo	hints, *res;
+	std::stringstream		ss;
+	std::string				strPort;
+
+	struct sockaddr_in	addr;
+
 	//	...
 	//	Loop to each Server and Create socket
+	for (std::vector<Server>::iterator servIt = serv->servers.begin(); servIt != serv->servers.end(); servIt++)
+	{
+		mmap = servIt->getIpPort();
+		for (std::multimap<std::string, int>::iterator it = mmap.begin(); it != mmap.end(); it++)
+		{
+			//	-- Socket creation and setting reused addr option.
+			sockFd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+			if (sockFd < 0)
+				throw	std::runtime_error("Socket() Failed!!");
+			fcntl(sockFd, F_SETFL,	O_NONBLOCK);
+			if (setsockopt(sockFd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)))
+				throw	std::runtime_error("Setsockopt() Failed!!");
+			
+			//	-- Getting the addr info
+			bzero(&hints, sizeof(hints));
+			hints.ai_family = AF_INET;
+			hints.ai_protocol = SOCK_STREAM;
+			ss << it->second;
+			ss >> strPort;
+			if (getaddrinfo(it->first.c_str(), strPort.c_str(), &hints, &res))
+			{
+				std::cerr << it->first << " : " << strPort << std::endl;
+				throw	std::runtime_error("Address Not Available!!");
+			}
 
+			//	-- Binding the socket with Ip and Port
+			bzero(&addr, sizeof(addr));
+			addr.sin_family = AF_INET;
+			addr.sin_port = htons(it->second);
+			addr.sin_addr.s_addr = inet_addr(it->first.c_str());
+			if (bind(sockFd, (struct sockaddr *)&addr, (socklen_t)sizeof(addr)))
+				throw	std::runtime_error("Bind() Failed!!");
 
-	// set socket option to be reusable and its port = setsockopt()
+			//	--	Listening to socket
+			if (listen(sockFd, 5))
+				throw	std::runtime_error("Listen() Failed!!");
+			
+			//	-- Create sockPorp for each socket and insert it to the map
+			std::cout << "Socket with address of " << it->first << " : " << strPort 
+			<< std::endl << "+ is Successfuly created - get info - binded - listen." << std::endl;
 
+			//	--	Incrementing number of sockets
+			serv->nSocketServer++;
+		}
+	}
 
-	// Define struct sockaddr_in addrss = port + host
-
-
-	// getting the address infos
-
-
-	// Binding socketfd with addrss = bind()
 
 
 	// listening to server_sock = listen()
