@@ -16,3 +16,16 @@ int	checkDuplicatePort(std::multimap<std::string, int> Map)
 	}
 	return 0;
 }
+
+bool	checkDefaultServer(std::map<SockProp, std::vector<Server> > &servMap,std::string ip, int port, Server serv)
+{
+	for (std::map<SockProp, std::vector<Server> >::iterator it = servMap.begin(); it != servMap.end(); it++)
+	{
+		if (it->first._IP == ip && it->first._Port == port)
+		{
+			it->second.push_back(serv);
+			return false;
+		}
+	}
+	return true;
+}

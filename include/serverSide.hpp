@@ -161,6 +161,7 @@ std::vector<std::string>	getStringKeyVal(std::map<std::string, std::vector<std::
 
 	//	+++	Checkint functions +++	//
 int	checkDuplicatePort(std::multimap<std::string, int> Map);
+bool	checkDefaultServer(std::map<SockProp, std::vector<Server> > &servMap,std::string ip, int port, Server serv);
 
 	//	+++	Server Utils	+++	//
 std::multimap<std::string, int>	extractionIpPort(std::vector<std::string> combIpPort);
