@@ -3,7 +3,6 @@
 #define SERV_SIDE_H
 
 #include "WebServer.hpp"
-#include "unitTests.hpp"
 #include <poll.h>
 
 ///////////////////// MACROS ////////////////////
@@ -52,6 +51,13 @@ class	SockProp
 		std::string		_IP;
 		int				_type;
 		struct pollfd	_pSFD;
+
+		bool	operator< (const SockProp &other) const
+		{
+			if (_fd < other._fd)
+				return true;
+			return false;
+		}
 	
 		SockProp (int fd, int port, std::string ip, int type);
 		~SockProp ();
@@ -151,14 +157,12 @@ std::vector<T>	deepCopyVector(std::vector<T> vec)
 
 
 	//	+++	 Utils	+++	//
-void	printMultiMap(std::multimap<std::string, int> mmap);
 std::vector<std::string>	getStringKeyVal(std::map<std::string, std::vector<std::string> > myMap, std::string key);
 
 	//	+++	Checkint functions +++	//
 int	checkDuplicatePort(std::multimap<std::string, int> Map);
 
 	//	+++	Server Utils	+++	//
-void	printWebServ (WebServ *myServ);
 std::multimap<std::string, int>	extractionIpPort(std::vector<std::string> combIpPort);
 WebServ						*establishServers(Data &g_data);
 void						createSockets(WebServ *serv);

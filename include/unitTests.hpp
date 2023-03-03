@@ -19,4 +19,8 @@ void	printVector(std::vector<T> vec, std::string forWhat)
 	std::cout << std::endl;
 }
 
+void	printMultiMap(std::multimap<std::string, int> mmap);
+void	printWebServ (WebServ *myServ);
+void	printSockProp (std::map<SockProp, std::vector<Server> > m);
+
 #endif
