@@ -1,4 +1,4 @@
-#include "../include/header.hpp"
+#include "../include/serverSide.hpp"
 
 void	printWebServ (WebServ *myServ)
 {
@@ -30,7 +30,10 @@ int _main (int ac, char **av)
 
 				std::cout << "--> Num of Servers : " << myServ->servNums << std::endl << "\n";
 				printWebServ(myServ);
+				
 				createSockets(myServ);
+
+
 				delete	myServ;
 			} catch (std::exception &e) {
 				std::cout << e.what() << std::endl;

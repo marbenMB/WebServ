@@ -1,4 +1,10 @@
 #include "../../include/serverSide.hpp"
+//	***	---		________	---	***	//
+
+WebServ::WebServ() {}
+WebServ::~WebServ() { servers.clear(); }
+
+//	***	---		________	---	***	//
 
 Server::Server (int id, ServerConf server, std::vector<std::string> portIp, std::vector<std::string> name)
 {
@@ -26,8 +32,16 @@ void						Server::setIpPort (std::multimap<std::string, int> listen)
 }
 //	***	---		________	---	***	//
 
-WebServ::WebServ() {}
-WebServ::~WebServ() { servers.clear(); }
+SockProp::SockProp(int fd, int port, std::string ip, int type) : _fd(fd), _Port(port), _IP(ip), _type(type)
+{
+	_pSFD.fd = _fd;
+	_pSFD.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
+}
+SockProp::~SockProp() {}
 
 //	***	---		________	---	***	//
 
+// ClientSock::ClientSock (int fd, int port, std::string ip) : SockProp(fd, port, ip, CLIENT) {}
+// ClientSock::~ClientSock () {};
+
+// std::string	ClientSock::getRequest (void) const { return _request; }

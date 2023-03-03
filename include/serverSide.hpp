@@ -3,6 +3,7 @@
 #define SERV_SIDE_H
 
 #include "WebServer.hpp"
+#include <poll.h>
 
 ///////////////////// MACROS ////////////////////
 #define	EXIT_FAILURE 1
@@ -20,8 +21,70 @@ typedef std::map<std::string, std::vector<std::string> >::iterator map_location_
 ///////////////////// ***** ////////////////////
 
 //	****	*********	****	//
+//	****	 DEFINES	****	//
+//	****	*********	****	//
+
+enum defines 
+{
+	//	-- Socket Type
+	SERVER_SOCK = 1,
+	CLIENT_SOCK,
+
+	//	-- Request 
+	KEEP_ALIVE = 7,
+	CLOSE,
+
+	//	-- Socket readiness to respond
+	READY = 9,
+	N_READY
+};
+
+//	****	*********	****	//
 //	****	 CLASSES	****	//
 //	****	*********	****	//
+
+class	SockProp
+{
+	public :
+		int				_fd;
+		int				_Port;
+		std::string		_IP;
+		int				_type;
+		struct pollfd	_pSFD;
+	
+		SockProp (int fd, int port, std::string ip, int type);
+		~SockProp ();
+};
+
+// class	ClientSock : public SockProp
+// {
+// 	private :
+// 		std::string		_host;
+// 		ServerConf		_serverResponding;
+		
+// 		bool			_InitialRead;
+// 		bool			_chunkedBody;
+// 		int				_connexion;
+
+// 		std::string		_request;
+// 		std::string		_reqHeader;
+// 		std::string		_reqBody;
+// 		size_t			byteToRead;
+// 		size_t			byteRead;
+// 		size_t			byteLeft;
+// 		int				_readiness;
+
+// 		std::string		_response;
+// 		size_t			byteToSend;
+// 		size_t			byteSent;
+// 		// size_t			byteLeft;
+
+// 	public :
+// 		std::string		getRequest (void) const;
+
+// 		ClientSock (int fd, int port, std::string ip);
+// 		~ClientSock ();
+// };
 
 class	Server
 {
@@ -49,7 +112,11 @@ class	Server
 class	WebServ
 {
 	public :
-		std::vector<Server>	servers;
+		std::vector<Server>			servers;
+		std::vector<struct pollfd>	vecPoll;
+
+		std::map<SockProp, std::vector<Server> >	serverSockets;
+
 		int					servNums;
 		size_t				nSocketServer;
 		// std::vector<struct pollFd>	fds;

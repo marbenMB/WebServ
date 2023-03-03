@@ -130,8 +130,16 @@ void	createSockets(WebServ *serv)
 				throw	std::runtime_error("Listen() Failed!!");
 			
 			//	-- Create sockPorp for each socket and insert it to the map
-			std::cout << "Socket with address of " << it->first << " : " << strPort 
-			<< std::endl << "+ is Successfuly created - get info - binded - listen." << std::endl;
+			SockProp	prop(sockFd, it->second, it->first, SERVER_SOCK);
+			
+			//	-- Push socket to poll vector
+			serv->vecPoll.push_back(prop._pSFD);
+
+			//	-- Insert sockProp and vector of Server in the serverSockets map
+			std::vector<Server>	vec;
+			vec.push_back(*servIt);
+
+			// serv->serverSockets[prop];
 
 			//	--	Incrementing number of sockets
 			serv->nSocketServer++;
