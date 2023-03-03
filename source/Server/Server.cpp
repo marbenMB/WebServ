@@ -136,10 +136,8 @@ void	createSockets(WebServ *serv)
 			serv->vecPoll.push_back(prop._pSFD);
 
 			//	-- Insert sockProp and vector of Server in the serverSockets map
-			std::vector<Server>	vec;
-			vec.push_back(*servIt);
-
-			// serv->serverSockets[prop];
+			serv->serverSockets[prop];
+			serv->serverSockets[prop].push_back(*servIt);
 
 			//	--	Incrementing number of sockets
 			serv->nSocketServer++;

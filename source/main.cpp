@@ -1,4 +1,5 @@
 #include "../include/serverSide.hpp"
+#include "../include/unitTests.hpp"
 
 int _main (int ac, char **av)
 {
@@ -19,7 +20,7 @@ int _main (int ac, char **av)
 				printWebServ(myServ);
 				
 				createSockets(myServ);
-
+				printSockProp(myServ->serverSockets);
 
 				delete	myServ;
 			} catch (std::exception &e) {
