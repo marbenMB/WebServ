@@ -26,7 +26,7 @@ void	printSockProp (std::map<SockProp, std::vector<Server> > m)
 			printVector(sIt->getCombIpPort(), "Server Ports : ");
 			printVector(sIt->getServerName(), "Server Names : ");
 		}
-		std::cout << "********************" << std::endl;
+		std::cout << "********************\n" << std::endl;
 		mapIt++;
 	}
 }
