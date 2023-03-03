@@ -3,6 +3,7 @@
 #define SERV_SIDE_H
 
 #include "WebServer.hpp"
+#include "unitTests.hpp"
 #include <poll.h>
 
 ///////////////////// MACROS ////////////////////
@@ -128,21 +129,6 @@ class	WebServ
 //	****	*********	****	//
 //	****	TEMPLATES	****	//
 //	****	*********	****	//
-
-template <typename T>
-void	printVector(std::vector<T> vec, std::string forWhat)
-{
-	typename std::vector<T>::iterator	it;
-
-	it = vec.begin();
-	std::cout << forWhat;
-	while (it != vec.end())
-	{
-		std::cout << *it << " ";
-		it++;
-	}
-	std::cout << std::endl;
-}
 
 template <typename T>
 std::vector<T>	deepCopyVector(std::vector<T> vec)
