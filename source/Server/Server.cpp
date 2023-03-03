@@ -88,6 +88,8 @@ void	createSockets(WebServ *serv)
 
 	struct sockaddr_in	addr;
 
+	bool	def;
+
 	//	...
 	//	Loop to each Server and Create socket
 	for (std::vector<Server>::iterator servIt = serv->servers.begin(); servIt != serv->servers.end(); servIt++)
@@ -95,6 +97,9 @@ void	createSockets(WebServ *serv)
 		mmap = servIt->getIpPort();
 		for (std::multimap<std::string, int>::iterator it = mmap.begin(); it != mmap.end(); it++)
 		{
+			//	-- No default server is defined for the current IP:PORT (it->first:it->second) combination
+			def = true;
+			
 			//	-- Socket creation and setting reused addr option.
 			sockFd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 			if (sockFd < 0)
@@ -124,43 +129,31 @@ void	createSockets(WebServ *serv)
 			addr.sin_addr.s_addr = inet_addr(it->first.c_str());
 			if (bind(sockFd, (struct sockaddr *)&addr, (socklen_t)sizeof(addr)))
 			{
-				if (checkDefaultServer(serv->serverSockets, it->first, it->second, *servIt))
+				std::cout << "Inside Bind ------ FD : " << sockFd << std::endl;
+				if ((def = checkDefaultServer(serv->serverSockets, it->first, it->second, *servIt)))
 					throw	std::runtime_error("Bind() Failed!!");
+				close(sockFd);
 			}
 
-			//	--	Listening to socket
-			if (listen(sockFd, 5))
-				throw	std::runtime_error("Listen() Failed!!");
-			
-			//	-- Create sockPorp for each socket and insert it to the map
-			SockProp	prop(sockFd, it->second, it->first, SERVER_SOCK);
-			
-			//	-- Push socket to poll vector
-			serv->vecPoll.push_back(prop._pSFD);
+			if (def)
+			{
+				//	--	Listening to socket
+				if (listen(sockFd, 5))
+					throw	std::runtime_error("Listen() Failed!!");
+				
+				//	-- Create sockPorp for each socket and insert it to the map
+				SockProp	prop(sockFd, it->second, it->first, SERVER_SOCK);
+				
+				//	-- Push socket to poll vector
+				serv->vecPoll.push_back(prop._pSFD);
 
-			//	-- Insert sockProp and vector of Server in the serverSockets map
-			serv->serverSockets[prop];
-			serv->serverSockets[prop].push_back(*servIt);
+				//	-- Insert sockProp and vector of Server in the serverSockets map
+				serv->serverSockets[prop];
+				serv->serverSockets[prop].push_back(*servIt);
 
-			//	--	Incrementing number of sockets
-			serv->nSocketServer++;
+				//	--	Incrementing number of sockets
+				serv->nSocketServer++;
+			}
 		}
 	}
-
-
-
-	// listening to server_sock = listen()
-
-
-	// pushing sockfd to vec = sockFd.push_back()
-
-
-	//	pushing sockfd to queue of I/O Multiplexer
-
-
-	//	set sockfd vector of the server
-
-
-	//	clear sockFd = sockFd.clear
-	(void)serv;
 }
