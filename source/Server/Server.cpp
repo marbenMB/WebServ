@@ -123,7 +123,10 @@ void	createSockets(WebServ *serv)
 			addr.sin_port = htons(it->second);
 			addr.sin_addr.s_addr = inet_addr(it->first.c_str());
 			if (bind(sockFd, (struct sockaddr *)&addr, (socklen_t)sizeof(addr)))
-				throw	std::runtime_error("Bind() Failed!!");
+			{
+				if (checkDefaultServer(serv->serverSockets, it->first, it->second, *servIt))
+					throw	std::runtime_error("Bind() Failed!!");
+			}
 
 			//	--	Listening to socket
 			if (listen(sockFd, 5))
