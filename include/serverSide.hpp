@@ -165,7 +165,7 @@ bool	checkDefaultServer(std::map<SockProp, std::vector<Server> > &servMap,std::s
 
 	//	+++	Server Utils	+++	//
 std::multimap<std::string, int>	extractionIpPort(std::vector<std::string> combIpPort);
-WebServ						*establishServers(Data &g_data);
-void						createSockets(WebServ *serv);
+WebServ						establishServers(Data &g_data);
+void						createSockets(WebServ &serv);
 
 #endif

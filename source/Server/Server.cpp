@@ -50,9 +50,9 @@ std::multimap<std::string, int>	extractionIpPort(std::vector<std::string> combIp
 	return listen;
 }
 
-WebServ	*establishServers(Data &g_data)
+WebServ	establishServers(Data &g_data)
 {
-	WebServ 					*serv = new WebServ();
+	WebServ 					serv;
 	std::vector<std::string>	servName;
 	int							id = 1;
 
@@ -66,19 +66,18 @@ WebServ	*establishServers(Data &g_data)
 		newServ.setIpPort(extractionIpPort(newServ.getCombIpPort()));
 		if (checkDuplicatePort(newServ.getIpPort()))
 		{
-			delete serv;
 			throw	std::invalid_argument("Duplicated Port !!");
 		}
 
 		id++;
-		serv->servers.push_back(newServ);
+		serv.servers.push_back(newServ);
 	}
-	serv->servNums = id - 1;
-	serv->nSocketServer = 0;
+	serv.servNums = id - 1;
+	serv.nSocketServer = 0;
 	return serv;
 }
 
-void	createSockets(WebServ *serv)
+void	createSockets(WebServ &serv)
 {
 	std::multimap<std::string, int>	mmap;
 	
@@ -95,7 +94,7 @@ void	createSockets(WebServ *serv)
 
 	//	...
 	//	Loop to each Server and Create socket
-	for (std::vector<Server>::iterator servIt = serv->servers.begin(); servIt != serv->servers.end(); servIt++)
+	for (std::vector<Server>::iterator servIt = serv.servers.begin(); servIt != serv.servers.end(); servIt++)
 	{
 		mmap = servIt->getIpPort();
 		for (std::multimap<std::string, int>::iterator it = mmap.begin(); it != mmap.end(); it++)
@@ -131,9 +130,10 @@ void	createSockets(WebServ *serv)
 			addr.sin_family = AF_INET;
 			addr.sin_port = htons(it->second);
 			addr.sin_addr.s_addr = inet_addr(it->first.c_str());
+			std::cout << "IP : " << it->first << " : Port : " << it->second << std::endl; 
 			if (bind(sockFd, (struct sockaddr *)&addr, (socklen_t)sizeof(addr)))
 			{
-				if ((def = checkDefaultServer(serv->serverSockets, it->first, it->second, *servIt)))
+				if ((def = checkDefaultServer(serv.serverSockets, it->first, it->second, *servIt)))
 					throw	std::runtime_error("Bind() Failed !!");
 				close(sockFd);
 			}
@@ -148,14 +148,14 @@ void	createSockets(WebServ *serv)
 				SockProp	prop(sockFd, it->second, it->first, SERVER_SOCK);
 				
 				//	-- Push socket to poll vector
-				serv->vecPoll.push_back(prop._pSFD);
+				serv.vecPoll.push_back(prop._pSFD);
 
 				//	-- Insert sockProp and vector of Server in the serverSockets map
-				serv->serverSockets[prop];
-				serv->serverSockets[prop].push_back(*servIt);
+				serv.serverSockets[prop];
+				serv.serverSockets[prop].push_back(*servIt);
 
 				//	--	Incrementing number of sockets
-				serv->nSocketServer++;
+				serv.nSocketServer++;
 			}
 		}
 	}
