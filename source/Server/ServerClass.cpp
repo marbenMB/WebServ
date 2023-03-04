@@ -2,7 +2,12 @@
 //	***	---		________	---	***	//
 
 WebServ::WebServ() {}
-WebServ::~WebServ() { servers.clear(); }
+WebServ::~WebServ() 
+{ 
+	servers.clear();
+	vecPoll.clear();
+	serverSockets.clear();
+}
 
 //	***	---		________	---	***	//
 
@@ -19,6 +24,7 @@ Server::~Server ()
 	_combIpPort.clear();
 	_serverName.clear();
 	_serverName.clear();
+	_IpPort.clear();
 }
 
 int							Server::getID(void) const { return _id; }
@@ -37,7 +43,7 @@ SockProp::SockProp(int fd, int port, std::string ip, int type) : _fd(fd), _Port(
 	_pSFD.fd = _fd;
 	_pSFD.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
 }
-SockProp::~SockProp() {}
+SockProp::~SockProp() { _IP.clear(); }
 
 //	***	---		________	---	***	//
 

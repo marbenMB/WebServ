@@ -65,7 +65,10 @@ WebServ	*establishServers(Data &g_data)
 
 		newServ.setIpPort(extractionIpPort(newServ.getCombIpPort()));
 		if (checkDuplicatePort(newServ.getIpPort()))
+		{
+			delete serv;
 			throw	std::invalid_argument("+> Duplicated Port!!");
+		}
 
 		id++;
 		serv->servers.push_back(newServ);
@@ -121,6 +124,7 @@ void	createSockets(WebServ *serv)
 				std::cerr << it->first << " : " << strPort << std::endl;
 				throw	std::runtime_error("Address Not Available!!");
 			}
+			freeaddrinfo(res);
 
 			//	-- Binding the socket with Ip and Port
 			bzero(&addr, sizeof(addr));
@@ -129,7 +133,6 @@ void	createSockets(WebServ *serv)
 			addr.sin_addr.s_addr = inet_addr(it->first.c_str());
 			if (bind(sockFd, (struct sockaddr *)&addr, (socklen_t)sizeof(addr)))
 			{
-				std::cout << "Inside Bind ------ FD : " << sockFd << std::endl;
 				if ((def = checkDefaultServer(serv->serverSockets, it->first, it->second, *servIt)))
 					throw	std::runtime_error("Bind() Failed!!");
 				close(sockFd);

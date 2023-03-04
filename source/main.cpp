@@ -20,11 +20,13 @@ int _main (int ac, char **av)
 				// printWebServ(myServ);
 				
 				createSockets(myServ);
-				printSockProp(myServ->serverSockets);
+				// printSockProp(myServ->serverSockets);
 
 				delete	myServ;
 			} catch (std::exception &e) {
-				std::cout << e.what() << std::endl;
+				if (myServ)
+					delete myServ;
+				std::cout << RED <<e.what() << END_CLR << std::endl;
 			}
 
 		}
