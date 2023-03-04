@@ -17,6 +17,7 @@
 
 get::get(request rhs)
 {
+    
     this->execute_method(rhs);
     /**
      *
@@ -43,6 +44,21 @@ int get::execute_method(request _request)
     struct stat STATInfo;
     DIR *dirp;
     struct dirent *dp;
+
+
+
+    // ! item_name
+    // ! item_absPATH
+    // ! item_URL
+    // ! item_size
+    // ! item_createDate
+    std::string item_name;
+    std::string item_URL;
+    std::string item_absPATH;
+    std::string item_size;
+    std::string item_createDATE;
+
+
     // size_t pos = 0;
     // std::string responseBody;
     // check config file if the method is allowed:
@@ -54,9 +70,16 @@ int get::execute_method(request _request)
     filename.append(_request.getrequest_URI());
     if (_request.getRedirect_status() != -1)
     {
+
+        /*
+        
+        
+        <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>301 Redirction</title></head><body><h1>301 Redirction</h1></body></html>
+        
+        **/ 
         this->setStatuscode(_request.getRedirect_status());
         this->setreason_phrase("Moved Permanently");
-        if (Is_cgi(_request.getredirect_URL())){ throw request::CGI();}
+        // if (Is_cgi(_request.getredirect_URL())){ throw request::CGI();}
         filename.clear();
         filename.append(_request.getroot());
         filename.append(_request.getredirect_URL());
@@ -64,45 +87,43 @@ int get::execute_method(request _request)
         _request.setrequest_URI(filename);
         // set Header : 
         this->addHeader("Location", _request.getredirect_URL());
-        inFile.open(filename, std::ifstream::in);
-        while (std::getline(inFile, buffer))
-        {
-            // std::cout << buffer << std::endl;
-            line.append(buffer);
-        }
-        // std::cout << "</Line >" << std::endl;
-        inFile.close();
+        line.append("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>");
+        line.append(std::to_string(this->getStatuscode()));
+        line.append(" Redirction</title></head><body><h1>");
+        line.append(std::to_string(this->getStatuscode()));
+        line.append(" Redirction</h1></body></html>");
+        // inFile.open(filename, std::ifstream::in);
+        // while (std::getline(inFile, buffer))
+        // {
+        //     // std::cout << buffer << std::endl;
+        //     line.append(buffer);
+        // }
+        // // std::cout << "</Line >" << std::endl;
+        // inFile.close();
     }
     else if (stat(filename.c_str(), &STATInfo) != 0)
     { // not exist
         throw request::NotFound();
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFREG) { // is file   S_ISREG(fileStat.st_mode)
+        std::stringstream ssbuf;
+        
         this->setStatuscode(200);
         this->setreason_phrase("Ok");
         inFile.open(filename, std::ifstream::in);
-        while (std::getline(inFile, buffer))
-        {
-            // std::cout << buffer << std::endl;
-            line.append(buffer);
-        }
+        ssbuf << inFile.rdbuf();
+        line.append(ssbuf.str());
+        // while (std::getline(inFile, buffer))
+        // {
+        //     // std::cout << buffer << std::endl;
+        //     line.append(buffer);
+        // }
         inFile.close();
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFDIR) { // is dir
-        // std::cout << "stat dir : " << filename << std::endl;
+        // std::cout << "+++++> : " << filename << std::endl;
         filename.append("/");
         filename.append(_request.getdefaultIndex());
-        // std::cout << "filename [" << _request.getAutoIndex() << "]: " << filename << std::endl;
-        // if (_request.getAutoIndex() == AUTOINDEX_ON)
-        //     std::cout << "AUTOINDEX_ON\n";
-        // else
-        //     std::cout << "AUTOINDEX_OFF\n";
-
-        // if (stat(filename.c_str(), &STATInfo) != 0)
-        // {
-        //     std::cout << "not foud error" << std::endl;
-        // }
-
         inFile.open(filename, std::ifstream::in);
         if (Is_cgi(_request.getdefaultIndex())){ throw request::CGI();}
         else if (!inFile.is_open() && _request.getAutoIndex() == AUTOINDEX_ON) // run AutoIndex 
@@ -111,11 +132,12 @@ int get::execute_method(request _request)
             // if (pathdir.compare("/") != 0){
             //     pathdir.append("/..");
             // }
-            std::cout << "AUTOINDEX :" << _request.getrequest_URI() << std::endl;
+            // std::cout << "AUTOINDEX :" << _request.getrequest_URI() << std::endl;
             line.clear();
-            inFile.open("./var/srcs/autoIndex.html", std::ifstream::in);
+            inFile.clear();
+            inFile.open(AOTUINDEX_PATH, std::ifstream::in);
             if (!inFile.is_open())
-                throw request::InternalServerError();
+                throw request::InternalServerError(); // r************
             while (std::getline(inFile, buffer))
             {
                 if (buffer.find("<title>") != std::string::npos) // title
@@ -142,11 +164,11 @@ int get::execute_method(request _request)
                     buffer.clear();
                     std::string parentDirLink(pathdir);
                     buffer.append("<a id=\"parentDirLink\" class=\"icon up\" href=\"");
-                    std::cout << "_request.getroot() :" << _request.getroot() << std::endl;
-                    std::cout << "pathdir :" << pathdir << std::endl;
+                    // std::cout << "_request.getroot() :" << _request.getroot() << std::endl;
+                    // std::cout << "pathdir :" << pathdir << std::endl;
                     size_t start = (parentDirLink.compare("/") == 0) ? std::string::npos :parentDirLink.rfind("/");
                     (start != std::string::npos) ? parentDirLink.erase(start + 1, parentDirLink.length()) : parentDirLink;
-                    std::cout << "parentDirLink :" << parentDirLink << std::endl;
+                    // std::cout << "parentDirLink :" << parentDirLink << std::endl;
                     parentDirLink.erase(0, strlen(_request.getroot().c_str()));
                     buffer.append(parentDirLink);
                     buffer.append("\">      ");
@@ -187,26 +209,84 @@ int get::execute_method(request _request)
                 : request_URITmp;
             while ((dp = readdir(dirp)) != NULL)
             {
+                // ! item_name
+                // ! item_absPATH
+                // ! item_URL
+                // ! item_size
+                // ! item_createDATE
                 /*
                     <tr>
-                        <td data-value="runtime.txt"><a class="icon file" draggable="true" href="/Users/mmasstou/Desktop/my-Store/runtime.txt">runtime.txt</a></td>
-                        <td class="detailsColumn" data-value="14">14 B</td>
-                        <td class="detailsColumn" data-value="1672423565">12/30/22, 7:06:05 PM</td>
+                        <td data-value="${item_name}"><a class="icon file" draggable="true" href="${item_path}">${item_name}</a></td>
+                        <td class="detailsColumn" data-value="${item_size}">${item_size} B</td>
+                        <td class="detailsColumn" data-value="1672423565">${item_createDate}</td>
                     </tr>
-                    ctime(&file_stat.st_mtime)
-                    .st_size
                 **/
+
+                std::cout << MAUVE  << "***** AOUTOINDEX *****" << std::endl;
+                item_name.clear();
+                item_name.append(dp->d_name, strlen(dp->d_name));
+                std::cout << "item_name :" << item_name << std::endl;
+                // ? ./var/
+
+
+
+
+                item_absPATH.clear();
+                // item_absPATH.append(_request.getroot());
+                item_absPATH.append(_request.getrequest_URI());
+                item_absPATH.append("/");
+                item_absPATH.append(item_name);
+                std::cout << "item_absPATH :" << item_absPATH << std::endl;
+
+                // item_URL.append(item_absPATH, item_absPATH.length());
+                // item_URL.erase(0, _request.getroot().length());
+
+
+
+
+                item_URL.clear();
+
+                item_URL.append(_request.getcompare_URI());
+                item_URL.append(item_absPATH.substr( _request.getroot().length(), item_absPATH.length()));
+
+                // item_URL.append("/");
+                // item_URL.append(item_name);
+                std::cout << "item_URL :" << item_URL << std::endl;
+
+                struct stat STATFile;
+                std::string filePATH;
+                if (stat(item_absPATH.c_str(), &STATFile) != 0)
+                {
+                    std::cout << " |" << filePATH << "| file Not found \n";
+                    // continue;
+                }
+
+
+
+
+                item_size.clear();
+                item_size.append(std::to_string(STATFile.st_size));
+                std::cout << "item_size :" << item_size << std::endl;
+
+
+
+
+                item_createDATE.clear();
+                item_createDATE.append(ctime(&STATFile.st_mtime));
+                std::cout << "item_createDATE :" << item_createDATE << END_CLR <<std::endl;
+
+
                 std::string d_nameTmp(dp->d_name);
                 // std::cout << " Name :" << d_nameTmp << std::endl;
                 if (d_nameTmp.compare(".") != 0 || d_nameTmp.compare("..") != 0)
                 {
-                    struct stat STATFile;
-                    std::string filePATH;
                     filePATH.clear();
                     filePATH.append(this->getRootPath());
                     filePATH.append(request_URITmp);
                     filePATH.append("/");
                     filePATH.append(dp->d_name);
+                    std::cout << "filePATH :" << filePATH << std::endl;
+                    // 
                     // std::cout << "FILE PATH :" << filePATH << std::endl;
                     if (stat(filePATH.c_str(), &STATFile) != 0)
                     {
@@ -215,20 +295,22 @@ int get::execute_method(request _request)
                     }
                     line.append("<tr> <td data-value=\"");
                     line.append(dp->d_name);
-                    line.append("\">\n\r<a class=\"icon file\" draggable=\"true\" href=\"");
+                    line.append("\"><a class=\"icon file\" draggable=\"true\" href=\"");
                     filePATH.erase(0, strlen(_request.getroot().c_str()));
-                    line.append(filePATH);
+                    // line.append(_request.getcompare_URI(), _request.getcompare_URI().length());
+                    line.append(item_URL);
+                    std::cout << "**filePATH :" << filePATH << std::endl;
                     // line.append("/");
                     // line.append(dp->d_name);
                     line.append("\">");
                     line.append(dp->d_name);
-                    line.append("</a>\n\r</td>");
+                    line.append("</a></td>");
                     line.append("<td class=\"detailsColumn\" >");
                     line.append(std::to_string(STATFile.st_size));
-                    line.append("B</td>\n\r");
+                    line.append("B</td>");
                     line.append("<td class=\"detailsColumn\" data-value=\"1672423565\"> ");
                     line.append(ctime(&STATFile.st_mtime));
-                    line.append("</td>\n\r</tr>\n\r");
+                    line.append("</td></tr>\n\r");
                 }
             }
 
@@ -289,10 +371,16 @@ int get::execute_method(request _request)
     // this->setResponseBody(line);
 
     // std::cout << "\nBody : \n" << this->getResponseBody();
-
+// 
     // std::cout <<"\n\n\n\nresponseBody :\n"<< this->getResponseBody() << std::endl;
     this->setResponseBody(line);
-    this->addHeader("Content-Type", "text/html");
-    this->addHeader("Content-Length", std::to_string(strlen(this->getResponseBody().c_str())));
+
+    // std::cout << "response : \n" << this->getResponseBody() << std::endl;
+    // std::string tt( _request.getrequest_URI());
+    size_t pos = _request.getrequest_URI().rfind(".");
+    std::string extension = _request.getrequest_URI().substr(pos + 1, _request.getrequest_URI().length());
+    this->addHeader("Cache-Control", "no-cache");
+    this->addHeader("Content-Type", _request.getType(extension));
+    this->addHeader("Content-Length", std::to_string(this->getResponseBody().length()));
     return 1;
 }

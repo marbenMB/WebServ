@@ -27,7 +27,7 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
     // _requestHeader.clear();
     // _requestBody.clear();
     // _requestHeader.append(req_vector[0]);
-    std::cout << _requestHeader << std::endl;
+    // std::cout << _requestHeader << std::endl;
 
     // int i = 0;
 
@@ -43,12 +43,14 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
     // this->requirements = true;
     this->setsocketID(socketID);
     this->setRedirect_status(-1);
+    this->setcompare_URI("");
     try
     {
         this->Verifying_Header(_requestHeader);
         this->Retrieving_requested_resource(server);
         if (this->getmethod().compare("POST") == 0)
             this->Verifying_Body(_requestBody);
+        this->uploadType();
         reqmethod = this->execute_request();
 
     }
@@ -58,7 +60,7 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
     catch(request::NotFound & e){ reqmethod = e.createError(*this);}
     catch(request::Forbiden & e){ reqmethod = e.createError(*this);}
     catch(request::InternalServerError & e){ reqmethod = e.createError(*this);}
-     catch(request::CGI & e){ reqmethod = e.runCGI(*this);}
+    catch(request::CGI & e){ reqmethod = e.runCGI(*this);}
     
     // * parse Header :
     // 1 - cheack for Header
@@ -101,7 +103,7 @@ void request::sand(int socketID, std::string body)
 {
     int n;
 
-    n = write(socketID, body.c_str(), strlen(body.c_str()));
+    n = write(socketID, body.c_str(),body.length());
     if (n < 0)
     {
         perror("ERROR writing to socket");
@@ -279,7 +281,7 @@ bool request::Verifying_Header(std::string req)
    
     std::string _request_URI = spl[1];
 
-    std::cout << "request_URI : |" << _request_URI << std::endl; 
+    // std::cout << "request_URI : |" << _request_URI << std::endl; 
     url_decode(_request_URI);
     // char _ABSdir[PATH_MAX];
     // char _SubDir[PATH_MAX];
@@ -296,7 +298,7 @@ bool request::Verifying_Header(std::string req)
     }
     else{this->setrequest_URI(_request_URI); }
 
-    std::cout << "request_URI : |" << this->getrequest_URI() << std::endl; 
+    // std::cout << "request_URI : |" << this->getrequest_URI() << std::endl; 
     // if (!is__subDir("./var",this->getrequest_URI()))
     //     throw NotAllowed();
     // this->_error.setCode_status(404);

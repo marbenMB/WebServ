@@ -17,6 +17,16 @@
 # define CR "\r"
 # define CRLF "\r\n"
 
+
+
+
+
+// Assets :
+
+#define AOTUINDEX_PATH "./var/assets/autoIndex.html"
+#define MIME_TYPE_PATH "conf/mime.types"
+
+
 #include <iostream>
 #include <unistd.h>
 #include <sstream>
@@ -117,7 +127,18 @@ private:
     request(){};
     std::vector<std::string> message;
     //  error 
+
+    // for location
+    std::string compare_URI;
+
+    std::map<std::string, std::string> _typs;
 public:
+
+
+
+    void addType(std::string, std::string);
+    std::string const &getType(std::string);
+    bool uploadType(void );
     void url_decode(std::string &url);
     request(int , Data *, std::string, std::vector<std::string> &);
     std::vector<std::string> &execute(std::string body, Data *_confdata);
@@ -177,7 +198,9 @@ public:
     std::string const & getDefault_30x( void );
     void print_vectINFO(std::vector<std::string>, std::string);
 
-
+    // location
+    std::string const & getcompare_URI( void ) const;
+    void setcompare_URI(std::string);
 
     class BadRequest 
     {

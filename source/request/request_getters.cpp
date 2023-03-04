@@ -145,8 +145,10 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
             // std::cout << "----URI2 (str) :" << str << std::endl;
             std::string __erraseTmp(this->getrequest_URI()) ;
             std::string __URI(this->getroot());
+            // std::cout << "__erraseTmp :" << __erraseTmp << std::endl;
             if (__erraseTmp.compare("/") != 0)
             {
+                this->setcompare_URI(str);
                 __erraseTmp.erase(0,str.length());
                 __URI.append("/");
             }
@@ -154,7 +156,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
             __URI.append(__erraseTmp);
             realpath("./", realPATH_subdir);
             // std::cout << "realPATH_subdir :" << realPATH_subdir << std::endl;
-            std::cout << "*****this->getroot() :" << this->getroot() << std::endl;
+            // std::cout << "*****this->getroot() :" << this->getroot() << std::endl;
             realpath(__URI.c_str(), realPATH_dir);
             // std::cout << "realPATH_dir :" << realPATH_dir << std::endl;
             __erraseTmp.clear();
@@ -189,4 +191,39 @@ std::string const &request::getquery_string() const{
 }
 void request::setquery_string(std::string query_string){
     this->query_string = query_string;
+}
+
+
+std::string const & request::getcompare_URI( void ) const{
+    return this->compare_URI;
+}
+void request::setcompare_URI(std::string compare_URI){
+    this->compare_URI = compare_URI;
+}
+
+
+void request::addType(std::string key, std::string value){
+    this->_typs[key] = value;
+}
+std::string const &request::getType(std::string key){
+    return this->_typs[key];
+}
+
+bool request::uploadType(void ){
+    std::ifstream file;
+    std::string buffer;
+    std::vector<std::string> _split;
+
+
+    file.open(MIME_TYPE_PATH, std::ifstream::in);
+    if (!file.is_open())
+        throw InternalServerError();
+    while (std::getline(file, buffer))
+    {
+        _split = split(buffer, ": ");
+        // std::cout << " KEY :" << _split[1] << std::endl;
+        // std::cout << " VALUE :" << _split[0] << std::endl;
+        this->addType(_split[1], _split[0]);
+    }
+    return true;
 }
