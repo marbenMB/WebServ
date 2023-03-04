@@ -67,7 +67,7 @@ WebServ	*establishServers(Data &g_data)
 		if (checkDuplicatePort(newServ.getIpPort()))
 		{
 			delete serv;
-			throw	std::invalid_argument("+> Duplicated Port!!");
+			throw	std::invalid_argument("Duplicated Port !!");
 		}
 
 		id++;
@@ -106,10 +106,10 @@ void	createSockets(WebServ *serv)
 			//	-- Socket creation and setting reused addr option.
 			sockFd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 			if (sockFd < 0)
-				throw	std::runtime_error("Socket() Failed!!");
+				throw	std::runtime_error("Socket() Failed !!");
 			fcntl(sockFd, F_SETFL,	O_NONBLOCK);
 			if (setsockopt(sockFd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)))
-				throw	std::runtime_error("Setsockopt() Failed!!");
+				throw	std::runtime_error("Setsockopt() Failed !!");
 			
 			//	-- Getting the addr info
 			bzero(&hints, sizeof(hints));
@@ -122,7 +122,7 @@ void	createSockets(WebServ *serv)
 			if (getaddrinfo(it->first.c_str(), strPort.c_str(), &hints, &res))
 			{
 				std::cerr << it->first << " : " << strPort << std::endl;
-				throw	std::runtime_error("Address Not Available!!");
+				throw	std::runtime_error("Address Not Available !!");
 			}
 			freeaddrinfo(res);
 
@@ -134,7 +134,7 @@ void	createSockets(WebServ *serv)
 			if (bind(sockFd, (struct sockaddr *)&addr, (socklen_t)sizeof(addr)))
 			{
 				if ((def = checkDefaultServer(serv->serverSockets, it->first, it->second, *servIt)))
-					throw	std::runtime_error("Bind() Failed!!");
+					throw	std::runtime_error("Bind() Failed !!");
 				close(sockFd);
 			}
 
@@ -142,7 +142,7 @@ void	createSockets(WebServ *serv)
 			{
 				//	--	Listening to socket
 				if (listen(sockFd, 5))
-					throw	std::runtime_error("Listen() Failed!!");
+					throw	std::runtime_error("Listen() Failed !!");
 				
 				//	-- Create sockPorp for each socket and insert it to the map
 				SockProp	prop(sockFd, it->second, it->first, SERVER_SOCK);
