@@ -21,12 +21,12 @@ int _main (int ac, char **av)
 				
 				createSockets(myServ);
 				// printSockProp(myServ->serverSockets);
-
+				std::cout << GREEN << "+> Socket Created !!" << END_CLR << std::endl;
 				delete	myServ;
 			} catch (std::exception &e) {
 				if (myServ)
 					delete myServ;
-				std::cout << RED <<e.what() << END_CLR << std::endl;
+				std::cout << RED << "+> " << e.what() << END_CLR << std::endl;
 			}
 
 		}
@@ -39,7 +39,7 @@ int _main (int ac, char **av)
         // system("leaks webserv");
         return (1);
     }
-	std::cout << GREEN << "+> Parsing Done!!" << END_CLR << std::endl << std::endl;
+	std::cout << GREEN << "+> Parsing Done !!" << END_CLR << std::endl << std::endl;
     // system("leaks webserv");
     return (0);
 }
