@@ -130,7 +130,6 @@ void	createSockets(WebServ &serv)
 			addr.sin_family = AF_INET;
 			addr.sin_port = htons(it->second);
 			addr.sin_addr.s_addr = inet_addr(it->first.c_str());
-			std::cout << "IP : " << it->first << " : Port : " << it->second << std::endl; 
 			if (bind(sockFd, (struct sockaddr *)&addr, (socklen_t)sizeof(addr)))
 			{
 				if ((def = checkDefaultServer(serv.serverSockets, it->first, it->second, *servIt)))

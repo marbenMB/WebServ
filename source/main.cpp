@@ -16,8 +16,8 @@ int _main (int ac, char **av)
 			try {
 				myServ = establishServers(g_Data);
 
-				std::cout << "--> Num of Servers : " << myServ.servNums << std::endl << "\n";
-				printWebServ(myServ);
+				// std::cout << "--> Num of Servers : " << myServ.servNums << std::endl << "\n";
+				// printWebServ(myServ);
 				
 				createSockets(myServ);
 				printSockProp(myServ.serverSockets);

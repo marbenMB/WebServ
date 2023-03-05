@@ -7,7 +7,6 @@ int	checkDuplicatePort(std::multimap<std::string, int> Map)
 
 	while (it != Map.end() && Scit != Map.end())
 	{
-		Scit = it;
 		Scit++;
 		while (Scit != Map.end())
 		{
@@ -17,6 +16,7 @@ int	checkDuplicatePort(std::multimap<std::string, int> Map)
 			Scit++;
 		}
 		it++;
+		Scit = it;
 	}
 	return 0;
 }
