@@ -60,7 +60,7 @@ class	SockProp
 
 class	ClientSock : public SockProp
 {
-	private :
+	public :
 		// std::string		_host;
 		// ServerConf		_serverResponding;
 		
@@ -72,7 +72,7 @@ class	ClientSock : public SockProp
 		// std::string		_reqHeader;
 		// std::string		_reqBody;
 		// size_t			byteToRead;
-		// size_t			byteRead;
+		size_t			byteRead;
 		// size_t			byteLeft;
 		// int				_readiness;
 
@@ -84,6 +84,7 @@ class	ClientSock : public SockProp
 	public :
 		// std::string		getRequest (void) const;
 
+		ClientSock ();
 		ClientSock (int fd, int port, std::string ip);
 		~ClientSock ();
 };
@@ -118,6 +119,7 @@ class	WebServ
 		std::vector<struct pollfd>	vecPoll;
 
 		std::map<SockProp, std::vector<Server> >	serverSockets;
+		std::map<int, ClientSock>	clientMap;
 
 		int					servNums;
 		size_t				nSocketServer;

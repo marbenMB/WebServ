@@ -1,4 +1,5 @@
 #include "../../include/serverSide.hpp"
+#include "../../include/unitTests.hpp"
 
 std::multimap<std::string, int>	extractionIpPort(std::vector<std::string> combIpPort)
 {
@@ -187,7 +188,7 @@ void	acceptClients(WebServ &serv)
 		idx = 0;
 		while (idx < serv.vecPoll.size())
 		{
-			if (idx <= serv.nSocketServer && serv.vecPoll[idx].revents & POLLIN)
+			if (idx < serv.nSocketServer && serv.vecPoll[idx].revents & POLLIN)
 			{
 				//	--	Accepting Client :
 				clientFD = accept(serv.vecPoll[idx].fd, (struct sockaddr *)&clientAddr, (socklen_t *)&clientLen);
@@ -199,6 +200,7 @@ void	acceptClients(WebServ &serv)
 				serv.vecPoll.push_back(sockClient._pSFD);
 
 				//	-- insert client socket in client map
+				serv.clientMap.insert(std::make_pair(clientFD, sockClient));
 			}
 			else
 			{
@@ -216,6 +218,8 @@ void	acceptClients(WebServ &serv)
 						request.append(buffer, byte);
 						std::cout << request << std::endl;
 						request.clear();
+						serv.clientMap[serv.vecPoll[idx].fd].byteRead += byte;
+						std::cout << "Byte Read : " << serv.clientMap[serv.vecPoll[idx].fd].byteRead << std::endl;
 					}
 				}
 			}

@@ -19,7 +19,6 @@ int	WebServ::findSocketPort(int sockFd)
 			break ;
 		it++;
 	}
-	std::cout << "Port : " << it->first._Port << std::endl;
 	return it->first._Port;
 }
 
@@ -33,7 +32,6 @@ std::string	WebServ::findSocketIP(int sockFd)
 			break;
 		it++;
 	}
-	std::cout << "IP : " << it->first._IP << std::endl;
 	return it->first._IP;
 }
 
@@ -75,7 +73,13 @@ SockProp::~SockProp() { _IP.clear(); }
 
 //	***	---		________	---	***	//
 
-ClientSock::ClientSock (int fd, int port, std::string ip) : SockProp(fd, port, ip, CLIENT_SOCK) {}
+ClientSock::ClientSock () :  SockProp(0, 0, "", CLIENT_SOCK) {};
+
+ClientSock::ClientSock (int fd, int port, std::string ip) : SockProp(fd, port, ip, CLIENT_SOCK) 
+{
+	byteRead = 0;
+}
+
 ClientSock::~ClientSock () {};
 
 // std::string	ClientSock::getRequest (void) const { return _request; }
