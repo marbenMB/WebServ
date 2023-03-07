@@ -21,7 +21,6 @@ int _main (int ac, char **av)
 				
 				createSockets(myServ);
 				// printSockProp(myServ.serverSockets);
-				std::cout << myServ.nSocketServer << std::endl;
 				std::cout << GREEN << "+> Socket Created !!" << END_CLR << std::endl;
 
 				acceptClients(myServ);

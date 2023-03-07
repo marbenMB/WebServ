@@ -30,3 +30,16 @@ void	printSockProp (std::map<SockProp, std::vector<Server> > m)
 		mapIt++;
 	}
 }
+
+void	printMapClient (std::map<int, ClientSock> m)
+{
+	for (std::map<int, ClientSock>::iterator it = m.begin(); it != m.end(); it++)
+	{
+		std::cout << it->first << " -> " 
+		<< "FD : " << it->second._fd << std::endl
+		<< "Port : " << it->second._Port << std::endl
+		<< "IP : " << it->second._IP << std::endl
+		<< "byte Read : " << it->second.byteRead << std::endl;
+		std::cout << "========================" << std::endl;
+	}
+}
