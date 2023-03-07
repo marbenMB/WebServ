@@ -207,6 +207,7 @@ void	acceptClients(WebServ &serv)
 				bzero(&buffer[0], MAXREAD);
 				if (serv.vecPoll[idx].revents & POLLIN)
 				{
+					//	-- Read request
 					byte = recv(serv.vecPoll[idx].fd, &buffer, MAXREAD, 0);
 					if (byte <= 0)
 					{
@@ -215,15 +216,24 @@ void	acceptClients(WebServ &serv)
 					}
 					else
 					{
+						//	-- Save number of byte read
 						serv.clientMap[serv.vecPoll[idx].fd].byteRead += byte;
 						tmp.append(buffer, byte);
 						if (serv.clientMap[serv.vecPoll[idx].fd]._InitialRead)
 						{
+							//	--	Separate headers than body request
 							serv.clientMap[serv.vecPoll[idx].fd].separateHeadBody(tmp);
+
+							//	-- check transfer encoding
+							serv.clientMap[serv.vecPoll[idx].fd].transferEncoding();
+							
+							//	--	set content lenght
+
 							serv.clientMap[serv.vecPoll[idx].fd]._InitialRead = false;
-							std::cout << "REQUEST HEADERS : \n-----------\n" << serv.clientMap[serv.vecPoll[idx].fd]._reqHeader << std::endl;
-							std::cout << "REQUEST BODY : \n-----------\n" << serv.clientMap[serv.vecPoll[idx].fd]._reqBody << std::endl
-							<< "Length : " << serv.clientMap[serv.vecPoll[idx].fd]._reqBody.length() << std::endl;
+						}
+						else
+						{
+							serv.clientMap[serv.vecPoll[idx].fd]._reqBody.append(buffer, byte);
 						}
 					}
 				}

@@ -97,3 +97,30 @@ void	ClientSock::separateHeadBody(std::string tmp)
 			_reqBody = tmp.substr(nFind + 5, tmp.length());
 	}
 }
+
+void	ClientSock::transferEncoding(void)
+{
+	size_t		nFind;
+	std::string	tmp;
+	std::stringstream ss;
+	
+	nFind = _reqHeader.find("chunked");
+	if (nFind != std::string::npos)
+		_chunkedBody = true;
+	else
+	{
+		_chunkedBody = false;
+		nFind = _reqHeader.find("Content-Length: ");
+		if (nFind != std::string::npos)
+		{
+			tmp = _reqHeader.substr(nFind + 16, _reqHeader.length() - (nFind + 16));
+			ss << tmp;
+			ss >> byteToRead;
+		}
+	}
+}
+
+void	ClientSock::readBody(void)
+{
+	std::cout << std::endl;
+}
