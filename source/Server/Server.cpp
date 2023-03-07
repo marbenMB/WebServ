@@ -159,3 +159,33 @@ void	createSockets(WebServ &serv)
 		}
 	}
 }
+
+void	acceptClients(WebServ &serv)
+{
+	int		nFd;
+	size_t	idx;
+
+	int					clientFD;
+	struct sockaddr_in	clientAddr;
+	int					clientLen = sizeof(clientAddr);
+
+	while (true)
+	{
+		nFd = poll(&serv.vecPoll[0], serv.vecPoll.size(), -1);
+		if (nFd < 0)
+		{
+			// continue;
+			throw	std::runtime_error("Poll Failed !!");
+		}
+		idx = 1;
+		for (std::vector<struct pollfd>::iterator it = serv.vecPoll.begin(); it != serv.vecPoll.end(); it++)
+		{
+			if (idx <= serv.nSocketServer)
+			{
+				std::cout << "SERVER\n";
+				clientFD = accept(clientFD, (struct sockaddr *)&clientAddr, (socklen_t *)&clientLen);
+			}
+			idx++;
+		}
+	}
+}

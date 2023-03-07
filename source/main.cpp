@@ -20,8 +20,11 @@ int _main (int ac, char **av)
 				// printWebServ(myServ);
 				
 				createSockets(myServ);
-				printSockProp(myServ.serverSockets);
+				// printSockProp(myServ.serverSockets);
+				std::cout << myServ.nSocketServer << std::endl;
 				std::cout << GREEN << "+> Socket Created !!" << END_CLR << std::endl;
+
+				acceptClients(myServ);
 			} catch (std::exception &e) {
 				std::cout << RED << "+> " << e.what() << END_CLR << std::endl;
 			}
