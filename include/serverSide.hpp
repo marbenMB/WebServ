@@ -65,13 +65,13 @@ class	ClientSock : public SockProp
 		// ServerConf		_serverResponding;
 		
 		bool			_InitialRead;
-		// bool			_chunkedBody;
+		bool			_chunkedBody;
 		// int				_connexion;
 
 		std::string		_request;
 		std::string		_reqHeader;
 		std::string		_reqBody;
-		// size_t			byteToRead;
+		size_t			byteToRead;
 		size_t			byteRead;
 		// size_t			byteLeft;
 		// int				_readiness;
@@ -89,6 +89,8 @@ class	ClientSock : public SockProp
 		~ClientSock ();
 
 		void	separateHeadBody(std::string tmp);
+		void	transferEncoding(void);
+		void	readBody(void);
 };
 
 class	Server
