@@ -78,8 +78,22 @@ ClientSock::ClientSock () :  SockProp(0, 0, "", CLIENT_SOCK) {};
 ClientSock::ClientSock (int fd, int port, std::string ip) : SockProp(fd, port, ip, CLIENT_SOCK) 
 {
 	byteRead = 0;
+	_InitialRead = true;
 }
 
 ClientSock::~ClientSock () {};
 
 // std::string	ClientSock::getRequest (void) const { return _request; }
+
+void	ClientSock::separateHeadBody(std::string tmp)
+{
+	size_t		nFind;
+	
+	nFind = tmp.find("\r\n\r\n");
+	if (nFind != std::string::npos)
+	{
+		_reqHeader = tmp.substr(0, nFind + 4);
+		if (nFind + 5 < tmp.length())
+			_reqBody = tmp.substr(nFind + 5, tmp.length());
+	}
+}
