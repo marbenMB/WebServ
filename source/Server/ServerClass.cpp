@@ -78,7 +78,9 @@ ClientSock::ClientSock () :  SockProp(0, 0, "", CLIENT_SOCK) {};
 ClientSock::ClientSock (int fd, int port, std::string ip) : SockProp(fd, port, ip, CLIENT_SOCK) 
 {
 	byteRead = 0;
+	byteToRead = 0;
 	_InitialRead = true;
+	_readiness = false;
 }
 
 ClientSock::~ClientSock () {};

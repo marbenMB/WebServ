@@ -218,6 +218,8 @@ void	acceptClients(WebServ &serv)
 					{
 						//	-- Save number of byte read
 						serv.clientMap[serv.vecPoll[idx].fd].byteRead += byte;
+						if (serv.clientMap[serv.vecPoll[idx].fd].byteRead >= serv.clientMap[serv.vecPoll[idx].fd].byteToRead)
+							serv.clientMap[serv.vecPoll[idx].fd]._readiness = true;
 						tmp.append(buffer, byte);
 						if (serv.clientMap[serv.vecPoll[idx].fd]._InitialRead)
 						{
@@ -230,12 +232,19 @@ void	acceptClients(WebServ &serv)
 							//	--	set content lenght
 
 							serv.clientMap[serv.vecPoll[idx].fd]._InitialRead = false;
+							std::cout << serv.clientMap[serv.vecPoll[idx].fd]._reqHeader << std::endl;
 						}
 						else
 						{
 							serv.clientMap[serv.vecPoll[idx].fd]._reqBody.append(buffer, byte);
 						}
 					}
+				}
+				if (serv.vecPoll[idx].revents & POLLOUT && serv.clientMap[serv.vecPoll[idx].fd]._readiness)
+				{
+					std::string	response("HTTP/1.1 200 OK\nContent-Type: text/html\n\r\n\r<html>\n<head>\n<title>Hello World</title>\n</head>\n<body>\n<h1>Hello World</h1>\n</body>\n</html>");
+
+					send(serv.vecPoll[idx].fd, response.c_str(), response.length(), 0);
 				}
 			}
 			idx++;
