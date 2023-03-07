@@ -175,7 +175,7 @@ void	acceptClients(WebServ &serv)
 	//	--	Read var
 	char	buffer[MAXREAD];
 	int		byte;
-	std::string	request;
+	std::string	tmp;
 
 	while (true)
 	{
@@ -215,11 +215,16 @@ void	acceptClients(WebServ &serv)
 					}
 					else
 					{
-						request.append(buffer, byte);
-						std::cout << request << std::endl;
-						request.clear();
 						serv.clientMap[serv.vecPoll[idx].fd].byteRead += byte;
-						std::cout << "Byte Read : " << serv.clientMap[serv.vecPoll[idx].fd].byteRead << std::endl;
+						tmp.append(buffer, byte);
+						if (serv.clientMap[serv.vecPoll[idx].fd]._InitialRead)
+						{
+							serv.clientMap[serv.vecPoll[idx].fd].separateHeadBody(tmp);
+							serv.clientMap[serv.vecPoll[idx].fd]._InitialRead = false;
+							std::cout << "REQUEST HEADERS : \n-----------\n" << serv.clientMap[serv.vecPoll[idx].fd]._reqHeader << std::endl;
+							std::cout << "REQUEST BODY : \n-----------\n" << serv.clientMap[serv.vecPoll[idx].fd]._reqBody << std::endl
+							<< "Length : " << serv.clientMap[serv.vecPoll[idx].fd]._reqBody.length() << std::endl;
+						}
 					}
 				}
 			}
