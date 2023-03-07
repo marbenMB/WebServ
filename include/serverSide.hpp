@@ -12,12 +12,7 @@
 #define DEFAULT_IP "0.0.0.0"
 #define	DEFAULT_PORT 80
 
-typedef std::vector<ServerConf> Vect_Serv;
-typedef std::map<std::string, std::vector<std::string> >::iterator map_srv_data_it;
-
-typedef std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator vector_location_it;
-typedef std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator map_path_location_it;
-typedef std::map<std::string, std::vector<std::string> >::iterator map_location_it;
+#define	MAXREAD	1024
 ///////////////////// ***** ////////////////////
 
 //	****	*********	****	//
@@ -63,35 +58,35 @@ class	SockProp
 		~SockProp ();
 };
 
-// class	ClientSock : public SockProp
-// {
-// 	private :
-// 		std::string		_host;
-// 		ServerConf		_serverResponding;
+class	ClientSock : public SockProp
+{
+	private :
+		// std::string		_host;
+		// ServerConf		_serverResponding;
 		
-// 		bool			_InitialRead;
-// 		bool			_chunkedBody;
-// 		int				_connexion;
+		// bool			_InitialRead;
+		// bool			_chunkedBody;
+		// int				_connexion;
 
-// 		std::string		_request;
-// 		std::string		_reqHeader;
-// 		std::string		_reqBody;
-// 		size_t			byteToRead;
-// 		size_t			byteRead;
-// 		size_t			byteLeft;
-// 		int				_readiness;
+		// std::string		_request;
+		// std::string		_reqHeader;
+		// std::string		_reqBody;
+		// size_t			byteToRead;
+		// size_t			byteRead;
+		// size_t			byteLeft;
+		// int				_readiness;
 
-// 		std::string		_response;
-// 		size_t			byteToSend;
-// 		size_t			byteSent;
-// 		// size_t			byteLeft;
+		// std::string		_response;
+		// size_t			byteToSend;
+		// size_t			byteSent;
+		// size_t			byteLeft;
 
-// 	public :
-// 		std::string		getRequest (void) const;
+	public :
+		// std::string		getRequest (void) const;
 
-// 		ClientSock (int fd, int port, std::string ip);
-// 		~ClientSock ();
-// };
+		ClientSock (int fd, int port, std::string ip);
+		~ClientSock ();
+};
 
 class	Server
 {
@@ -130,6 +125,8 @@ class	WebServ
 		
 		WebServ ();
 		~WebServ ();
+		int		findSocketPort(int sockFd);
+		std::string	findSocketIP(int sockFd);
 };
 
 //	****	*********	****	//

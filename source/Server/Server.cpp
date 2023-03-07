@@ -162,12 +162,19 @@ void	createSockets(WebServ &serv)
 
 void	acceptClients(WebServ &serv)
 {
+	//	--	Poll var
 	int		nFd;
 	size_t	idx;
 
+	//	--	Accept var
 	int					clientFD;
 	struct sockaddr_in	clientAddr;
 	int					clientLen = sizeof(clientAddr);
+
+	//	--	Read var
+	char	buffer[MAXREAD];
+	int		byte;
+	std::string	request;
 
 	while (true)
 	{
@@ -177,13 +184,40 @@ void	acceptClients(WebServ &serv)
 			// continue;
 			throw	std::runtime_error("Poll Failed !!");
 		}
-		idx = 1;
-		for (std::vector<struct pollfd>::iterator it = serv.vecPoll.begin(); it != serv.vecPoll.end(); it++)
+		idx = 0;
+		while (idx < serv.vecPoll.size())
 		{
-			if (idx <= serv.nSocketServer)
+			if (idx <= serv.nSocketServer && serv.vecPoll[idx].revents & POLLIN)
 			{
-				std::cout << "SERVER\n";
-				clientFD = accept(clientFD, (struct sockaddr *)&clientAddr, (socklen_t *)&clientLen);
+				//	--	Accepting Client :
+				clientFD = accept(serv.vecPoll[idx].fd, (struct sockaddr *)&clientAddr, (socklen_t *)&clientLen);
+				
+				//	-- Creating Client socketPorop
+				ClientSock			sockClient(clientFD, serv.findSocketPort(serv.vecPoll[idx].fd), serv.findSocketIP(serv.vecPoll[idx].fd));
+
+				//	--	push to poll vector
+				serv.vecPoll.push_back(sockClient._pSFD);
+
+				//	-- insert client socket in client map
+			}
+			else
+			{
+				bzero(&buffer[0], MAXREAD);
+				if (serv.vecPoll[idx].revents & POLLIN)
+				{
+					byte = recv(serv.vecPoll[idx].fd, &buffer, MAXREAD, 0);
+					if (byte <= 0)
+					{
+						close(serv.vecPoll[idx].fd);
+						serv.vecPoll.erase(serv.vecPoll.begin() + idx);
+					}
+					else
+					{
+						request.append(buffer, byte);
+						std::cout << request << std::endl;
+						request.clear();
+					}
+				}
 			}
 			idx++;
 		}

@@ -9,6 +9,34 @@ WebServ::~WebServ()
 	serverSockets.clear();
 }
 
+int	WebServ::findSocketPort(int sockFd)
+{
+	std::map<SockProp, std::vector<Server> >::iterator it = serverSockets.begin();
+	
+	while (it != serverSockets.end())
+	{
+		if (it->first._fd == sockFd)
+			break ;
+		it++;
+	}
+	std::cout << "Port : " << it->first._Port << std::endl;
+	return it->first._Port;
+}
+
+std::string	WebServ::findSocketIP(int sockFd)
+{
+	std::map<SockProp, std::vector<Server> >::iterator it = serverSockets.begin();
+
+	while ( it != serverSockets.end())
+	{
+		if (it->first._fd == sockFd)
+			break;
+		it++;
+	}
+	std::cout << "IP : " << it->first._IP << std::endl;
+	return it->first._IP;
+}
+
 //	***	---		________	---	***	//
 
 Server::Server (int id, ServerConf server, std::vector<std::string> portIp, std::vector<std::string> name)
@@ -47,7 +75,7 @@ SockProp::~SockProp() { _IP.clear(); }
 
 //	***	---		________	---	***	//
 
-// ClientSock::ClientSock (int fd, int port, std::string ip) : SockProp(fd, port, ip, CLIENT) {}
-// ClientSock::~ClientSock () {};
+ClientSock::ClientSock (int fd, int port, std::string ip) : SockProp(fd, port, ip, CLIENT_SOCK) {}
+ClientSock::~ClientSock () {};
 
 // std::string	ClientSock::getRequest (void) const { return _request; }
