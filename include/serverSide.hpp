@@ -74,7 +74,7 @@ class	ClientSock : public SockProp
 		size_t			byteToRead;
 		size_t			byteRead;
 		// size_t			byteLeft;
-		// int				_readiness;
+		bool			_readiness;
 
 		// std::string		_response;
 		// size_t			byteToSend;
