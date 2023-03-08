@@ -119,6 +119,8 @@ void	ClientSock::transferEncoding(void)
 			ss << tmp;
 			ss >> byteToRead;
 		}
+		else
+			byteToRead = -1;
 	}
 }
 
