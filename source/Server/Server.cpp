@@ -165,7 +165,6 @@ void	acceptClients(WebServ &serv)
 {
 	//	--	Poll var
 	int		nFd;
-	size_t	idx;
 
 	//	--	Accept var
 	int					clientFD;
@@ -185,8 +184,8 @@ void	acceptClients(WebServ &serv)
 			// continue;
 			throw	std::runtime_error("Poll Failed !!");
 		}
-		idx = 0;
-		while (idx < serv.vecPoll.size())
+		// std::cout << "HERRRE\n" << std::endl;
+		for (size_t idx = 0; idx < serv.vecPoll.size(); idx++)
 		{
 			if (idx < serv.nSocketServer)
 			{
@@ -194,6 +193,9 @@ void	acceptClients(WebServ &serv)
 				{
 					//	--	Accepting Client :
 					clientFD = accept(serv.vecPoll[idx].fd, (struct sockaddr *)&clientAddr, (socklen_t *)&clientLen);
+					if (clientFD < 0)
+						throw	std::runtime_error("Accept() Failed !!");
+					fcntl(clientFD, F_SETFL,	O_NONBLOCK);
 					
 					//	-- Creating Client socketPorop
 					ClientSock			sockClient(clientFD, serv.findSocketPort(serv.vecPoll[idx].fd), serv.findSocketIP(serv.vecPoll[idx].fd));
@@ -212,11 +214,12 @@ void	acceptClients(WebServ &serv)
 				{
 					//	-- Read request
 					byte = recv(serv.vecPoll[idx].fd, &buffer, MAXREAD, 0);
+					// std::cout << "******** " << byte << "********\n" << std::endl;
 					if (byte <= 0)
 					{
 						close(serv.vecPoll[idx].fd);
 						serv.vecPoll.erase(serv.vecPoll.begin() + idx);
-						serv.clientMap.erase(serv.vecPoll[idx].fd);
+						// serv.clientMap.erase(serv.vecPoll[idx].fd);
 						// idx--;
 						// continue;
 					}
@@ -253,7 +256,6 @@ void	acceptClients(WebServ &serv)
 				// 	send(serv.vecPoll[idx].fd, response.c_str(), response.length(), 0);
 				// }
 			}
-			idx++;
 		}
 	}
 }
