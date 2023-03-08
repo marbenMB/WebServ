@@ -241,7 +241,7 @@
 #include "./include/method.hpp"
 
 
-int main(int ac, char *av[])
+int _main(int ac, char *av[])
 {
     // system("leaks webServ");
     Data g_Data;
@@ -320,7 +320,7 @@ int main(int ac, char *av[])
 
         //  std::string buff[7000];
         // recv(newsockfd, (char *)tmp.c_str(), sizeof(buff), 0);
-        // sleep(5);
+        sleep(5);
         // n = recv(newsockfd, buffer, maxBayte, 0);
         n = read(newsockfd, buffer, maxBayte);
         // while (1)
@@ -351,7 +351,16 @@ int main(int ac, char *av[])
 
         close(newsockfd);
         delete req;
+        // exit(1);
     }
 
     return 0;
+}
+void CheckLeack( void ){
+    system("leaks webServ");
+}
+int main(int ac, char *av[]){
+    atexit(CheckLeack);
+    _main(ac, av);
+    
 }

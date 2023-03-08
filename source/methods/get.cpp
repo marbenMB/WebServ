@@ -79,7 +79,6 @@ int get::execute_method(request _request)
         **/ 
         this->setStatuscode(_request.getRedirect_status());
         this->setreason_phrase("Moved Permanently");
-        // if (Is_cgi(_request.getredirect_URL())){ throw request::CGI();}
         filename.clear();
         filename.append(_request.getroot());
         filename.append(_request.getredirect_URL());
@@ -101,11 +100,14 @@ int get::execute_method(request _request)
         // // std::cout << "</Line >" << std::endl;
         // inFile.close();
     }
+    else if (Is_cgi(filename)){ throw request::CGI();}
     else if (stat(filename.c_str(), &STATInfo) != 0)
     { // not exist
         throw request::NotFound();
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFREG) { // is file   S_ISREG(fileStat.st_mode)
+        
+        if (Is_cgi(_request.getredirect_URL())){ throw request::CGI();} 
         std::stringstream ssbuf;
         
         this->setStatuscode(200);

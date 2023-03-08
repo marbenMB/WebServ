@@ -4,7 +4,7 @@ REQUEST_PATH = ./source/request/
 METHODS_PATH = ./source/methods/
 CONFIGFILE_PATH = ./source/config_file/
 INCLUDES_PATH = ./include/
-FLAGS =  -Wall -Wextra -Werror -std=c++98  -fsanitize=address
+FLAGS =  -Wall -Wextra -Werror -std=c++98  #-fsanitize=address
 
 
 config_SRCS = $(CONFIGFILE_PATH)ConfigFile.cpp $(CONFIGFILE_PATH)CheckValidity.cpp $(CONFIGFILE_PATH)ft_error.cpp $(CONFIGFILE_PATH)save_data.cpp $(CONFIGFILE_PATH)tool.cpp

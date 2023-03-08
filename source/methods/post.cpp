@@ -25,19 +25,50 @@ int Post::execute_method(request _request)
     std::string filename;
     std::ofstream outFile;
     std::ifstream inFile;
-    filename.append("./var/srcs/success.html");
+    filename.append(CREATE_SUCCESS_FILE);
     // bool _execute = false;
     std::map<std::string, std::string> tmp = this->getContent_Type();
-    this->parseBody();
-    if (tmp["type"].compare("multipart/form-data") == 0)
+    // this->parseBody();
+    if (_request.getRedirect_status() != -1)
+    {
+
+        /*
+        
+        
+        <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>301 Redirction</title></head><body><h1>301 Redirction</h1></body></html>
+        
+        **/ 
+        this->setStatuscode(_request.getRedirect_status());
+        this->setreason_phrase("Moved Permanently");
+        filename.clear();
+        filename.append(_request.getroot());
+        filename.append(_request.getredirect_URL());
+
+        _request.setrequest_URI(filename);
+        // set Header : 
+        this->addHeader("Location", _request.getredirect_URL());
+        body.append("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>");
+        body.append(std::to_string(this->getStatuscode()));
+        body.append(" Redirction</title></head><body><h1>");
+        body.append(std::to_string(this->getStatuscode()));
+        body.append(" Redirction</h1></body></html>");
+        // inFile.open(filename, std::ifstream::in);
+        // while (std::getline(inFile, buffer))
+        // {
+        //     // std::cout << buffer << std::endl;
+        //     line.append(buffer);
+        // }
+        // // std::cout << "</Line >" << std::endl;
+        // inFile.close();
+    }
+    else if (tmp["type"].compare("multipart/form-data") == 0)
     {
         std::vector<std::pair<std::string, std::string> > file = _request.getReqBody();
         std::vector<std::pair<std::string, std::string> >::iterator file_It = file.begin();
         while (file_It != file.end())
         {
             filename.clear();
-            filename.append(_request.getroot());
-            filename.append(_request.getrequest_URI());
+            filename.append(_request.getUpload_store_PATH());
             filename.append("/");
             filename.append((*file_It).first);
             // std::cout <<" abs path to the file created :" << filename << std::endl;
@@ -50,8 +81,7 @@ int Post::execute_method(request _request)
                 file_It = file.begin();
                 while (file_It != file.end()){
                     filename.clear();
-                    filename.append(_request.getroot());
-                    filename.append(_request.getrequest_URI());
+                    filename.append(_request.getUpload_store_PATH());
                     filename.append("/");
                     filename.append((*file_It).first);
                     remove(filename.c_str());
@@ -73,17 +103,11 @@ int Post::execute_method(request _request)
         }
 
     }
-    buffer.clear();
-    body.clear();
-    inFile.open(filename, std::ifstream::in);
-    while (std::getline(inFile, buffer))
-    {
-        // std::cout << buffer << std::endl;
-        body.append(buffer);
-    }
-    // std::cout << "</Line >" << std::endl;
-    inFile.close();
+    
     this->setResponseBody(body);
+    this->addHeader("Cache-Control", "no-cache");
+    this->addHeader("Content-Type", _request.getType("html"));
+    this->addHeader("Content-Length", std::to_string(this->getResponseBody().length()));
     return true;
 }
 

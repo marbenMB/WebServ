@@ -1,5 +1,4 @@
 #include "../../include/request.hpp"
-#include <stdlib.h>
 std::string const &request::gethost() const
 {
     return (this->host);
@@ -85,7 +84,6 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
     std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator locations_iterator = location.begin();
     int locationId = -1;
     int index = 0;
-    bool _cgi = false;
     std::string compare_URI;
     std::string str;
     compare_URI.clear();
@@ -95,12 +93,12 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
     // pos = this->getrequest_URI().find_last_of(".go");
     if ((pos = this->getrequest_URI().rfind(".py")) != std::string::npos && (pos + 3) == this->getrequest_URI().length())
     {
-        _cgi = true;
+       this->is_cgi = true;
         compare_URI.append("\%.py$");
     }
     else if ((pos = this->getrequest_URI().rfind(".go")) != std::string::npos && (pos + 3) == this->getrequest_URI().length())
     {
-         _cgi = true;
+        this->is_cgi = true;
         compare_URI.append("\%.go$");
     }
     else  
@@ -135,7 +133,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
             }
         }
     }
-    if (!_cgi) // remove the mutch string 
+    if (!this->is_cgi) // remove the mutch string 
     {
         // std::cout << "locationId :" << locationId << std::endl;
         // std::cout << "----URI1 (str) :" << str << std::endl;
@@ -170,7 +168,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
             this->setrequest_URI(__URI);
         }
     }
-    if (_cgi && locationId == -1)
+    if (this->is_cgi && locationId == -1)
         throw NotImplemented();
     return locationId;
 }
@@ -226,4 +224,13 @@ bool request::uploadType(void ){
         this->addType(_split[1], _split[0]);
     }
     return true;
+}
+
+bool request::getIs_cgi( void ){
+    return this->is_cgi;
+}
+
+
+std::string const & request::getUpload_store_PATH( void ) const{
+    return this->upload_store;
 }

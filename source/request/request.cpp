@@ -23,7 +23,7 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
          _requestHeader = _request.substr(0, splitIndex);
          _requestBody = _request.substr(splitIndex + 4, _request.length());
     }
-    // std::cout << "BODY****>" << request << std::endl;
+    // std::cout << "BODY****>" << _request << std::endl;
     // _requestHeader.clear();
     // _requestBody.clear();
     // _requestHeader.append(req_vector[0]);
@@ -44,12 +44,16 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
     this->setsocketID(socketID);
     this->setRedirect_status(-1);
     this->setcompare_URI("");
+    this->is_cgi = false;
     try
     {
         this->Verifying_Header(_requestHeader);
         this->Retrieving_requested_resource(server);
         if (this->getmethod().compare("POST") == 0)
+        {
+            // exit(1);
             this->Verifying_Body(_requestBody);
+        }
         this->uploadType();
         reqmethod = this->execute_request();
 
@@ -158,88 +162,101 @@ bool request::Verifying_Body(std::string req)
     // std::cout <<"EndSTRINGSEPARATES     " << EndSTRINGSEPARATES << std::endl;
     // if ((int)req.length() != this->getContent_Length()){this->requirements = false;return false;}
     // std::cout << req << std::endl;
-    if (ContentType["type"].compare("multipart/form-data") == 0)
-    {
-        STRINGSEPARATES.clear();
-        STRINGSEPARATES.append("--");
-        STRINGSEPARATES.append(ContentType["boundary"]);
-        EndSTRINGSEPARATES.clear();
-        EndSTRINGSEPARATES.append(STRINGSEPARATES);
-        EndSTRINGSEPARATES.append("--");
-        if (!ContentType["boundary"].length() || req.find(STRINGSEPARATES) == std::string::npos || req.find(EndSTRINGSEPARATES) == std::string::npos){
+    if ((int)req.length() != this->getContent_Length() || (int)req.length() > this->client_max_body_size){
             throw BadRequest();
         }
+    if (ContentType["type"].compare("application/x-www-form-urlencoded") == 0){
+        if ((int)req.length() != this->getContent_Length() || (int)req.length() > this->client_max_body_size){
+            throw BadRequest();
+        }
+        std::cout<< "application/x-www-form-urlencoded :" << req <<std::endl;
+        std::cout<< "upload_store :" << this->upload_store <<std::endl;
+    }
+    else if (ContentType["type"].compare("multipart/form-data") == 0)
+    {
+        if (ContentType["boundary"].length() != 0){
+            // std::cout << "REQUEST :" << req <<std::endl;
+            STRINGSEPARATES.clear();
+            STRINGSEPARATES.append("--");
+            STRINGSEPARATES.append(ContentType["boundary"]);
+            EndSTRINGSEPARATES.clear();
+            EndSTRINGSEPARATES.append(STRINGSEPARATES);
+            EndSTRINGSEPARATES.append("--");
+            if (req.find(STRINGSEPARATES) == std::string::npos || req.find(EndSTRINGSEPARATES) == std::string::npos){
+                throw BadRequest();
+            }
 
-        tmp.clear();
-        request = split(req, EndSTRINGSEPARATES)[0];
-        STRINGSEPARATES.append("\r\n");
-        tmp = split(request, STRINGSEPARATES);
-        std::vector<std::string>::iterator it = tmp.begin();
-        int index = 1;
-        std::vector<std::string>::iterator tmp_IT;
-        int indexs, nndex;
-        while (it != tmp.end())
-        {
-            // std::cout << RED <<"boundary["<<index<<"]"<<END_CLR << it[0] << std::endl;
-            std::vector<std::string> _file = split(it[0], "\n\r");
-            // std::cout << "\nBODY :\n" << _file[1] << std::endl ;
-            // std::cout << "_file size :" << _file.size() << std::endl;
-            /**
-            *   ! _file[0]
-                Content-Disposition: form-data; name=""; filename="get.cpp"
-                Content-Type: text/x-c
-            *   * _file[1]
-                file Body
-            */
-            indexs = 1;
-            tmp_IT = _file.begin();
-            while (tmp_IT != _file.end())
+            tmp.clear();
+            request = split(req, EndSTRINGSEPARATES)[0];
+            STRINGSEPARATES.append("\r\n");
+            tmp = split(request, STRINGSEPARATES);
+            std::vector<std::string>::iterator it = tmp.begin();
+            int index = 1;
+            std::vector<std::string>::iterator tmp_IT;
+            int indexs, nndex;
+            while (it != tmp.end())
             {
-                //  std::cout << RED <<"_file["<< indexs <<"] :"<< END_CLR<< *tmp_IT << std::endl;
-                ++tmp_IT;indexs++;
-            }
-            std::vector<std::string> __fileHeader = split(_file[0], "\n");
-            // __fileHeader = split(__fileHeader[0], "\n");
-            // std::cout << "__fileHeader :" << __fileHeader.size() << std::endl;
-            /**
-             * !   __fileHeader[0] :Content-Disposition: form-data; name=""; filename="request.hpp"
-             * *   __fileHeader[1] :Content-Type: application/octet-stream
-             */
-            indexs = 1;
-            tmp_IT = __fileHeader.begin();
-            std::vector<std::string> ContentDisposition_vect = split(split(tmp_IT[0], ":")[1], ";");
-            while (tmp_IT != __fileHeader.end())
-            {
-                // std::cout << RED << "__fileHeader[" << indexs << "] :" << END_CLR << *tmp_IT << std::endl;
-                ++tmp_IT;indexs++;
-            }
-            std::vector<std::string>::iterator ContentDisposition_iter = ContentDisposition_vect.begin();
-            nndex = 1;
-            // std::cout <<RED<< "Name =" <<END_CLR<< ContentDisposition_vect[1] << std::endl;
-            while (ContentDisposition_iter != ContentDisposition_vect.end())
-            {
-                // std::cout << RED << "ContentDisposition[" << nndex << "] :" << END_CLR << *ContentDisposition_iter << std::endl;
+                // std::cout << RED <<"boundary["<<index<<"]"<<END_CLR << it[0] << std::endl;
+                std::vector<std::string> _file = split(it[0], CRLF);
+                // std::cout << "\nBODY :\n" << _file[1] << std::endl ;
+                // std::cout << "_file size :" << _file.size() << std::endl;
                 /**
-                 * *ContentDisposition[1] :form-data
-                 * *ContentDisposition[2] :name=""
-                 * !ContentDisposition[3] :filename="request.hpp"
-                 */
-                if ((*ContentDisposition_iter).find("filename=") != std::string::npos){
-                    std::string filenameee(ContentDisposition_iter[0]);
-                    filenameee.erase(0, 10);
-                    int filename_length = filenameee.length();
-                    filenameee.erase(filename_length - 2, filename_length);
-                    tmp_fileIt.first = filenameee;
-                    tmp_fileIt.second = _file[1];
-                    this->req_body.push_back(tmp_fileIt);
-
-                    // std::cout <<RED<< "Body       =" <<END_CLR<< _file[1] << std::endl;
+                *   ! _file[0]
+                    Content-Disposition: form-data; name=""; filename="get.cpp"
+                    Content-Type: text/x-c
+                *   * _file[1]
+                    file Body
+                */
+                indexs = 1;
+                tmp_IT = _file.begin();
+                while (tmp_IT != _file.end())
+                {
+                    //  std::cout << RED <<"_file["<< indexs <<"] :"<< END_CLR<< *tmp_IT << std::endl;
+                    ++tmp_IT;indexs++;
                 }
-                ContentDisposition_iter++;nndex++;
+                std::vector<std::string> __fileHeader = split(_file[0], LF);
+                // __fileHeader = split(__fileHeader[0], "\n");
+                // std::cout << "__fileHeader :" << __fileHeader.size() << std::endl;
+                /**
+                 * !   __fileHeader[0] :Content-Disposition: form-data; name=""; filename="request.hpp"
+                 * *   __fileHeader[1] :Content-Type: application/octet-stream
+                 */
+                indexs = 1;
+                tmp_IT = __fileHeader.begin();
+                std::vector<std::string> ContentDisposition_vect = split(split(tmp_IT[0], ":")[1], ";");
+                while (tmp_IT != __fileHeader.end())
+                {
+                    // std::cout << RED << "__fileHeader[" << indexs << "] :" << END_CLR << *tmp_IT << std::endl;
+                    ++tmp_IT;indexs++;
+                }
+                std::vector<std::string>::iterator ContentDisposition_iter = ContentDisposition_vect.begin();
+                nndex = 1;
+                // std::cout <<RED<< "Name =" <<END_CLR<< ContentDisposition_vect[1] << std::endl;
+                while (ContentDisposition_iter != ContentDisposition_vect.end())
+                {
+                    // std::cout << RED << "ContentDisposition[" << nndex << "] :" << END_CLR << *ContentDisposition_iter << std::endl;
+                    /**
+                     * *ContentDisposition[1] :form-data
+                     * *ContentDisposition[2] :name=""
+                     * !ContentDisposition[3] :filename="request.hpp"
+                     */
+                    if ((*ContentDisposition_iter).find("filename=") != std::string::npos){
+                        std::string filenameee(ContentDisposition_iter[0]);
+                        filenameee.erase(0, 10);
+                        int filename_length = filenameee.length();
+                        filenameee.erase(filename_length - 2, filename_length);
+                        tmp_fileIt.first = filenameee;
+                        tmp_fileIt.second = _file[1];
+                        this->req_body.push_back(tmp_fileIt);
+
+                        // std::cout <<RED<< "Body       =" <<END_CLR<< _file[1] << std::endl;
+                    }
+                    ContentDisposition_iter++;nndex++;
+                }
+                // ContentDisposition_iter += 2;
+            
+                ++it;++index;
             }
-            // ContentDisposition_iter += 2;
-          
-            ++it;++index;
         }
     }
     else{ // theres no boundary
@@ -299,7 +316,6 @@ bool request::Verifying_Header(std::string req)
     else{this->setrequest_URI(_request_URI); }
 
     // std::cout << "request_URI : |" << this->getrequest_URI() << std::endl; 
-    // if (!is__subDir("./var",this->getrequest_URI()))
     //     throw NotAllowed();
     // this->_error.setCode_status(404);
     // this->_error.setReason_phrase("Bad Request");

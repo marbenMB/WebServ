@@ -21,12 +21,9 @@ void    request::Retrieving_requested_resource(Data *server)
     // ? set client max body size :
     std::vector<std::string>::iterator client_max_body_size_vect = it["client_max_body_size"].begin();
     if (!client_max_body_size_vect[0].empty() && it["client_max_body_size"].size() == 1){
-        // if ((*client_max_body_size_vect).find("G") != std::string::npos)
-        // {
-        //     // storege the value in the obj
-        //     std::cout << "NOt in string\n";
-        // }
-        // std::cout << "client_max_body_size : " << client_max_body_size_vect[0] << std::endl;
+       this->client_max_body_size = atoi(it["client_max_body_size"][0].c_str());
+        // std::cout << "client_max_body_size :" << this->client_max_body_size << std::endl;
+
     }
 
      /* -------------------------------------------------------------------------- */
@@ -75,13 +72,27 @@ void    request::Retrieving_requested_resource(Data *server)
     std::vector<std::string>::iterator iitt = location_vars["root"].begin();
     if (location_vars["root"].size()) this->root = *iitt;
     // std::cout << RED << "   +>index" << END_CLR << std::endl;
-
+    if (!this->is_cgi && !is__subDir(this->root, this->getrequest_URI()))
+        throw BadRequest();
     checkForIndex(location_vars["index"]);
     // if (this->getrequest_URI().compare("/") == 0){
     //     // std::cout << RED << this->default_index << END_CLR << std::endl;
     //     this->request_URI = "/" + this->default_index;
     // }
+    if (location_vars["upload_store"].size()){
+        this->upload_store.clear();
+        this->upload_store.append(this->root);
+        this->upload_store.append(location_vars["upload_store"][0]);
+        // std::cout << "upload_store :" << this->upload_store << std::endl;
+    }else{
+        this->upload_store.clear();
+        this->upload_store.append(UPLOAD_STORE);}
 
+    if (location_vars["fasstcgiPATH"].size()){
+        this->fasstcgiPATH = location_vars["fasstcgiPATH"][0];
+        // std::cout << "upload_store :" << this->fasstcgiPATH << std::endl;
+
+    }
     // autoindex
     iitt = location_vars["autoindex"].begin();
     if (location_vars["autoindex"].size() > 0 &&  location_vars["autoindex"][0].compare("on") == 0) {
