@@ -188,19 +188,22 @@ void	acceptClients(WebServ &serv)
 		idx = 0;
 		while (idx < serv.vecPoll.size())
 		{
-			if (idx < serv.nSocketServer && serv.vecPoll[idx].revents & POLLIN)
+			if (idx < serv.nSocketServer)
 			{
-				//	--	Accepting Client :
-				clientFD = accept(serv.vecPoll[idx].fd, (struct sockaddr *)&clientAddr, (socklen_t *)&clientLen);
-				
-				//	-- Creating Client socketPorop
-				ClientSock			sockClient(clientFD, serv.findSocketPort(serv.vecPoll[idx].fd), serv.findSocketIP(serv.vecPoll[idx].fd));
+				if (serv.vecPoll[idx].revents & POLLIN)
+				{
+					//	--	Accepting Client :
+					clientFD = accept(serv.vecPoll[idx].fd, (struct sockaddr *)&clientAddr, (socklen_t *)&clientLen);
+					
+					//	-- Creating Client socketPorop
+					ClientSock			sockClient(clientFD, serv.findSocketPort(serv.vecPoll[idx].fd), serv.findSocketIP(serv.vecPoll[idx].fd));
 
-				//	--	push to poll vector
-				serv.vecPoll.push_back(sockClient._pSFD);
+					//	--	push to poll vector
+					serv.vecPoll.push_back(sockClient._pSFD);
 
-				//	-- insert client socket in client map
-				serv.clientMap.insert(std::make_pair(clientFD, sockClient));
+					//	-- insert client socket in client map
+					serv.clientMap.insert(std::make_pair(clientFD, sockClient));
+				}
 			}
 			else
 			{
@@ -213,6 +216,9 @@ void	acceptClients(WebServ &serv)
 					{
 						close(serv.vecPoll[idx].fd);
 						serv.vecPoll.erase(serv.vecPoll.begin() + idx);
+						serv.clientMap.erase(serv.vecPoll[idx].fd);
+						// idx--;
+						// continue;
 					}
 					else
 					{
@@ -240,12 +246,12 @@ void	acceptClients(WebServ &serv)
 						}
 					}
 				}
-				if (serv.vecPoll[idx].revents & POLLOUT && serv.clientMap[serv.vecPoll[idx].fd]._readiness)
-				{
-					std::string	response("HTTP/1.1 200 OK\nContent-Type: text/html\n\r\n\r<html>\n<head>\n<title>Hello World</title>\n</head>\n<body>\n<h1>Hello World</h1>\n</body>\n</html>");
+				// if (serv.vecPoll[idx].revents & POLLOUT && serv.clientMap[serv.vecPoll[idx].fd]._readiness)
+				// {
+				// 	std::string	response("HTTP/1.1 200 OK\nContent-Type: text/html\n\r\n\r<html>\n<head>\n<title>Hello World</title>\n</head>\n<body>\n<h1>Hello World</h1>\n</body>\n</html>");
 
-					send(serv.vecPoll[idx].fd, response.c_str(), response.length(), 0);
-				}
+				// 	send(serv.vecPoll[idx].fd, response.c_str(), response.length(), 0);
+				// }
 			}
 			idx++;
 		}
