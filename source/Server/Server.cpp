@@ -182,79 +182,71 @@ void	acceptClients(WebServ &serv)
 		if (nFd < 0)
 		{
 			// continue;
-			throw	std::runtime_error("Poll Failed !!");
+			throw	std::runtime_error("Poll() Failed !!");
 		}
-		// std::cout << "HERRRE\n" << std::endl;
 		for (size_t idx = 0; idx < serv.vecPoll.size(); idx++)
 		{
 			if (idx < serv.nSocketServer)
 			{
 				if (serv.vecPoll[idx].revents & POLLIN)
 				{
-					//	--	Accepting Client :
+					//	--	Accepting new Client
 					clientFD = accept(serv.vecPoll[idx].fd, (struct sockaddr *)&clientAddr, (socklen_t *)&clientLen);
 					if (clientFD < 0)
 						throw	std::runtime_error("Accept() Failed !!");
-					fcntl(clientFD, F_SETFL,	O_NONBLOCK);
-					
-					//	-- Creating Client socketPorop
-					ClientSock			sockClient(clientFD, serv.findSocketPort(serv.vecPoll[idx].fd), serv.findSocketIP(serv.vecPoll[idx].fd));
+					fcntl(clientFD, F_SETFL, O_NONBLOCK);
 
-					//	--	push to poll vector
+					//	--	Create new Client prop object
+					ClientSock	sockClient(clientFD, serv.findSocketPort(serv.vecPoll[idx].fd), serv.findSocketIP(serv.vecPoll[idx].fd));
+
+					//	--	push client to poll vector
 					serv.vecPoll.push_back(sockClient._pSFD);
 
-					//	-- insert client socket in client map
+					//	--	insert client to clientMap
 					serv.clientMap.insert(std::make_pair(clientFD, sockClient));
 				}
 			}
 			else
 			{
-				bzero(&buffer[0], MAXREAD);
+				bzero(&buffer, MAXREAD);
+
+				//	--	check the POLLIN event in the client socket
 				if (serv.vecPoll[idx].revents & POLLIN)
 				{
-					//	-- Read request
 					byte = recv(serv.vecPoll[idx].fd, &buffer, MAXREAD, 0);
-					// std::cout << "******** " << byte << "********\n" << std::endl;
+
+					//	--	check if recv returns <= 0 (error case -> erase client socket)
 					if (byte <= 0)
 					{
 						close(serv.vecPoll[idx].fd);
 						serv.vecPoll.erase(serv.vecPoll.begin() + idx);
-						// serv.clientMap.erase(serv.vecPoll[idx].fd);
-						// idx--;
-						// continue;
+						serv.clientMap.erase(serv.vecPoll[idx].fd);
+					}
+					if (serv.clientMap[serv.vecPoll[idx].fd].byteToRead && serv.clientMap[serv.vecPoll[idx].fd].byteRead >= serv.clientMap[serv.vecPoll[idx].fd].byteToRead)
+					{
+						serv.clientMap[serv.vecPoll[idx].fd]._readiness = true;
+						std::cout << serv.clientMap[serv.vecPoll[idx].fd]._reqHeader << serv.clientMap[serv.vecPoll[idx].fd]._reqBody << std::endl;
+					}
+					tmp.append(buffer, byte);
+					//	--	check if the first read in the socket
+					if (serv.clientMap[serv.vecPoll[idx].fd]._InitialRead)
+					{
+						//	--	set Initial read to false
+						serv.clientMap[serv.vecPoll[idx].fd]._InitialRead = false;
+
+						//	-- separate request headers than body
+						serv.clientMap[serv.vecPoll[idx].fd].separateHeadBody(tmp);
+
+						//	-- check transfer encoding of the request body
+						serv.clientMap[serv.vecPoll[idx].fd].transferEncoding();
+						std::cout << "====== BYTE TO READ ===== : " << serv.clientMap[serv.vecPoll[idx].fd].byteToRead << std::endl;
 					}
 					else
 					{
-						//	-- Save number of byte read
-						serv.clientMap[serv.vecPoll[idx].fd].byteRead += byte;
-						if (serv.clientMap[serv.vecPoll[idx].fd].byteRead >= serv.clientMap[serv.vecPoll[idx].fd].byteToRead)
-							serv.clientMap[serv.vecPoll[idx].fd]._readiness = true;
-						tmp.append(buffer, byte);
-						if (serv.clientMap[serv.vecPoll[idx].fd]._InitialRead)
-						{
-							//	--	Separate headers than body request
-							serv.clientMap[serv.vecPoll[idx].fd].separateHeadBody(tmp);
-
-							//	-- check transfer encoding
-							serv.clientMap[serv.vecPoll[idx].fd].transferEncoding();
-							
-							//	--	set content lenght
-
-							serv.clientMap[serv.vecPoll[idx].fd]._InitialRead = false;
-							std::cout << serv.clientMap[serv.vecPoll[idx].fd]._reqHeader << std::endl;
-						}
-						else
-						{
-							serv.clientMap[serv.vecPoll[idx].fd]._reqBody.append(buffer, byte);
-						}
+						serv.clientMap[serv.vecPoll[idx].fd]._reqBody.append(tmp, byte);
 					}
+					serv.clientMap[serv.vecPoll[idx].fd].byteRead += byte;
 				}
-				// if (serv.vecPoll[idx].revents & POLLOUT && serv.clientMap[serv.vecPoll[idx].fd]._readiness)
-				// {
-				// 	std::string	response("HTTP/1.1 200 OK\nContent-Type: text/html\n\r\n\r<html>\n<head>\n<title>Hello World</title>\n</head>\n<body>\n<h1>Hello World</h1>\n</body>\n</html>");
-
-				// 	send(serv.vecPoll[idx].fd, response.c_str(), response.length(), 0);
-				// }
 			}
 		}
 	}

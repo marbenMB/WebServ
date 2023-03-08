@@ -71,8 +71,8 @@ class	ClientSock : public SockProp
 		std::string		_request;
 		std::string		_reqHeader;
 		std::string		_reqBody;
-		size_t			byteToRead;
-		size_t			byteRead;
+		long long		byteToRead;
+		long long		byteRead;
 		// size_t			byteLeft;
 		bool			_readiness;
 
