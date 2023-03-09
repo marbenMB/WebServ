@@ -239,13 +239,13 @@
 #include <unistd.h>
 #include "./include/request.hpp"
 #include "./include/method.hpp"
-
+ #define PORT 9090
 
 int _main(int ac, char *av[])
 {
     // system("leaks webServ");
     Data g_Data;
-    int sockfd, newsockfd, portno;
+    int sockfd, newsockfd;
     // long maxBayte = 2147483648;
     long maxBayte = 2147483647;
     socklen_t clilen; // unsigned int
@@ -281,11 +281,10 @@ int _main(int ac, char *av[])
 
     /* Initialize socket structure */
     bzero((char *)&serv_addr, sizeof(serv_addr));
-    portno = 9090;
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(portno);
+    serv_addr.sin_port = htons(PORT);
 
     /* Now bind the host address using bind() call.*/
     if (bind(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)

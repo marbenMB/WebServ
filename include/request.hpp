@@ -128,24 +128,26 @@ private:
 
 
     // cgi
-     std::string fasstcgiPATH;
+    std::string CGIbody;
+    std::string fastcgi_pass;
+    std::string fastcgi_index;
+    bool is_cgi;
+
 
     // allowed vars
     int __post;
     int __delete;
     int __get;
-    bool is_cgi;
     request(){};
     std::vector<std::string> message;
     //  error 
 
     // for location
     std::string compare_URI;
-
     std::map<std::string, std::string> _typs;
+
+    
 public:
-
-
     bool getIs_cgi( void );
     void addType(std::string, std::string);
     std::string const &getType(std::string);
@@ -217,6 +219,8 @@ public:
     // upload_store
     std::string const & getUpload_store_PATH( void ) const;
 
+    //  CGI :
+    bool getCGIstatus( void ) const;
     class BadRequest 
     {
         public:

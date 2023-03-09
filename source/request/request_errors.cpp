@@ -19,6 +19,13 @@ method * request::CGI::runCGI(request req) const throw(){
         resp->setContent_Type("text/html");
     }
 
+
+
+    std::cout << "fastcgi_pass :" << req.fastcgi_pass <<std::endl;
+    std::cout << "fastcgi_index :" << req.fastcgi_index <<std::endl;
+    std::cout << "CGIbody :" << req.CGIbody <<std::endl;
+    std::cout << "upload_store :" << req.upload_store <<std::endl <<std::endl<<std::endl;
+
     inFile.open("var/cgi.html", std::ifstream::in);
     while (std::getline(inFile, buffer))
     {

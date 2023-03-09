@@ -234,3 +234,8 @@ bool request::getIs_cgi( void ){
 std::string const & request::getUpload_store_PATH( void ) const{
     return this->upload_store;
 }
+
+
+bool request::getCGIstatus( void ) const{
+    return this->is_cgi;
+}

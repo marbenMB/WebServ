@@ -88,10 +88,11 @@ void    request::Retrieving_requested_resource(Data *server)
         this->upload_store.clear();
         this->upload_store.append(UPLOAD_STORE);}
 
-    if (location_vars["fasstcgiPATH"].size()){
-        this->fasstcgiPATH = location_vars["fasstcgiPATH"][0];
-        // std::cout << "upload_store :" << this->fasstcgiPATH << std::endl;
-
+    if (location_vars["fastcgi_pass"].size()){
+        this->fastcgi_pass = location_vars["fastcgi_pass"][0];
+    }
+     if (location_vars["fastcgi_index"].size()){
+        this->fastcgi_index = location_vars["fastcgi_index"][0];
     }
     // autoindex
     iitt = location_vars["autoindex"].begin();

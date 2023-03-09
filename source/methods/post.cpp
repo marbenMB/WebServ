@@ -61,6 +61,9 @@ int Post::execute_method(request _request)
         // // std::cout << "</Line >" << std::endl;
         // inFile.close();
     }
+    else if (tmp["type"].compare("application/x-www-form-urlencoded") == 0){
+        if (_request.getCGIstatus()){ throw request::CGI();}
+    }
     else if (tmp["type"].compare("multipart/form-data") == 0)
     {
         std::vector<std::pair<std::string, std::string> > file = _request.getReqBody();

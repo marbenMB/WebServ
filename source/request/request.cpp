@@ -166,10 +166,9 @@ bool request::Verifying_Body(std::string req)
             throw BadRequest();
         }
     if (ContentType["type"].compare("application/x-www-form-urlencoded") == 0){
-        if ((int)req.length() != this->getContent_Length() || (int)req.length() > this->client_max_body_size){
-            throw BadRequest();
-        }
-        std::cout<< "application/x-www-form-urlencoded :" << req <<std::endl;
+        // std::cout<< "application/x-www-form-urlencoded :" << req <<std::endl;
+        this->CGIbody.clear();
+        this->CGIbody.append(req);
         std::cout<< "upload_store :" << this->upload_store <<std::endl;
     }
     else if (ContentType["type"].compare("multipart/form-data") == 0)
