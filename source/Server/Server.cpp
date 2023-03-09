@@ -107,9 +107,9 @@ void	createSockets(WebServ &serv)
 			sockFd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 			if (sockFd < 0)
 				throw	std::runtime_error("Socket() Failed !!");
-			fcntl(sockFd, F_SETFL,	O_NONBLOCK);
 			if (setsockopt(sockFd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)))
 				throw	std::runtime_error("Setsockopt() Failed !!");
+			fcntl(sockFd, F_SETFL,	O_NONBLOCK);
 			
 			//	-- Getting the addr info
 			bzero(&hints, sizeof(hints));
@@ -167,6 +167,7 @@ void	acceptClients(WebServ &serv)
 	int		nFd;
 
 	//	--	Accept var
+	int					optval = 1;
 	int					clientFD;
 	struct sockaddr_in	clientAddr;
 	int					clientLen = sizeof(clientAddr);
@@ -194,6 +195,8 @@ void	acceptClients(WebServ &serv)
 					clientFD = accept(serv.vecPoll[idx].fd, (struct sockaddr *)&clientAddr, (socklen_t *)&clientLen);
 					if (clientFD < 0)
 						throw	std::runtime_error("Accept() Failed !!");
+					if (setsockopt(clientFD, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)))
+						throw	std::runtime_error("Setsockopt() Failed !!");
 					fcntl(clientFD, F_SETFL, O_NONBLOCK);
 
 					//	--	Create new Client prop object
@@ -214,19 +217,19 @@ void	acceptClients(WebServ &serv)
 				if (serv.vecPoll[idx].revents & POLLIN)
 				{
 					byte = recv(serv.vecPoll[idx].fd, &buffer, MAXREAD, 0);
-
+					std::cout << "======== RECV BYTE : " << byte << "======\n" << std::endl;
 					//	--	check if recv returns <= 0 (error case -> erase client socket)
 					if (byte <= 0)
 					{
+						std::cout << "**** RECV PROB : ****\n" << std::endl;
 						close(serv.vecPoll[idx].fd);
-						serv.vecPoll.erase(serv.vecPoll.begin() + idx);
-						serv.clientMap.erase(serv.vecPoll[idx].fd);
+						std::vector<struct pollfd>::iterator it = serv.vecPoll.begin() + (idx);
+						serv.clientMap.erase(it->fd);
+						serv.vecPoll.erase(it);
+						// idx--;
+						continue;
 					}
-					if (serv.clientMap[serv.vecPoll[idx].fd].byteToRead && serv.clientMap[serv.vecPoll[idx].fd].byteRead >= serv.clientMap[serv.vecPoll[idx].fd].byteToRead)
-					{
-						serv.clientMap[serv.vecPoll[idx].fd]._readiness = true;
-						std::cout << serv.clientMap[serv.vecPoll[idx].fd]._reqHeader << serv.clientMap[serv.vecPoll[idx].fd]._reqBody << std::endl;
-					}
+					
 					tmp.append(buffer, byte);
 					//	--	check if the first read in the socket
 					if (serv.clientMap[serv.vecPoll[idx].fd]._InitialRead)
@@ -245,7 +248,15 @@ void	acceptClients(WebServ &serv)
 					{
 						serv.clientMap[serv.vecPoll[idx].fd]._reqBody.append(tmp, byte);
 					}
+					tmp.clear();
 					serv.clientMap[serv.vecPoll[idx].fd].byteRead += byte;
+					if (serv.clientMap[serv.vecPoll[idx].fd].byteToRead && serv.clientMap[serv.vecPoll[idx].fd].byteRead >= serv.clientMap[serv.vecPoll[idx].fd].byteToRead)
+					{
+						serv.clientMap[serv.vecPoll[idx].fd]._readiness = true;
+						std::cout << serv.clientMap[serv.vecPoll[idx].fd]._reqHeader << serv.clientMap[serv.vecPoll[idx].fd]._reqBody << std::endl;
+						
+					}
+					
 				}
 			}
 		}
