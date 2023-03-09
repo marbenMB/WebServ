@@ -68,6 +68,7 @@ SockProp::SockProp(int fd, int port, std::string ip, int type) : _fd(fd), _Port(
 {
 	_pSFD.fd = _fd;
 	_pSFD.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
+	_pSFD.revents = 0;
 }
 SockProp::~SockProp() { _IP.clear(); }
 
@@ -98,6 +99,8 @@ void	ClientSock::separateHeadBody(std::string tmp)
 		if (nFind + 5 < tmp.length())
 			_reqBody = tmp.substr(nFind + 5, tmp.length());
 	}
+	// else
+	// 	_readiness = false;
 }
 
 void	ClientSock::transferEncoding(void)
@@ -106,7 +109,7 @@ void	ClientSock::transferEncoding(void)
 	std::string	tmp;
 	std::stringstream ss;
 	
-	nFind = _reqHeader.find("chunked");
+	nFind = _reqHeader.find("Transfer-Encoding: chunked");
 	if (nFind != std::string::npos)
 		_chunkedBody = true;
 	else

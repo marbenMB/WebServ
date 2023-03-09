@@ -167,7 +167,7 @@ void	acceptClients(WebServ &serv)
 	int		nFd;
 
 	//	--	Accept var
-	int					optval = 1;
+	// int					optval = 1;
 	int					clientFD;
 	struct sockaddr_in	clientAddr;
 	int					clientLen = sizeof(clientAddr);
@@ -195,8 +195,8 @@ void	acceptClients(WebServ &serv)
 					clientFD = accept(serv.vecPoll[idx].fd, (struct sockaddr *)&clientAddr, (socklen_t *)&clientLen);
 					if (clientFD < 0)
 						throw	std::runtime_error("Accept() Failed !!");
-					if (setsockopt(clientFD, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)))
-						throw	std::runtime_error("Setsockopt() Failed !!");
+					// if (setsockopt(clientFD, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)))
+					// 	throw	std::runtime_error("Setsockopt() Failed !!");
 					fcntl(clientFD, F_SETFL, O_NONBLOCK);
 
 					//	--	Create new Client prop object
