@@ -206,8 +206,6 @@ void	acceptClients(WebServ &serv)
 					//	-- storing servers Vector for the new Client
 					std::vector<Server>&	vecServ = serv.serverSockets[serverSock];
 					sockClient.vecServ = vecServ;
-					std::cout << "+++++++ : " << sockClient.vecServ[0].getServerName()[0] << "+++++++ : " << std::endl;
-					std::cout << "+++++++ : " << sockClient.vecServ[1].getServerName()[0] << "+++++++ : " << std::endl;
 
 					//	--	push client to poll vector
 					serv.vecPoll.push_back(sockClient._pSFD);
@@ -240,17 +238,20 @@ void	acceptClients(WebServ &serv)
 					//	--	check if the first read in the socket
 					if (serv.clientMap[serv.vecPoll[idx].fd]._InitialRead)
 					{
-						serv.clientMap[serv.vecPoll[idx].fd].tmp.append(buffer, byte);
+						serv.clientMap[serv.vecPoll[idx].fd]._tmp.append(buffer, byte);
 						//	--	set Initial read to false
 						serv.clientMap[serv.vecPoll[idx].fd]._InitialRead = false;
 
 						//	-- separate request headers than body
-						serv.clientMap[serv.vecPoll[idx].fd].separateHeadBody(serv.clientMap[serv.vecPoll[idx].fd].tmp);
+						serv.clientMap[serv.vecPoll[idx].fd].separateHeadBody(serv.clientMap[serv.vecPoll[idx].fd]._tmp);
 
-						//	-- check transfer encoding of the request body
-						serv.clientMap[serv.vecPoll[idx].fd].transferEncoding();
-						std::cout << "====== BYTE TO READ ===== : " << serv.clientMap[serv.vecPoll[idx].fd].byteToRead 
-						<< " ====== Content-Length ===== : " << serv.clientMap[serv.vecPoll[idx].fd]._content_lenght << std::endl;
+						if (!serv.clientMap[serv.vecPoll[idx].fd]._InitialRead)
+						{
+							//	-- check transfer encoding of the request body
+							serv.clientMap[serv.vecPoll[idx].fd].transferEncoding();
+							std::cout << "====== BYTE TO READ ===== : " << serv.clientMap[serv.vecPoll[idx].fd].byteToRead 
+							<< " ====== Content-Length ===== : " << serv.clientMap[serv.vecPoll[idx].fd]._content_lenght << std::endl;
+						}
 					}
 					else
 					{

@@ -71,7 +71,7 @@ class	ClientSock : public SockProp
 		bool			_chunkedBody;
 		// int				_connexion;
 
-		std::string		tmp;
+		std::string		_tmp;
 		std::string		_request;
 		std::string		_reqHeader;
 		std::string		_reqBody;
