@@ -203,6 +203,12 @@ void	acceptClients(WebServ &serv)
 					const SockProp&	serverSock = serv.findServSocket(serv.vecPoll[idx].fd);
 					ClientSock	sockClient(clientFD, serverSock._Port, serverSock._IP);
 
+					//	-- storing servers Vector for the new Client
+					std::vector<Server>&	vecServ = serv.serverSockets[serverSock];
+					sockClient.vecServ = vecServ;
+					std::cout << "+++++++ : " << sockClient.vecServ[0].getServerName()[0] << "+++++++ : " << std::endl;
+					std::cout << "+++++++ : " << sockClient.vecServ[1].getServerName()[0] << "+++++++ : " << std::endl;
+
 					//	--	push client to poll vector
 					serv.vecPoll.push_back(sockClient._pSFD);
 
