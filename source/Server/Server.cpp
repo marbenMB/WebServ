@@ -200,7 +200,8 @@ void	acceptClients(WebServ &serv)
 					fcntl(clientFD, F_SETFL, O_NONBLOCK);
 
 					//	--	Create new Client prop object
-					ClientSock	sockClient(clientFD, serv.findSocketPort(serv.vecPoll[idx].fd), serv.findSocketIP(serv.vecPoll[idx].fd));
+					const SockProp&	serverSock = serv.findServSocket(serv.vecPoll[idx].fd);
+					ClientSock	sockClient(clientFD, serverSock._Port, serverSock._IP);
 
 					//	--	push client to poll vector
 					serv.vecPoll.push_back(sockClient._pSFD);
