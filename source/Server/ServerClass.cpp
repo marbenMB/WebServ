@@ -99,8 +99,11 @@ void	ClientSock::separateHeadBody(std::string tmp)
 		if (nFind + 5 < tmp.length())
 			_reqBody = tmp.substr(nFind + 5, tmp.length());
 	}
-	// else
-	// 	_readiness = false;
+	else
+	{
+		_InitialRead = true;
+		_readiness = false;
+	}
 }
 
 void	ClientSock::transferEncoding(void)
@@ -121,8 +124,10 @@ void	ClientSock::transferEncoding(void)
 			tmp = _reqHeader.substr(nFind + 16, _reqHeader.length() - (nFind + 16));
 			ss << tmp;
 			ss >> byteToRead;
+			_content_lenght = byteToRead;
+			byteToRead += _reqHeader.length();
 		}
-		else
+		else if (nFind == std::string::npos && _InitialRead == false)
 			byteToRead = -1;
 	}
 }

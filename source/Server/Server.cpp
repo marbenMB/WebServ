@@ -175,7 +175,7 @@ void	acceptClients(WebServ &serv)
 	//	--	Read var
 	char	buffer[MAXREAD];
 	int		byte;
-	std::string	tmp;
+	// std::string	tmp;
 
 	while (true)
 	{
@@ -230,25 +230,26 @@ void	acceptClients(WebServ &serv)
 						continue;
 					}
 					
-					tmp.append(buffer, byte);
 					//	--	check if the first read in the socket
 					if (serv.clientMap[serv.vecPoll[idx].fd]._InitialRead)
 					{
+						serv.clientMap[serv.vecPoll[idx].fd].tmp.append(buffer, byte);
 						//	--	set Initial read to false
 						serv.clientMap[serv.vecPoll[idx].fd]._InitialRead = false;
 
 						//	-- separate request headers than body
-						serv.clientMap[serv.vecPoll[idx].fd].separateHeadBody(tmp);
+						serv.clientMap[serv.vecPoll[idx].fd].separateHeadBody(serv.clientMap[serv.vecPoll[idx].fd].tmp);
 
 						//	-- check transfer encoding of the request body
 						serv.clientMap[serv.vecPoll[idx].fd].transferEncoding();
-						std::cout << "====== BYTE TO READ ===== : " << serv.clientMap[serv.vecPoll[idx].fd].byteToRead << std::endl;
+						std::cout << "====== BYTE TO READ ===== : " << serv.clientMap[serv.vecPoll[idx].fd].byteToRead 
+						<< " ====== Content-Length ===== : " << serv.clientMap[serv.vecPoll[idx].fd]._content_lenght << std::endl;
 					}
 					else
 					{
-						serv.clientMap[serv.vecPoll[idx].fd]._reqBody.append(tmp, byte);
+						serv.clientMap[serv.vecPoll[idx].fd]._reqBody.append(buffer, byte);
 					}
-					tmp.clear();
+					// tmp.clear();
 					serv.clientMap[serv.vecPoll[idx].fd].byteRead += byte;
 					if (serv.clientMap[serv.vecPoll[idx].fd].byteToRead && serv.clientMap[serv.vecPoll[idx].fd].byteRead >= serv.clientMap[serv.vecPoll[idx].fd].byteToRead)
 					{
@@ -258,6 +259,13 @@ void	acceptClients(WebServ &serv)
 					}
 					
 				}
+				// else if (serv.vecPoll[idx].revents & POLLOUT && serv.clientMap[serv.vecPoll[idx].fd]._readiness)
+				// {
+				//	********* reset client data first **************
+				// 	std::string	response("HTTP/1.1 200 OK\nContent-Type: text/html\n\r\n\r<html>\n<head>\n<title>Hello World</title>\n</head>\n<body>\n<h1>Hello World</h1>\n</body>\n</html>");
+
+				// 	send(serv.vecPoll[idx].fd, response.c_str(), response.length(), 0);
+				// }
 			}
 		}
 	}
