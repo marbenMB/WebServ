@@ -68,11 +68,13 @@ class	ClientSock : public SockProp
 		bool			_chunkedBody;
 		// int				_connexion;
 
+		std::string		tmp;
 		std::string		_request;
 		std::string		_reqHeader;
 		std::string		_reqBody;
 		long long		byteToRead;
 		long long		byteRead;
+		long long		_content_lenght;
 		// size_t			byteLeft;
 		bool			_readiness;
 
