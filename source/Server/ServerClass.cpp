@@ -9,20 +9,7 @@ WebServ::~WebServ()
 	serverSockets.clear();
 }
 
-int	WebServ::findSocketPort(int sockFd)
-{
-	std::map<SockProp, std::vector<Server> >::iterator it = serverSockets.begin();
-	
-	while (it != serverSockets.end())
-	{
-		if (it->first._fd == sockFd)
-			break ;
-		it++;
-	}
-	return it->first._Port;
-}
-
-std::string	WebServ::findSocketIP(int sockFd)
+const SockProp&	WebServ::findServSocket(int sockFd)
 {
 	std::map<SockProp, std::vector<Server> >::iterator it = serverSockets.begin();
 
@@ -32,7 +19,7 @@ std::string	WebServ::findSocketIP(int sockFd)
 			break;
 		it++;
 	}
-	return it->first._IP;
+	return ((*it).first);
 }
 
 //	***	---		________	---	***	//

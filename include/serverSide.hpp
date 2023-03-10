@@ -133,8 +133,7 @@ class	WebServ
 		
 		WebServ ();
 		~WebServ ();
-		int		findSocketPort(int sockFd);
-		std::string	findSocketIP(int sockFd);
+		const SockProp&	findServSocket(int sockFd);
 };
 
 //	****	*********	****	//
