@@ -38,6 +38,8 @@ enum defines
 //	****	 CLASSES	****	//
 //	****	*********	****	//
 
+class	Server;
+
 class	SockProp
 {
 	public :
@@ -62,6 +64,7 @@ class	ClientSock : public SockProp
 {
 	public :
 		// std::string		_host;
+		std::vector<Server>	vecServ;
 		// ServerConf		_serverResponding;
 		
 		bool			_InitialRead;
