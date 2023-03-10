@@ -85,6 +85,7 @@ void	ClientSock::separateHeadBody(std::string tmp)
 		_reqHeader = tmp.substr(0, nFind + 4);
 		if (nFind + 5 < tmp.length())
 			_reqBody = tmp.substr(nFind + 5, tmp.length());
+		_tmp.clear();
 	}
 	else
 	{
