@@ -251,6 +251,9 @@ void	acceptClients(WebServ &serv)
 							serv.clientMap[serv.vecPoll[idx].fd].transferEncoding();
 							std::cout << "====== BYTE TO READ ===== : " << serv.clientMap[serv.vecPoll[idx].fd].byteToRead 
 							<< " ====== Content-Length ===== : " << serv.clientMap[serv.vecPoll[idx].fd]._content_lenght << std::endl;
+							serv.clientMap[serv.vecPoll[idx].fd].sockConnection();
+
+							// serv.clientMap[serv.vecPoll[idx].fd].hostResp();
 						}
 					}
 					else
@@ -262,8 +265,9 @@ void	acceptClients(WebServ &serv)
 					if (serv.clientMap[serv.vecPoll[idx].fd].byteToRead && serv.clientMap[serv.vecPoll[idx].fd].byteRead >= serv.clientMap[serv.vecPoll[idx].fd].byteToRead)
 					{
 						serv.clientMap[serv.vecPoll[idx].fd]._readiness = true;
-						std::cout << serv.clientMap[serv.vecPoll[idx].fd]._reqHeader << serv.clientMap[serv.vecPoll[idx].fd]._reqBody << std::endl;
-						
+						serv.clientMap[serv.vecPoll[idx].fd].formRequest();
+						std::cout << "+++ REQUEST LENGTH : " << serv.clientMap[serv.vecPoll[idx].fd]._request.length() << " ++++ \n\n" 
+						<< serv.clientMap[serv.vecPoll[idx].fd]._request;
 					}
 					
 				}
