@@ -63,7 +63,7 @@ class	SockProp
 class	ClientSock : public SockProp
 {
 	public :
-		// std::string		_host;
+		std::string		_host;
 		std::vector<Server>	vecServ;
 		ServerConf		_serverResponding;
 		
@@ -96,6 +96,7 @@ class	ClientSock : public SockProp
 		void	separateHeadBody(std::string tmp);
 		void	transferEncoding(void);
 		void	formRequest(void);
+		std::string	findHeaderValue(std::string header);
 		void	sockConnection(void);
 		void	hostResp(void);
 		void	readBody(void);
