@@ -123,7 +123,13 @@ void	ClientSock::transferEncoding(void)
 void	ClientSock::formRequest(void)
 {
 	_request.append(_reqHeader);
-	_request.append(_reqBody);
+	if (_chunkedBody)
+	{
+		// add content length to request headers
+		_request.append(_bodyChunk);
+	}
+	else
+		_request.append(_reqBody);
 }
 
 std::string	ClientSock::findHeaderValue(std::string header)
