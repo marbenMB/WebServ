@@ -126,25 +126,39 @@ void	ClientSock::formRequest(void)
 	_request.append(_reqBody);
 }
 
-void	ClientSock::sockConnection(void)
+std::string	ClientSock::findHeaderValue(std::string header)
 {
 	size_t		nFind_1;
 	size_t		nFind_2;
-	std::string	findConn;
-	std::string	conn;
+	std::string	findWord;
+	std::string	word;
 
-	nFind_1 = _reqHeader.find("Connection: ");
+	nFind_1 = _reqHeader.find(header);
 	if (nFind_1 != std::string::npos)
 	{
-		findConn = _reqHeader.substr(nFind_1 + 12, _reqHeader.length());
-		nFind_2 = findConn.find("\r\n");
+		findWord = _reqHeader.substr(nFind_1 + header.length(), _reqHeader.length());
+		nFind_2 = findWord.find("\r\n");
 		if (nFind_2 != std::string::npos)
-			conn = _reqHeader.substr(nFind_1 + 12, nFind_2);
+			word = _reqHeader.substr(nFind_1 + header.length(), nFind_2);
 	}
+	return word;
+}
+
+void	ClientSock::sockConnection(void)
+{
+	std::string	conn;
+
+	conn = this->findHeaderValue("Connection: ");
 	if (!conn.compare("keep-alive"))
 		_connexion = KEEP_ALIVE;
 	else if	(!conn.compare("close"))
 		_connexion = CLOSE;
+}
+
+void	ClientSock::hostResp(void)
+{
+	_host = this->findHeaderValue("Host: ");
+	std::cout << "|+|+|+|+|+|+|+|+|+|\n" << _host << std::endl << "|+|+|+|+|+|+|+|+|+|\n";
 }
 
 void	ClientSock::readBody(void)

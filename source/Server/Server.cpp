@@ -253,7 +253,7 @@ void	acceptClients(WebServ &serv)
 							<< " ====== Content-Length ===== : " << serv.clientMap[serv.vecPoll[idx].fd]._content_lenght << std::endl;
 							serv.clientMap[serv.vecPoll[idx].fd].sockConnection();
 
-							// serv.clientMap[serv.vecPoll[idx].fd].hostResp();
+							serv.clientMap[serv.vecPoll[idx].fd].hostResp();
 						}
 					}
 					else
