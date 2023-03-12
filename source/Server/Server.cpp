@@ -269,7 +269,8 @@ void	acceptClients(WebServ &serv)
 						std::cout << "+++ REQUEST LENGTH : " << serv.clientMap[serv.vecPoll[idx].fd]._request.length() << " ++++ \n\n" 
 						<< serv.clientMap[serv.vecPoll[idx].fd]._request;
 					}
-					
+					if (serv.clientMap[serv.vecPoll[idx].fd]._chunkedBody)
+						std::cout << std::string(buffer, byte) << std::endl;
 				}
 				// else if (serv.vecPoll[idx].revents & POLLOUT && serv.clientMap[serv.vecPoll[idx].fd]._readiness)
 				// {

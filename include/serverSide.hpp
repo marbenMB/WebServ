@@ -75,6 +75,7 @@ class	ClientSock : public SockProp
 		std::string		_request;
 		std::string		_reqHeader;
 		std::string		_reqBody;
+		std::string		_bodyChunk;
 		long long		byteToRead;
 		long long		byteRead;
 		long long		_content_lenght;
