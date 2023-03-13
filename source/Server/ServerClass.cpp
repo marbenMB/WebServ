@@ -193,10 +193,59 @@ void	ClientSock::hostResp(void)
 		_serverResponding = servIt->getServconf();
 	else
 		_serverResponding = vecServ.begin()->getServconf();
-	std::cout << "Server Name : " << _serverResponding.server_data["server_name"][0] << std::endl;
+	std::cout << "Server Name : " << _serverResponding.server_data["server_name"][1] << std::endl;
 }
 
 void	ClientSock::readBody(void)
 {
 	std::cout << std::endl;
+}
+
+//	--- Response part
+
+void	ClientSock::formResponse(void)
+{
+	_response = std::string("HTTP/1.1 200 OK\nContent-Type: text/html\n\r\n\r<html>\n<head>\
+	\n<title>Hello World 1</title> \
+	</head>\n<body>\
+	\n<h1>Hello World I</h1>\n\
+	</body>\n</html>");
+
+	byteToSend = _response.length();
+	std::cout << GREEN << "+> Byte TO send : " << byteToSend << END_CLR << std::endl;
+	byteSent = 0;
+	_done = false;
+}
+
+void	ClientSock::reFormResponse(int sent)
+{
+	std::string	tmp = std::string(_response);
+
+	_response.clear();
+	_response = tmp.substr(sent, tmp.length() - sent);
+	if (_response.empty() && byteSent >= byteToSend)
+		_done = true;
+}
+
+void	ClientSock::resetClientProp(void)
+{
+	_host.clear();
+	byteRead = 0;
+	byteToRead = 0;
+	_InitialRead = true;
+	_readiness = false;
+	_chunkedBody = false;
+	_connexion = SET_CNX;
+	_tmp.clear();
+	_request.clear();
+	_reqHeader.clear();
+	_reqBody.clear();
+	_bodyChunk.clear();
+	byteRead = 0;
+	byteToRead = 0;
+	_content_lenght = 0;
+
+	byteToSend = 0;
+	byteSent = 0;
+	_done = false;
 }

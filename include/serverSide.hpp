@@ -28,9 +28,10 @@ enum defines
 	//	-- Request 
 	KEEP_ALIVE = 7,
 	CLOSE,
+	SET_CNX,
 
 	//	-- Socket readiness to respond
-	READY = 9,
+	READY = 12,
 	N_READY
 };
 
@@ -82,9 +83,10 @@ class	ClientSock : public SockProp
 		// size_t			byteLeft;
 		bool			_readiness;
 
-		// std::string		_response;
-		// size_t			byteToSend;
-		// size_t			byteSent;
+		bool			_done;
+		std::string		_response;
+		long long		byteToSend;
+		long long		byteSent;
 		// size_t			byteLeft;
 
 	public :
@@ -101,6 +103,10 @@ class	ClientSock : public SockProp
 		void	sockConnection(void);
 		void	hostResp(void);
 		void	readBody(void);
+
+		void	formResponse(void);
+		void	reFormResponse(int sent);
+		void	resetClientProp(void);
 };
 
 class	Server
