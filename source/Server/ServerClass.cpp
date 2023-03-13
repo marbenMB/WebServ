@@ -44,6 +44,7 @@ int							Server::getID(void) const { return _id; }
 std::vector<std::string>	Server::getCombIpPort(void) const { return _combIpPort; }
 std::vector<std::string>	Server::getServerName(void) const { return _serverName; }
 std::multimap<std::string, int>	Server::getIpPort(void) const { return _IpPort; }
+ServerConf					Server::getServconf(void) const { return _Server; }
 
 void						Server::setIpPort (std::multimap<std::string, int> listen)
 {
@@ -163,8 +164,36 @@ void	ClientSock::sockConnection(void)
 
 void	ClientSock::hostResp(void)
 {
+	//	-- getting the host name form the request headers
 	_host = this->findHeaderValue("Host: ");
-	std::cout << "|+|+|+|+|+|+|+|+|+|\n" << _host << std::endl << "|+|+|+|+|+|+|+|+|+|\n";
+	
+	//	--	finding server
+	bool	match = false;
+	std::vector<std::string>	names;
+	std::vector<Server>::iterator servIt = vecServ.begin();
+
+	while (servIt != vecServ.end())
+	{
+		names = servIt->getServerName();
+		for (std::vector<std::string>::iterator it = names.begin(); it != names.end(); it++)
+		{
+			if (!_host.compare(*it))
+			{
+				match = true;
+				break;
+			}
+		}
+		if (match)
+			break;
+		servIt++;
+	}
+
+	//	-- storing server config for the client
+	if (match)
+		_serverResponding = servIt->getServconf();
+	else
+		_serverResponding = vecServ.begin()->getServconf();
+	std::cout << "Server Name : " << _serverResponding.server_data["server_name"][0] << std::endl;
 }
 
 void	ClientSock::readBody(void)

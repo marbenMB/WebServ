@@ -247,12 +247,15 @@ void	acceptClients(WebServ &serv)
 
 						if (!serv.clientMap[serv.vecPoll[idx].fd]._InitialRead)
 						{
-							//	-- check transfer encoding of the request body
+							//	-- check transfer encoding of the request body and save content-length if not chunked
 							serv.clientMap[serv.vecPoll[idx].fd].transferEncoding();
 							std::cout << "====== BYTE TO READ ===== : " << serv.clientMap[serv.vecPoll[idx].fd].byteToRead 
 							<< " ====== Content-Length ===== : " << serv.clientMap[serv.vecPoll[idx].fd]._content_lenght << std::endl;
-							serv.clientMap[serv.vecPoll[idx].fd].sockConnection();
 
+							//	-- checking the connexion sent with request
+							serv.clientMap[serv.vecPoll[idx].fd].sockConnection();
+							
+							//	-- Determin which server is responsible for the request
 							serv.clientMap[serv.vecPoll[idx].fd].hostResp();
 						}
 					}
@@ -265,6 +268,8 @@ void	acceptClients(WebServ &serv)
 					if (serv.clientMap[serv.vecPoll[idx].fd].byteToRead && serv.clientMap[serv.vecPoll[idx].fd].byteRead >= serv.clientMap[serv.vecPoll[idx].fd].byteToRead)
 					{
 						serv.clientMap[serv.vecPoll[idx].fd]._readiness = true;
+
+						//	-- Forming request by assambling headers and body together to be traited in the req-resp part
 						serv.clientMap[serv.vecPoll[idx].fd].formRequest();
 						std::cout << "+++ REQUEST LENGTH : " << serv.clientMap[serv.vecPoll[idx].fd]._request.length() << " ++++ \n\n" 
 						<< serv.clientMap[serv.vecPoll[idx].fd]._request;
