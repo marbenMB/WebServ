@@ -175,6 +175,9 @@ void	acceptClients(WebServ &serv)
 	//	--	Read var
 	char	buffer[MAXREAD];
 	int		byte;
+
+	//	-- Response Var
+	int		sent;
 	// std::string	tmp;
 
 	while (true)
@@ -273,17 +276,35 @@ void	acceptClients(WebServ &serv)
 						serv.clientMap[serv.vecPoll[idx].fd].formRequest();
 						std::cout << "+++ REQUEST LENGTH : " << serv.clientMap[serv.vecPoll[idx].fd]._request.length() << " ++++ \n\n" 
 						<< serv.clientMap[serv.vecPoll[idx].fd]._request;
+
+						//	-- Create Response 
+						serv.clientMap[serv.vecPoll[idx].fd].formResponse();
 					}
 					if (serv.clientMap[serv.vecPoll[idx].fd]._chunkedBody)
 						std::cout << std::string(buffer, byte) << std::endl;
 				}
-				// else if (serv.vecPoll[idx].revents & POLLOUT && serv.clientMap[serv.vecPoll[idx].fd]._readiness)
-				// {
-				//	********* reset client data first **************
-				// 	std::string	response("HTTP/1.1 200 OK\nContent-Type: text/html\n\r\n\r<html>\n<head>\n<title>Hello World</title>\n</head>\n<body>\n<h1>Hello World</h1>\n</body>\n</html>");
+				else if (serv.vecPoll[idx].revents & POLLOUT && serv.clientMap[serv.vecPoll[idx].fd]._readiness)
+				{
+					sent = send(serv.vecPoll[idx].fd, serv.clientMap[serv.vecPoll[idx].fd]._response.c_str(), serv.clientMap[serv.vecPoll[idx].fd].byteToSend, 0);
+					serv.clientMap[serv.vecPoll[idx].fd].byteSent += sent;
+					serv.clientMap[serv.vecPoll[idx].fd].reFormResponse(sent);
 
-				// 	send(serv.vecPoll[idx].fd, response.c_str(), response.length(), 0);
-				// }
+					std::cout << RED << "+> Byte sent : " << serv.clientMap[serv.vecPoll[idx].fd].byteSent << END_CLR << std::endl;
+
+					if (serv.clientMap[serv.vecPoll[idx].fd]._done)
+					{
+						// ********* reset client data first **************
+						if (serv.clientMap[serv.vecPoll[idx].fd]._connexion == KEEP_ALIVE)
+							serv.clientMap[serv.vecPoll[idx].fd].resetClientProp();
+						else if (serv.clientMap[serv.vecPoll[idx].fd]._connexion == CLOSE)
+						{
+							close(serv.vecPoll[idx].fd);
+							std::vector<struct pollfd>::iterator it = serv.vecPoll.begin() + (idx);
+							serv.clientMap.erase(it->fd);
+							serv.vecPoll.erase(it);
+						}
+					}
+				}
 			}
 		}
 	}
