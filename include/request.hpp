@@ -25,6 +25,7 @@
 
 #define AOTUINDEX_PATH "./var/assets/autoIndex.html"
 #define MIME_TYPE_PATH "conf/mime.types"
+#define STATUS_CODE_PATH "conf/status.code.conf"
 #define UPLOAD_STORE "./var/upload/Default"
 #define CREATE_SUCCESS_FILE "./var/srcs/success.html"
 
@@ -151,6 +152,10 @@ public:
     bool getIs_cgi( void );
     void addType(std::string, std::string);
     std::string const &getType(std::string);
+
+
+    //  read Files
+    bool retrievingsatatuscodeFile(void);
     bool uploadType(void );
     void url_decode(std::string &url);
     request(int , Data *, std::string, std::vector<std::string> &);
