@@ -68,6 +68,8 @@ void ConfigFile::location(Data &g_Data, ServerConf &server, KeyValue v)
             trim(v.line, " \t'[]");
             if(v.line.length() == 0)
                 continue;
+            if (v.line[0] == '#')
+                continue;
             else {
                 v.value = v.line;
                 break;
@@ -79,6 +81,8 @@ void ConfigFile::location(Data &g_Data, ServerConf &server, KeyValue v)
             this->line_index++;
             trim(v.line, " \t:'[]");
             if(v.line.length() == 0)
+                continue;
+            if (v.line[0] == '#')
                 continue;
             if (v.line == "}")
                 break;
