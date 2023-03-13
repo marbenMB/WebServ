@@ -113,6 +113,7 @@ class	Server
 		std::vector<std::string>	getCombIpPort	(void) const;
 		std::vector<std::string>	getServerName	(void) const;
 		std::multimap<std::string, int>	getIpPort	(void) const;
+		ServerConf					getServconf		(void) const;
 
 		void						setIpPort	(std::multimap<std::string, int> listen);
 
