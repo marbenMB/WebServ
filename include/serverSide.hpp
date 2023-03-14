@@ -3,6 +3,8 @@
 #define SERV_SIDE_H
 
 #include "WebServer.hpp"
+#include "request.hpp"
+#include "method.hpp"
 #include <poll.h>
 
 ///////////////////// MACROS ////////////////////
@@ -13,7 +15,11 @@
 #define	DEFAULT_PORT 80
 
 #define	MAXREAD	1024
+<<<<<<< HEAD
 #define	MAXSEND	1024
+=======
+#define	MAXSEND	10024
+>>>>>>> d9ffec7723292c83c629384aea2901c5976cfa2b
 ///////////////////// ***** ////////////////////
 
 //	****	*********	****	//

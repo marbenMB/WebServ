@@ -26,6 +26,9 @@ bool ConfigFile::check_braces(Data &g_Data) {
 
     while (std::getline(this->_in_file, line)) {
         line_index++;
+        trim(line, WHITE_SPACE);
+        if (line[0] == '#')
+            continue;
         for (unsigned int i = 0; i < line.length(); i++) {
             if (line[i] == '{') {
                 brace_stack.push(line[i]);
@@ -56,7 +59,7 @@ void ConfigFile::server_block(Data &g_Data, KeyValue v) {
         while (std::getline(this->_in_file, v.line) && !g_Data.error.length()) {
             this->line_index++;
             trim(v.line, WHITE_SPACE);
-            if(v.line.length() == 0)
+            if(v.line.length() == 0 || v.line[0] == '#')
                 continue;
             if(v.line == "}")
                 break;
@@ -85,17 +88,23 @@ void ConfigFile::getdata(Data &g_Data) {
         while (std::getline(this->_in_file, v.line) && !g_Data.error.length()) {
             line_index++;
             trim(v.line, WHITE_SPACE);
-            if (v.line.length() == 0)
+            if (v.line.length() == 0 || v.line[0] == '#')
                 continue;
             v.index = v.line.find(" ");
             v.key = v.line.substr(0, v.index);
             if (v.index == -1) {
                 std::getline(this->_in_file, v.line);
                 line_index++;
+                trim(v.line, WHITE_SPACE);
+                if (v.line[0] == '#')
+                    continue;
                 v.index = v.line.find_first_not_of(WHITE_SPACE);
                 while(v.index == -1) {
                     std::getline(this->_in_file, v.line);
                     line_index++;
+                    trim(v.line, WHITE_SPACE);
+                    if (v.line[0] == '#')
+                        continue;
                     v.index = v.line.find_first_not_of(WHITE_SPACE);
                 }
                 v.value = v.line;
@@ -106,7 +115,8 @@ void ConfigFile::getdata(Data &g_Data) {
             server_block(g_Data, v);
         }
         check_validity(g_Data);
-        // print_Data(g_Data.server_list);
+        // if (g_Data.error.empty())
+        //     print_Data(g_Data.server_list);
     }
     else {
         g_Data.error = "WebServer: [emerg] error in syntax missing of '{' or '}' in configfile.conf";

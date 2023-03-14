@@ -49,7 +49,7 @@ std::vector<std::string> get_server_data(Data &g_Data, std::string key) {
     std::vector<std::string> V_ret;
 
     for (Vect_Serv::iterator it = g_Data.server_list.begin(); it != g_Data.server_list.end(); ++it) {
-        for (map_srv_data_it S_data_it = it->server_data.begin(); S_data_it != it->server_data.end(); ++S_data_it) {
+        for (map_vector_it S_data_it = it->server_data.begin(); S_data_it != it->server_data.end(); ++S_data_it) {
             if (S_data_it->first == key)
                 V_ret = S_data_it->second;
         } 
