@@ -23,7 +23,7 @@ void    request::Retrieving_requested_resource(Data *server)
     std::vector<std::string>::iterator client_max_body_size_vect = it["client_max_body_size"].begin();
     if (!client_max_body_size_vect[0].empty() && it["client_max_body_size"].size() == 1){
        this->client_max_body_size = atoll(it["client_max_body_size"][0].c_str());
-        std::cout << "client_max_body_size :" << this->client_max_body_size << std::endl;
+        // std::cout << "client_max_body_size :" << this->client_max_body_size << std::endl;
     }
 
      /* -------------------------------------------------------------------------- */

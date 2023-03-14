@@ -259,7 +259,7 @@ int _main(int ac, char *av[])
     }
     else if (ac == 1)
     {
-        g_Data.configuration.parcing_file("def_configfile.conf", g_Data);
+        g_Data.configuration.parcing_file("conf/def_configfile.conf", g_Data);
     }
     else
         g_Data.error = "error n number of argument";
@@ -363,7 +363,7 @@ void CheckLeack( void ){
     system("leaks webServ");
 }
 int main(int ac, char *av[]){
-    atexit(CheckLeack);
+    // atexit(CheckLeack);
     _main(ac, av);
     
 }

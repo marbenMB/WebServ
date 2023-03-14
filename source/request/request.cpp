@@ -88,12 +88,12 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
         reqmethod->getStatuscode(),
         reqmethod->getreason_phrase(),
         reqmethod->getResponseBody());
-    std::ofstream _outfile;
+    // std::ofstream _outfile;
 
 
-    _outfile.open("file", std::ifstream::out);
+    // _outfile.open("file", std::ifstream::out);
 
-    _outfile << _reaponseBody ;
+    // _outfile << _reaponseBody ;
 
 
     // std::cout << MAUVE << "**>|" << _reaponseBody << END_CLR << std::endl;
@@ -174,6 +174,7 @@ bool request::Verifying_Body(std::string req)
         throw BadRequest();
     }
     if (ContentType["type"].compare("application/x-www-form-urlencoded") == 0){
+        url_decode(req);
         this->CGIbody.clear();
         this->CGIbody.append(req);
     }
