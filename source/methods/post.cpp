@@ -39,7 +39,7 @@ int Post::execute_method(request _request)
         
         **/ 
         this->setStatuscode(_request.getRedirect_status());
-        this->setreason_phrase("Moved Permanently");
+        this->setreason_phrase(_request.getReason(std::to_string(_request.getRedirect_status())));
         filename.clear();
         filename.append(_request.getroot());
         filename.append(_request.getredirect_URL());
@@ -78,7 +78,7 @@ int Post::execute_method(request _request)
             outFile.open(filename, std::ifstream::out);
             if (!outFile.is_open()){ // cant open this file  Internal Server Error
                 this->setStatuscode(500);
-                this->setreason_phrase("Internal Server Error");
+                 this->setreason_phrase(_request.getReason("500"));
                 filename.clear();
                 filename.append("./var/errors/50x.html");
                 file_It = file.begin();
@@ -100,7 +100,7 @@ int Post::execute_method(request _request)
         if (file_It == file.end()){
             // forbiden
             this->setStatuscode(201);
-            this->setreason_phrase("Created");
+            this->setreason_phrase(_request.getReason("201"));
             filename.clear();
             filename.append("./var/srcs/success.html");
         }

@@ -56,7 +56,6 @@ void set_error(method* &resp, int code_status) {
 }
 
 method * request::CGI::runCGI(request req) const throw(){
-    std::cout << "running cgi\n";
     char** envp;
     std::vector<char*> env_vec;
     std::string _body;
@@ -85,7 +84,6 @@ method * request::CGI::runCGI(request req) const throw(){
         set_error(resp, status);
     return resp;
 }
-
 method * request::BadRequest::createError(request req) const throw(){
     std::ifstream inFile;
     std::string buffer;
@@ -97,7 +95,7 @@ method * request::BadRequest::createError(request req) const throw(){
     resp = new Error(req);
     // std::cout << "Bad Request***" << std::endl;
     resp->setStatuscode(400);
-    resp->setreason_phrase("Bad Request");
+    resp->setreason_phrase(req.getReason("400"));
     resp->setContent_Type("text/html");
     _filename = req.getDefault_40x().empty() ? "./var/errors/40x.html" : req.getDefault_40x();
     inFile.open(_filename, std::ifstream::in);
@@ -143,7 +141,7 @@ method * request::NotImplemented::createError(request req) const throw(){
 
     // std::cout << "Not Implemented" << std::endl;
     resp->setStatuscode(501);
-    resp->setreason_phrase("Not Implemented");
+    resp->setreason_phrase(req.getReason("501"));
     resp->setContent_Type("text/html");
     inFile.open("var/srcs/Notimplimented.html", std::ifstream::in);
     while (std::getline(inFile, buffer))
@@ -187,7 +185,7 @@ method * request::NotAllowed::createError(request req) const throw(){
     std::string error_disc("This page isn't allowed");
 
     resp->setStatuscode(405);
-    resp->setreason_phrase("Not Allowed");
+    resp->setreason_phrase(req.getReason("405"));
     resp->setContent_Type("text/html");
     inFile.open("./var/errors/40x.html", std::ifstream::in);
     while (std::getline(inFile, buffer))
@@ -232,7 +230,7 @@ method * request::NotFound::createError(request req) const throw(){
     std::string error_disc("This page Not Found");
 
     resp->setStatuscode(404);
-    resp->setreason_phrase("Not Found");
+    resp->setreason_phrase(req.getReason("404"));
     resp->setContent_Type("text/html");
     realpath("./var/errors/40x.html", _dir);
     // std::cout <<"*****> |" << _dir << std::endl;
@@ -277,7 +275,7 @@ method * request::Forbiden::createError(request req) const throw(){
     std::string error_disc("This page Forbiden");
 
     resp->setStatuscode(403);
-    resp->setreason_phrase("Forbiden");
+   resp->setreason_phrase(req.getReason("403"));
     resp->setContent_Type("text/html");
     inFile.open("./var/errors/40x.html", std::ifstream::in);
     while (std::getline(inFile, buffer))
@@ -320,7 +318,7 @@ method * request::InternalServerError::createError(request req) const throw(){
     std::string error_disc("Error in the servre");
 
     resp->setStatuscode(500);
-    resp->setreason_phrase("Internal Server Error");
+    resp->setreason_phrase(req.getReason("500"));
     resp->setContent_Type("text/html");
     inFile.open("./var/errors/50x.html", std::ifstream::in);
     while (std::getline(inFile, buffer))
