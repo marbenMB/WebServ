@@ -29,6 +29,10 @@ int _main (int ac, char **av)
 			}
 		}
     }
+    else if (ac == 1)
+    {
+        g_Data.configuration.parcing_file("def_configfile.conf", g_Data);
+    }
     else
         g_Data.error = "error in number of argument";
     if (!g_Data.error.empty())
