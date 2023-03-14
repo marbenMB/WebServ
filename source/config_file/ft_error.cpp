@@ -75,12 +75,12 @@ void ConfigFile::check_return_location(Data &g_Data, map_vector_it location_data
                     g_Data.error += "\" in " + this->filename;
                 }
             }
-            else {
-                if ((*value_it).find(".html") == std::string::npos) {
-                    g_Data.error = "WebServer: [emerg] \"" + *value_it + "\" is not a redection file ('file.html') in ";
-                    g_Data.error += this->filename;
-                }
-            }
+            // else {
+            //     if ((*value_it).find(".html") == std::string::npos) {
+            //         g_Data.error = "WebServer: [emerg] \"" + *value_it + "\" is not a redection file ('file.html') in ";
+            //         g_Data.error += this->filename;
+            //     }
+            // }
         }
     }
 }
