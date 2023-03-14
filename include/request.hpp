@@ -165,10 +165,10 @@ public:
 
 
     void url_decode(std::string &url);
-    request(int , Data *, std::string, std::vector<std::string> &);
+    request(int , ServerConf *, std::string, std::string &);
     std::vector<std::string> &execute(std::string body, Data *_confdata);
     method *   execute_request( void );
-    void    Retrieving_requested_resource(Data *server);
+    void    Retrieving_requested_resource(ServerConf *server);
     void    GETstatusOfexecution(method * req_method) const;
     std::vector<std::string>  const & create_response();
     int findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >);

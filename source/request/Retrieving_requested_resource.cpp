@@ -1,6 +1,6 @@
 #include "../../include/request.hpp"
 
-void    request::Retrieving_requested_resource(Data *server)
+void    request::Retrieving_requested_resource(ServerConf *server)
 {
     this->message.push_back(std::to_string(this->socketID));
     /* -------------------------------------------------------------------------- */
@@ -8,10 +8,10 @@ void    request::Retrieving_requested_resource(Data *server)
     /*                      // * Create instaence for server                      */
     /* -------------------------------------------------------------------------- */
     // ! SERVER DATA
-    std::vector<ServerConf> serv = server->server_list;
+    // std::vector<ServerConf> serv = server->server_list;
     // *> create iterator for etch srever in config file :
-    std::vector<ServerConf>::iterator server_iterator = server->server_list.begin();
-    std::map<std::string, std::vector<std::string> > it = server_iterator->server_data;
+    // std::vector<ServerConf>::iterator server_iterator = server->server_list.begin();
+    std::map<std::string, std::vector<std::string> > it = server->server_data;
     // ? root :
     std::vector<std::string>::iterator root_vect = it["root"].begin();
     if (!root_vect[0].empty() && it["root"].size() == 1) this->root = *root_vect;
@@ -34,7 +34,7 @@ void    request::Retrieving_requested_resource(Data *server)
 
     // ! LOCATION
 
-    std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > > location = server_iterator->locations;
+    std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > > location = server->locations;
     // **> Create iterator for etch loation :
     std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator locations_iterator = location.begin();
    

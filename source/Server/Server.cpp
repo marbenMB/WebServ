@@ -276,7 +276,7 @@ void	acceptClients(WebServ &serv)
 						//	-- Forming request by assambling headers and body together to be traited in the req-resp part
 						serv.clientMap[serv.vecPoll[idx].fd].formRequest();
 						// std::cout << "+++ REQUEST LENGTH : " << serv.clientMap[serv.vecPoll[idx].fd]._request.length() << " ++++ \n\n";
-						std::cout << serv.clientMap[serv.vecPoll[idx].fd]._request;
+						// std::cout << serv.clientMap[serv.vecPoll[idx].fd]._request;
 
 						//	-- Create Response 
 						serv.clientMap[serv.vecPoll[idx].fd].formResponse();

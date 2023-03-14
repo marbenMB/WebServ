@@ -1,6 +1,6 @@
 #include "../../include/request.hpp"
 
-request::request(int socketID, Data *server, std::string _request, std::vector<std::string> &response) : Content_Length(-1),
+request::request(int socketID, ServerConf *server, std::string _request, std::string &response) : Content_Length(-1),
                                                                                                         autoindex(AUTOINDEX_OFF),
                                                                                                         __post(NOT_ALLOWED),
                                                                                                         __delete(NOT_ALLOWED),
@@ -23,7 +23,7 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
          _requestHeader = _request.substr(0, splitIndex);
          _requestBody = _request.substr(splitIndex + 4, _request.length());
     }
-    // std::cout << "BODY****>" << _request << std::endl;
+    // std::cout << "BODY\n" << _request << std::endl;
     // _requestHeader.clear();
     // _requestBody.clear();
     // _requestHeader.append(req_vector[0]);
@@ -83,7 +83,7 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
     // exit(1);
     // std::cout << RED << "NOT :|" << reqmethod->getResponseBody() << std::endl;
 
-    _reaponseBody = _CREATEresponse(
+    response = _CREATEresponse(
         reqmethod->getHeader(),
         reqmethod->getStatuscode(),
         reqmethod->getreason_phrase(),
@@ -97,9 +97,8 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
 
 
     // std::cout << MAUVE << "**>|" << _reaponseBody << END_CLR << std::endl;
-    response.push_back(std::to_string(this->getsocketID()));
     // std::cout << MAUVE << "   @PUSH response Body" << END_CLR << std::endl;
-    response.push_back(_reaponseBody);
+    // response.push_back(_reaponseBody);
     // response = this->create_response();
     // 7 - print server status
     std::string color_status;
@@ -170,7 +169,12 @@ bool request::Verifying_Body(std::string req)
     // std::cout <<"EndSTRINGSEPARATES     " << EndSTRINGSEPARATES << std::endl;
     // if ((int)req.length() != this->getContent_Length()){this->requirements = false;return false;}
     // std::cout << req << std::endl;
-    if ((unsigned long long)req.length() != this->getContent_Length() || (unsigned long long)req.length() > this->client_max_body_size){
+    if ((unsigned long long)req.length() != this->getContent_Length() - 1 || (unsigned long long)req.length() > this->client_max_body_size){
+        std::cout << "ANA HANA\n";
+
+        std::cout << "req.length() :" << req.length() << std::endl;
+        std::cout << "this->getContent_Length() :" << this->getContent_Length() << std::endl;
+        std::cout << "this->client_max_body_size :" << this->client_max_body_size << std::endl;
         throw BadRequest();
     }
     if (ContentType["type"].compare("application/x-www-form-urlencoded") == 0){
@@ -189,7 +193,7 @@ bool request::Verifying_Body(std::string req)
             EndSTRINGSEPARATES.append(STRINGSEPARATES);
             EndSTRINGSEPARATES.append("--");
             if (req.find(STRINGSEPARATES) == std::string::npos || req.find(EndSTRINGSEPARATES) == std::string::npos){
-
+                
                 throw BadRequest();
             }
 
