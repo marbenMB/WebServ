@@ -291,11 +291,11 @@ void	acceptClients(WebServ &serv)
 					else
 						toSend = serv.clientMap[serv.vecPoll[idx].fd]._response.length();
 					sent = send(serv.vecPoll[idx].fd, serv.clientMap[serv.vecPoll[idx].fd]._response.c_str(), toSend, 0);
-					debug();
 					serv.clientMap[serv.vecPoll[idx].fd].byteSent += sent;
 					serv.clientMap[serv.vecPoll[idx].fd].reFormResponse(sent);
 
-					std::cout << RED << "+> Byte sent : " << serv.clientMap[serv.vecPoll[idx].fd].byteSent << END_CLR << std::endl;
+					std::cout << RED << "+> Byte sent : " << sent << END_CLR << std::endl;
+					std::cout << RED << "+> Byte sent from Response : " << serv.clientMap[serv.vecPoll[idx].fd].byteSent << END_CLR << std::endl;
 
 					if (serv.clientMap[serv.vecPoll[idx].fd]._done)
 					{
