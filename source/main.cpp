@@ -1,13 +1,33 @@
-#include "../include/WebServer.hpp"
+#include "../include/serverSide.hpp"
+#include "../include/unitTests.hpp"
 
-
-int main (int ac, char **av)
+int _main (int ac, char **av)
 {
-    Data g_Data;
+    Data 	g_Data;
     if (ac == 2)
     {
         g_Data.configuration.parcing_file(av[1], g_Data);
-        
+		
+		//	***	Creating WebServer :
+		if (g_Data.error.empty())
+		{
+			WebServ	myServ;
+			
+			try {
+				myServ = establishServers(g_Data);
+
+				// std::cout << "--> Num of Servers : " << myServ.servNums << std::endl << "\n";
+				// printWebServ(myServ);
+				
+				createSockets(myServ);
+				// printSockProp(myServ.serverSockets);
+				std::cout << GREEN << "+> Socket Created !!" << END_CLR << std::endl;
+
+				acceptClients(myServ);
+			} catch (std::exception &e) {
+				std::cout << RED << "+> " << e.what() << END_CLR << std::endl;
+			}
+		}
     }
     else if (ac == 1)
     {
@@ -21,6 +41,13 @@ int main (int ac, char **av)
         // system("leaks webserv");
         return (1);
     }
+	std::cout << GREEN << "+> Parsing Done !!" << END_CLR << std::endl << std::endl;
     // system("leaks webserv");
     return (0);
+}
+
+int main(int ac, char **av)
+{
+	_main(ac, av);
+    // system("leaks webserv");
 }

@@ -1,0 +1,4 @@
+Establish Servers : 
+	- Loop IP PORT combination and insert it as string-int (ip-Port) pairs.
+	- if PORT is not specified then 80 is default.
+	- if IP is not specified then 0.0.0.0 is default.

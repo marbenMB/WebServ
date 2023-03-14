@@ -8,9 +8,11 @@
 #define END_CLR "\033[0m"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <map>
 #include <vector>
 #include <stack>
+#include <libc.h>
 #include <netdb.h>
 #include <cstring>
 #include <sys/stat.h>
