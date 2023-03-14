@@ -196,7 +196,7 @@ void	ClientSock::hostResp(void)
 		_serverResponding = servIt->getServconf();
 	else
 		_serverResponding = vecServ.begin()->getServconf();
-	std::cout << "Server Name : " << _serverResponding.server_data["server_name"][1] << std::endl;
+	// std::cout << "Server Name : " << _serverResponding.server_data["server_name"][1] << std::endl;
 }
 
 void	ClientSock::readBody(void)
@@ -209,6 +209,9 @@ void	ClientSock::readBody(void)
 void	ClientSock::formResponse(void)
 {
 	//	**************************************************************************
+
+	_reqStat = WELL;
+	//	_reponse = generateResponse(_request, _serverResponding, _reqStat);
 
 	std::string body = std::string("<html>\n<head>\
 	\n<title>Hello World 1</title> \
@@ -224,7 +227,7 @@ void	ClientSock::formResponse(void)
 
 
 	byteToSend = _response.length();
-	std::cout << GREEN << "+> Byte TO send : " << byteToSend << END_CLR << std::endl;
+	// std::cout << GREEN << "+> Byte TO send : " << byteToSend << END_CLR << std::endl;
 	byteSent = 0;
 	_done = false;
 }

@@ -226,11 +226,11 @@ void	acceptClients(WebServ &serv)
 				if (serv.vecPoll[idx].revents & POLLIN)
 				{
 					byte = recv(serv.vecPoll[idx].fd, &buffer, MAXREAD, 0);
-					std::cout << "======== RECV BYTE : " << byte << "======\n" << std::endl;
+					// std::cout << "======== RECV BYTE : " << byte << "======\n" << std::endl;
 					//	--	check if recv returns <= 0 (error case -> erase client socket)
 					if (byte <= 0)
 					{
-						std::cout << "**** RECV PROB : ****\n" << std::endl;
+						// std::cout << "**** RECV PROB : ****\n" << std::endl;
 						close(serv.vecPoll[idx].fd);
 						std::vector<struct pollfd>::iterator it = serv.vecPoll.begin() + (idx);
 						serv.clientMap.erase(it->fd);
@@ -253,8 +253,8 @@ void	acceptClients(WebServ &serv)
 						{
 							//	-- check transfer encoding of the request body and save content-length if not chunked
 							serv.clientMap[serv.vecPoll[idx].fd].transferEncoding();
-							std::cout << "====== BYTE TO READ ===== : " << serv.clientMap[serv.vecPoll[idx].fd].byteToRead 
-							<< " ====== Content-Length ===== : " << serv.clientMap[serv.vecPoll[idx].fd]._content_lenght << std::endl;
+							// std::cout << "====== BYTE TO READ ===== : " << serv.clientMap[serv.vecPoll[idx].fd].byteToRead 
+							// << " ====== Content-Length ===== : " << serv.clientMap[serv.vecPoll[idx].fd]._content_lenght << std::endl;
 
 							//	-- checking the connexion sent with request
 							serv.clientMap[serv.vecPoll[idx].fd].sockConnection();
@@ -275,8 +275,8 @@ void	acceptClients(WebServ &serv)
 
 						//	-- Forming request by assambling headers and body together to be traited in the req-resp part
 						serv.clientMap[serv.vecPoll[idx].fd].formRequest();
-						std::cout << "+++ REQUEST LENGTH : " << serv.clientMap[serv.vecPoll[idx].fd]._request.length() << " ++++ \n\n" 
-						<< serv.clientMap[serv.vecPoll[idx].fd]._request;
+						// std::cout << "+++ REQUEST LENGTH : " << serv.clientMap[serv.vecPoll[idx].fd]._request.length() << " ++++ \n\n";
+						// std::cout << serv.clientMap[serv.vecPoll[idx].fd]._request;
 
 						//	-- Create Response 
 						serv.clientMap[serv.vecPoll[idx].fd].formResponse();
@@ -294,8 +294,8 @@ void	acceptClients(WebServ &serv)
 					serv.clientMap[serv.vecPoll[idx].fd].byteSent += sent;
 					serv.clientMap[serv.vecPoll[idx].fd].reFormResponse(sent);
 
-					std::cout << RED << "+> Byte sent : " << sent << END_CLR << std::endl;
-					std::cout << RED << "+> Byte sent from Response : " << serv.clientMap[serv.vecPoll[idx].fd].byteSent << END_CLR << std::endl;
+					// std::cout << RED << "+> Byte sent : " << sent << END_CLR << std::endl;
+					// std::cout << RED << "+> Byte sent from Response : " << serv.clientMap[serv.vecPoll[idx].fd].byteSent << END_CLR << std::endl;
 
 					if (serv.clientMap[serv.vecPoll[idx].fd]._done)
 					{

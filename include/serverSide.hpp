@@ -33,7 +33,11 @@ enum defines
 
 	//	-- Socket readiness to respond
 	READY = 12,
-	N_READY
+	N_READY,
+
+	//	-- Request stat
+	WELL = 200,
+	TIMEOUT
 };
 
 //	****	*********	****	//
@@ -72,6 +76,7 @@ class	ClientSock : public SockProp
 		bool			_InitialRead;
 		bool			_chunkedBody;
 		int				_connexion;
+		int				_reqStat;
 
 		std::string		_tmp;
 		std::string		_request;
