@@ -43,3 +43,8 @@ void	printMapClient (std::map<int, ClientSock> m)
 		std::cout << "========================" << std::endl;
 	}
 }
+
+void	debug()
+{
+	std::cout << RED << "********* DEBUG **************** " << END_CLR << std::endl;
+}

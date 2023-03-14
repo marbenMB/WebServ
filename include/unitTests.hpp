@@ -23,5 +23,6 @@ void	printMultiMap(std::multimap<std::string, int> mmap);
 void	printWebServ (WebServ &myServ);
 void	printSockProp (std::map<SockProp, std::vector<Server> > m);
 void	printMapClient (std::map<int, ClientSock> m);
+void	debug();
 
 #endif

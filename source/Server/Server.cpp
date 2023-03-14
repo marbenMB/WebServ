@@ -177,6 +177,7 @@ void	acceptClients(WebServ &serv)
 	int		byte;
 
 	//	-- Response Var
+	int		toSend;
 	int		sent;
 	// std::string	tmp;
 
@@ -285,7 +286,12 @@ void	acceptClients(WebServ &serv)
 				}
 				else if (serv.vecPoll[idx].revents & POLLOUT && serv.clientMap[serv.vecPoll[idx].fd]._readiness)
 				{
-					sent = send(serv.vecPoll[idx].fd, serv.clientMap[serv.vecPoll[idx].fd]._response.c_str(), serv.clientMap[serv.vecPoll[idx].fd].byteToSend, 0);
+					if (MAXSEND <= serv.clientMap[serv.vecPoll[idx].fd]._response.length())
+						toSend = MAXSEND;
+					else
+						toSend = serv.clientMap[serv.vecPoll[idx].fd]._response.length();
+					sent = send(serv.vecPoll[idx].fd, serv.clientMap[serv.vecPoll[idx].fd]._response.c_str(), toSend, 0);
+					debug();
 					serv.clientMap[serv.vecPoll[idx].fd].byteSent += sent;
 					serv.clientMap[serv.vecPoll[idx].fd].reFormResponse(sent);
 
