@@ -248,12 +248,12 @@ int get::execute_method(request _request)
 
                 item_URL.clear();
 
-                item_URL.append(_request.getcompare_URI());
+                if (_request.getcompare_URI().compare("/") != 0){
+                    item_URL.append(_request.getcompare_URI());
+                }
                 item_URL.append(item_absPATH.substr( _request.getroot().length(), item_absPATH.length()));
-
-                // item_URL.append("/");
-                // item_URL.append(item_name);
                 std::cout << "item_URL :" << item_URL << std::endl;
+        
 
                 struct stat STATFile;
                 std::string filePATH;

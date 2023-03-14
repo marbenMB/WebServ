@@ -29,6 +29,7 @@
 #define STATUS_CODE_PATH "conf/status.code.conf"
 #define UPLOAD_STORE "./var/upload/Default"
 #define CREATE_SUCCESS_FILE "./var/srcs/success.html"
+#define ERROR_PATH "./var/errors/40x.html"
 
 
 #include <iostream>

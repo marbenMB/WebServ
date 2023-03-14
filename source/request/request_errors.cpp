@@ -7,7 +7,7 @@ void set_error(method* &resp, int code_status) {
     std::stringstream code_status_str;
     std::string status_code;
     code_status_str << code_status;
-    file = "./var/errors/40x.html";
+    file = ERROR_PATH;
     if (code_status == 404) {
         error = "This page isn't available";
         status_code = "404 ";
@@ -97,7 +97,8 @@ method * request::BadRequest::createError(request req) const throw(){
     resp->setStatuscode(400);
     resp->setreason_phrase(req.getReason("400"));
     resp->setContent_Type("text/html");
-    _filename = req.getDefault_40x().empty() ? "./var/errors/40x.html" : req.getDefault_40x();
+    _filename = req.getDefault_40x().empty() ? ERROR_PATH : req.getDefault_40x();
+    std::cout << "Bad request file Path :" << _filename <<std::endl;
     inFile.open(_filename, std::ifstream::in);
     while (std::getline(inFile, buffer))
     {
@@ -143,7 +144,7 @@ method * request::NotImplemented::createError(request req) const throw(){
     resp->setStatuscode(501);
     resp->setreason_phrase(req.getReason("501"));
     resp->setContent_Type("text/html");
-    inFile.open("var/srcs/Notimplimented.html", std::ifstream::in);
+    inFile.open(ERROR_PATH, std::ifstream::in);
     while (std::getline(inFile, buffer))
     {
          if (buffer.find("<title>") != std::string::npos){
@@ -187,7 +188,7 @@ method * request::NotAllowed::createError(request req) const throw(){
     resp->setStatuscode(405);
     resp->setreason_phrase(req.getReason("405"));
     resp->setContent_Type("text/html");
-    inFile.open("./var/errors/40x.html", std::ifstream::in);
+    inFile.open(ERROR_PATH, std::ifstream::in);
     while (std::getline(inFile, buffer))
     {
         if (buffer.find("<title>") != std::string::npos){
@@ -232,7 +233,7 @@ method * request::NotFound::createError(request req) const throw(){
     resp->setStatuscode(404);
     resp->setreason_phrase(req.getReason("404"));
     resp->setContent_Type("text/html");
-    realpath("./var/errors/40x.html", _dir);
+    realpath(ERROR_PATH, _dir);
     // std::cout <<"*****> |" << _dir << std::endl;
     inFile.open(_dir, std::ifstream::in);
     while (std::getline(inFile, buffer))
@@ -277,7 +278,7 @@ method * request::Forbiden::createError(request req) const throw(){
     resp->setStatuscode(403);
    resp->setreason_phrase(req.getReason("403"));
     resp->setContent_Type("text/html");
-    inFile.open("./var/errors/40x.html", std::ifstream::in);
+    inFile.open(ERROR_PATH, std::ifstream::in);
     while (std::getline(inFile, buffer))
     {
          if (buffer.find("<title>") != std::string::npos){

@@ -27,8 +27,6 @@ request::request(int socketID, ServerConf *server, std::string _request, std::st
     // _requestHeader.clear();
     // _requestBody.clear();
     // _requestHeader.append(req_vector[0]);
-    // std::cout << _requestHeader << std::endl;
-
     // int i = 0;
 
     // while (++i < (int)req_vector.size())
@@ -257,7 +255,13 @@ bool request::Verifying_Body(std::string req)
                         filenameee.erase(filename_length - 1, filename_length);
                         tmp_fileIt.first = filenameee;
                         tmp_fileIt.second = _file[1];
-                        this->req_body.push_back(tmp_fileIt);
+                        // std::cout << "length :" << _file.size() << std::endl;
+                        if (_file[1].length()){
+                            std::cout << "3iw hadchi khawi\n";
+                              throw BadRequest();
+                        }
+                        else
+                            this->req_body.push_back(tmp_fileIt);
                     }
                     ContentDisposition_iter++;nndex++;
                 }

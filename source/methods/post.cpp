@@ -91,8 +91,9 @@ int Post::execute_method(request _request)
                     ++file_It;
                 }
             }
+
             outFile << (*file_It).second;
-            std::cout <<RED<< "filenameee =" <<END_CLR<< (*file_It).first << std::endl;
+            // std::cout <<RED<< "filenameee =" <<END_CLR<< (*file_It).first << std::endl;
             // std::cout <<RED<< "Body       =" <<END_CLR<< (*file_It).second << std::endl;
             outFile.close();
             ++file_It;
@@ -103,6 +104,18 @@ int Post::execute_method(request _request)
             this->setreason_phrase(_request.getReason("201"));
             filename.clear();
             filename.append("./var/srcs/success.html");
+            body.clear();
+            std::stringstream ssbuf;
+             inFile.open(filename, std::ifstream::in);
+            ssbuf << inFile.rdbuf();
+            body.append(ssbuf.str());
+            // while (std::getline(inFile, buffer))
+            // {
+            //     // std::cout << buffer << std::endl;
+            //     line.append(buffer);
+            // }
+            inFile.close();
+
         }
 
     }
