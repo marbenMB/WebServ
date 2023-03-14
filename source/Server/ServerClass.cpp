@@ -1,4 +1,5 @@
 #include "../../include/serverSide.hpp"
+#include "../../include/unitTests.hpp"
 //	***	---		________	---	***	//
 
 WebServ::WebServ() {}
@@ -160,6 +161,8 @@ void	ClientSock::sockConnection(void)
 		_connexion = KEEP_ALIVE;
 	else if	(!conn.compare("close"))
 		_connexion = CLOSE;
+	else
+		_connexion = KEEP_ALIVE;
 }
 
 void	ClientSock::hostResp(void)
@@ -205,14 +208,20 @@ void	ClientSock::readBody(void)
 
 void	ClientSock::formResponse(void)
 {
+	//	**************************************************************************
+
 	std::string body = std::string("<html>\n<head>\
 	\n<title>Hello World 1</title> \
 	</head>\n<body>\
 	\n<h1>Hello World I</h1>\n\
+	\n<p style=\"color:red;\">THIS IS MAR-BEN</p>\n\
 	</body>\n</html>");
+
 	_response = std::string("HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: ");
 	_response.append(std::to_string(body.length()).append("\r\n\r\n"));
 	_response.append(body);
+	//	**************************************************************************
+
 
 	byteToSend = _response.length();
 	std::cout << GREEN << "+> Byte TO send : " << byteToSend << END_CLR << std::endl;
