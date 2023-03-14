@@ -177,6 +177,9 @@ public:
     bool getrequirements( void ) const;
     std::string const &gethost() const;
     std::string const &getroot() const;
+    std::string const &getcookie() const;
+    std::string const &getreq_method() const;
+    std::string getCGIbody() const;
     std::string const &getdefaultIndex() const;
     std::string const &getrequest_URI() const;
     void setrequest_URI(std::string);

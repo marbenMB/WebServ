@@ -1,4 +1,17 @@
 #include "../../include/request.hpp"
+
+std::string request::getCGIbody( void ) const{
+    return this->CGIbody;
+}
+std::string const &request::getreq_method() const 
+{
+    return (this->req_method);
+}
+std::string const &request::getcookie() const
+{
+    return (this->Cookie);
+}
+
 std::string const &request::gethost() const
 {
     return (this->host);
