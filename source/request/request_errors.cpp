@@ -52,7 +52,7 @@ void set_error(method* &resp, int code_status) {
     inFile.close();
     resp->setResponseBody(_body);
     resp->addHeader("Content-Type", "text/html");
-    resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str())));
+    resp->addHeader("Content-Length", std::to_string(_body.length()));
 }
 
 method * request::CGI::runCGI(request req) const throw(){
@@ -77,7 +77,7 @@ method * request::CGI::runCGI(request req) const throw(){
         resp->setContent_Type("text/html");
         resp->setResponseBody(_body);
         resp->addHeader("Content-Type", "text/html");
-        resp->addHeader("Content-Length", std::to_string(strlen(resp->getResponseBody().c_str()) + 1));
+        resp->addHeader("Content-Length", std::to_string(_body.length()));
         resp->addHeader("Set-Cookie", Cookie);
     }
     else
