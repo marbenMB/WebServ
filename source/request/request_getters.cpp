@@ -33,7 +33,7 @@ std::string const &request::getTransfer_Encoding(void) const
     return (this->Transfer_Encoding);
 }
 
-int const &request::getContent_Length(void) const
+unsigned long long const &request::getContent_Length(void) const
 {
     return (this->Content_Length);
 }
@@ -238,4 +238,8 @@ std::string const & request::getUpload_store_PATH( void ) const{
 
 bool request::getCGIstatus( void ) const{
     return this->is_cgi;
+}
+
+std::string const &request::getReason(std::string key){
+    return this->_statusCode[key];
 }

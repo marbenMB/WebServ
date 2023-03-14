@@ -78,7 +78,7 @@ int get::execute_method(request _request)
         
         **/ 
         this->setStatuscode(_request.getRedirect_status());
-        this->setreason_phrase("Moved Permanently");
+        this->setreason_phrase(_request.getReason(std::to_string(_request.getRedirect_status())));
         filename.clear();
         filename.append(_request.getroot());
         filename.append(_request.getredirect_URL());
@@ -111,7 +111,7 @@ int get::execute_method(request _request)
         std::stringstream ssbuf;
         
         this->setStatuscode(200);
-        this->setreason_phrase("Ok");
+        this->setreason_phrase(_request.getReason(std::to_string(this->getStatuscode())));
         inFile.open(filename, std::ifstream::in);
         ssbuf << inFile.rdbuf();
         line.append(ssbuf.str());

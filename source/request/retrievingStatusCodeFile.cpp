@@ -11,9 +11,8 @@ bool request::retrievingsatatuscodeFile(void)
     while (std::getline(file, buffer))
     {
         _split = split(buffer, ": ");
-        std::cout << " KEY :" << _split[1] << std::endl;
-        std::cout << " VALUE :" << _split[0] << std::endl;
-        
+        // std::cout << _split[0] << " :" << _split[1] << std::endl;
+        this->_statusCode[_split[0]] = _split[1];
     }
     return true;
 }

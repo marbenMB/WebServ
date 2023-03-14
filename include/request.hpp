@@ -16,6 +16,7 @@
 # define LF "\n"
 # define CR "\r"
 # define CRLF "\r\n"
+# define CRLF_2 "\r\n\r\n"
 
 
 
@@ -118,8 +119,8 @@ private:
 
 
     // post requirements
-    int Content_Length;
-    int client_max_body_size;
+    unsigned long long Content_Length;
+    unsigned long long client_max_body_size;
     std::string upload_store;
     std::string Content_Type;
     std::string Content_Transfer_Encoding;
@@ -146,6 +147,7 @@ private:
     // for location
     std::string compare_URI;
     std::map<std::string, std::string> _typs;
+    std::map<std::string, std::string> _statusCode;
 
     
 public:
@@ -156,7 +158,12 @@ public:
 
     //  read Files
     bool retrievingsatatuscodeFile(void);
+    std::string const &getReason(std::string);
+
     bool uploadType(void );
+
+
+
     void url_decode(std::string &url);
     request(int , Data *, std::string, std::vector<std::string> &);
     std::vector<std::string> &execute(std::string body, Data *_confdata);
@@ -192,7 +199,7 @@ public:
     void setsocketID(int socketId);
     std::string const &getContent_Type(void) const;
     std::string const &getTransfer_Encoding(void) const;
-    int const &getContent_Length(void) const;
+    unsigned long long const &getContent_Length(void) const;
     //  redirect
     int const & getRedirect_status( void) const;
     void setRedirect_status(int redirect_status);

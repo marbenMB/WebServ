@@ -47,6 +47,8 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
     this->is_cgi = false;
     try
     {
+        this->uploadType();
+        this->retrievingsatatuscodeFile();
         this->Verifying_Header(_requestHeader);
         this->Retrieving_requested_resource(server);
         if (this->getmethod().compare("POST") == 0)
@@ -54,7 +56,6 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
             // exit(1);
             this->Verifying_Body(_requestBody);
         }
-        this->uploadType();
         reqmethod = this->execute_request();
 
     }
@@ -87,8 +88,15 @@ request::request(int socketID, Data *server, std::string _request, std::vector<s
         reqmethod->getStatuscode(),
         reqmethod->getreason_phrase(),
         reqmethod->getResponseBody());
+    std::ofstream _outfile;
 
-    // std::cout << MAUVE << "   @PUSH socket Id" << END_CLR << std::endl;
+
+    _outfile.open("file", std::ifstream::out);
+
+    _outfile << _reaponseBody ;
+
+
+    // std::cout << MAUVE << "**>|" << _reaponseBody << END_CLR << std::endl;
     response.push_back(std::to_string(this->getsocketID()));
     // std::cout << MAUVE << "   @PUSH response Body" << END_CLR << std::endl;
     response.push_back(_reaponseBody);
@@ -112,7 +120,7 @@ void request::sand(int socketID, std::string body)
     {
         perror("ERROR writing to socket");
         close(socketID);
-        exit(1);
+        // exit(1);
     }
     else
     {
@@ -162,14 +170,12 @@ bool request::Verifying_Body(std::string req)
     // std::cout <<"EndSTRINGSEPARATES     " << EndSTRINGSEPARATES << std::endl;
     // if ((int)req.length() != this->getContent_Length()){this->requirements = false;return false;}
     // std::cout << req << std::endl;
-    if ((int)req.length() != this->getContent_Length() || (int)req.length() > this->client_max_body_size){
-            throw BadRequest();
-        }
+    if ((unsigned long long)req.length() != this->getContent_Length() || (unsigned long long)req.length() > this->client_max_body_size){
+        throw BadRequest();
+    }
     if (ContentType["type"].compare("application/x-www-form-urlencoded") == 0){
-        // std::cout<< "application/x-www-form-urlencoded :" << req <<std::endl;
         this->CGIbody.clear();
         this->CGIbody.append(req);
-        std::cout<< "upload_store :" << this->upload_store <<std::endl;
     }
     else if (ContentType["type"].compare("multipart/form-data") == 0)
     {
@@ -182,6 +188,7 @@ bool request::Verifying_Body(std::string req)
             EndSTRINGSEPARATES.append(STRINGSEPARATES);
             EndSTRINGSEPARATES.append("--");
             if (req.find(STRINGSEPARATES) == std::string::npos || req.find(EndSTRINGSEPARATES) == std::string::npos){
+
                 throw BadRequest();
             }
 
@@ -196,7 +203,7 @@ bool request::Verifying_Body(std::string req)
             while (it != tmp.end())
             {
                 // std::cout << RED <<"boundary["<<index<<"]"<<END_CLR << it[0] << std::endl;
-                std::vector<std::string> _file = split(it[0], CRLF);
+                std::vector<std::string> _file = split(it[0], CRLF_2);
                 // std::cout << "\nBODY :\n" << _file[1] << std::endl ;
                 // std::cout << "_file size :" << _file.size() << std::endl;
                 /**
@@ -213,9 +220,8 @@ bool request::Verifying_Body(std::string req)
                     //  std::cout << RED <<"_file["<< indexs <<"] :"<< END_CLR<< *tmp_IT << std::endl;
                     ++tmp_IT;indexs++;
                 }
-                std::vector<std::string> __fileHeader = split(_file[0], LF);
-                // __fileHeader = split(__fileHeader[0], "\n");
-                // std::cout << "__fileHeader :" << __fileHeader.size() << std::endl;
+                std::vector<std::string> __fileHeader = split(_file[0], CRLF);
+              
                 /**
                  * !   __fileHeader[0] :Content-Disposition: form-data; name=""; filename="request.hpp"
                  * *   __fileHeader[1] :Content-Type: application/octet-stream
@@ -233,7 +239,7 @@ bool request::Verifying_Body(std::string req)
                 // std::cout <<RED<< "Name =" <<END_CLR<< ContentDisposition_vect[1] << std::endl;
                 while (ContentDisposition_iter != ContentDisposition_vect.end())
                 {
-                    // std::cout << RED << "ContentDisposition[" << nndex << "] :" << END_CLR << *ContentDisposition_iter << std::endl;
+                    std::cout << RED << "ContentDisposition[" << nndex << "] :" << END_CLR << *ContentDisposition_iter << std::endl;
                     /**
                      * *ContentDisposition[1] :form-data
                      * *ContentDisposition[2] :name=""
@@ -243,17 +249,13 @@ bool request::Verifying_Body(std::string req)
                         std::string filenameee(ContentDisposition_iter[0]);
                         filenameee.erase(0, 10);
                         int filename_length = filenameee.length();
-                        filenameee.erase(filename_length - 2, filename_length);
+                        filenameee.erase(filename_length - 1, filename_length);
                         tmp_fileIt.first = filenameee;
                         tmp_fileIt.second = _file[1];
                         this->req_body.push_back(tmp_fileIt);
-
-                        // std::cout <<RED<< "Body       =" <<END_CLR<< _file[1] << std::endl;
                     }
                     ContentDisposition_iter++;nndex++;
                 }
-                // ContentDisposition_iter += 2;
-            
                 ++it;++index;
             }
         }

@@ -1,4 +1,3 @@
-
 #ifndef REQUEST_H
 #define REQUEST_H
 
@@ -17,6 +16,7 @@
 # define LF "\n"
 # define CR "\r"
 # define CRLF "\r\n"
+# define CRLF_2 "\r\n\r\n"
 
 
 
@@ -26,6 +26,7 @@
 
 #define AOTUINDEX_PATH "./var/assets/autoIndex.html"
 #define MIME_TYPE_PATH "conf/mime.types"
+#define STATUS_CODE_PATH "conf/status.code.conf"
 #define UPLOAD_STORE "./var/upload/Default"
 #define CREATE_SUCCESS_FILE "./var/srcs/success.html"
 
@@ -118,8 +119,8 @@ private:
 
 
     // post requirements
-    int Content_Length;
-    int client_max_body_size;
+    unsigned long long Content_Length;
+    unsigned long long client_max_body_size;
     std::string upload_store;
     std::string Content_Type;
     std::string Content_Transfer_Encoding;
@@ -129,28 +130,40 @@ private:
 
 
     // cgi
-     std::string fasstcgiPATH;
+    std::string CGIbody;
+    std::string fastcgi_pass;
+    std::string fastcgi_index;
+    bool is_cgi;
+
 
     // allowed vars
     int __post;
     int __delete;
     int __get;
-    bool is_cgi;
     request(){};
     std::vector<std::string> message;
     //  error 
 
     // for location
     std::string compare_URI;
-
     std::map<std::string, std::string> _typs;
+    std::map<std::string, std::string> _statusCode;
+
+    
 public:
-
-
     bool getIs_cgi( void );
     void addType(std::string, std::string);
     std::string const &getType(std::string);
+
+
+    //  read Files
+    bool retrievingsatatuscodeFile(void);
+    std::string const &getReason(std::string);
+
     bool uploadType(void );
+
+
+
     void url_decode(std::string &url);
     request(int , Data *, std::string, std::vector<std::string> &);
     std::vector<std::string> &execute(std::string body, Data *_confdata);
@@ -186,7 +199,7 @@ public:
     void setsocketID(int socketId);
     std::string const &getContent_Type(void) const;
     std::string const &getTransfer_Encoding(void) const;
-    int const &getContent_Length(void) const;
+    unsigned long long const &getContent_Length(void) const;
     //  redirect
     int const & getRedirect_status( void) const;
     void setRedirect_status(int redirect_status);
@@ -218,6 +231,8 @@ public:
     // upload_store
     std::string const & getUpload_store_PATH( void ) const;
 
+    //  CGI :
+    bool getCGIstatus( void ) const;
     class BadRequest 
     {
         public:
