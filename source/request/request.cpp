@@ -27,7 +27,7 @@ request::request(int socketID, ServerConf *server, std::string _request, std::st
     // _requestHeader.clear();
     // _requestBody.clear();
     // _requestHeader.append(req_vector[0]);
-    // std::cout << _requestHeader << std::endl;
+    // std::cout << "HEADER :" << _requestHeader << std::endl;
 
     // int i = 0;
 

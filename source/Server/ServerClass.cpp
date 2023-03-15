@@ -211,20 +211,6 @@ void	ClientSock::formResponse(void)
 	//	**************************************************************************
 
 	_reqStat = WELL;
-<<<<<<< HEAD
-	//	_reponse = generateResponse(_request, _serverResponding, _reqStat);
-
-	std::string body = std::string("<html>\n<head>\
-	\n<title>Hello World 1</title> \
-	</head>\n<body>\
-	\n<h1>Hello World I</h1>\n\
-	\n<p style=\"color:red;\">THIS IS MAR-BEN</p>\n\
-	</body>\n</html>");
-
-	_response = std::string("HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: ");
-	_response.append(std::to_string(body.length()).append("\r\n\r\n"));
-	_response.append(body);
-=======
 		// _reponse = generateResponse(_request, _serverResponding, _reqStat);
 		request *req = new request(_fd ,&_serverResponding, _request, _response);
 
@@ -240,7 +226,6 @@ void	ClientSock::formResponse(void)
 	// _response = std::string("HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: ");
 	// _response.append(std::to_string(body.length()).append("\r\n\r\n"));
 	// _response.append(body);
->>>>>>> d9ffec7723292c83c629384aea2901c5976cfa2b
 	//	**************************************************************************
 
 
