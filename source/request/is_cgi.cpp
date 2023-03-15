@@ -69,7 +69,7 @@ void set_env(request req, std::vector<char*> &env_vec) {
         line += req.getCGIbody();
         env_vec.push_back(strdup(line.c_str()));
     }
-    line = "HOME=/Users/mbenbajj";
+    line = "HOME=/Users/aboulhaj";
     env_vec.push_back(strdup(line.c_str()));
     env_vec.push_back(NULL);
 }
@@ -121,7 +121,7 @@ int run_cgi(char **envp, std::string &_body) {
             }
             else
             {
-                argv[0] = strdup("/Users/mbenbajj/.brew/bin/go");
+                argv[0] = strdup("/Users/aboulhaj/.brew/bin/go");
                 argv[1] = strdup("run");
                 argv[2] = strdup(filename.c_str());
                 argv[3] = NULL;
