@@ -23,6 +23,13 @@ const SockProp&	WebServ::findServSocket(int sockFd)
 	return ((*it).first);
 }
 
+void	WebServ::closeClientConn(std::vector<struct pollfd>::iterator socket)
+{
+	close(socket->fd);
+	clientMap.erase(socket->fd);
+	vecPoll.erase(socket);
+}
+
 //	***	---		________	---	***	//
 
 Server::Server (int id, ServerConf server, std::vector<std::string> portIp, std::vector<std::string> name)

@@ -1,11 +1,28 @@
 #include "../../include/serverSide.hpp"
 
-void	printMultiMap(std::multimap<std::string, int> mmap)
+long long	ft_gettime(void)
 {
-	for (std::multimap<std::string, int>::iterator it = mmap.begin(); it != mmap.end(); it++)
-	{
-		std::cout << "IP : " << it->first << " : PORT : " << it->second << std::endl;
-	}
+	struct timeval	tp;
+	long long		time;
+
+	gettimeofday(&tp, NULL);
+	time = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+	return (time);
+}
+
+int	setOptionSocket(int fd)
+{
+	int	optval = 1;
+
+	//?-	Reusable addresss
+	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)))
+		return 1;
+	//?-	Protection form sigPipe signal
+	if (setsockopt(fd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&optval, sizeof(optval)))
+		return 1;
+	//?-	Non Blocking fd
+	fcntl(fd, F_SETFL,	O_NONBLOCK);
+	return 0;
 }
 
 std::vector<std::string>	getStringKeyVal(std::map<std::string, std::vector<std::string> > myMap, std::string key)

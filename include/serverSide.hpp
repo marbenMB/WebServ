@@ -15,7 +15,9 @@
 #define	DEFAULT_PORT 80
 
 #define	MAXREAD	1024
-#define	MAXSEND	10024
+#define	MAXSEND	500000
+
+#define	OUTTIME	300
 ///////////////////// ***** ////////////////////
 
 //	****	*********	****	//
@@ -156,7 +158,9 @@ class	WebServ
 		
 		WebServ ();
 		~WebServ ();
+
 		const SockProp&	findServSocket(int sockFd);
+		void	closeClientConn(std::vector<struct pollfd>::iterator socket);
 };
 
 //	****	*********	****	//
@@ -185,6 +189,8 @@ std::vector<T>	deepCopyVector(std::vector<T> vec)
 
 	//	+++	 Utils	+++	//
 std::vector<std::string>	getStringKeyVal(std::map<std::string, std::vector<std::string> > myMap, std::string key);
+int							setOptionSocket(int fd);
+long long					ft_gettime(void);
 
 	//	+++	Checkint functions +++	//
 int	checkDuplicatePort(std::multimap<std::string, int> Map);
