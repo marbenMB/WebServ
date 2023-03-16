@@ -122,7 +122,7 @@ int Post::execute_method(request _request)
     
     this->setResponseBody(body);
     this->addHeader("Cache-Control", "no-cache");
-    this->addHeader("Content-Type", _request.getType("html"));
+    this->addHeader("Content-Type",Assets::__getType("html"));
     this->addHeader("Content-Length", std::to_string(this->getResponseBody().length()));
     return true;
 }

@@ -1,9 +1,11 @@
 #include "../include/serverSide.hpp"
 #include "../include/unitTests.hpp"
+#include "../include/Assets.hpp"
 
 int _main (int ac, char **av)
 {
     Data 	g_Data;
+    Assets  _assets;
     if (ac == 2)
         g_Data.configuration.parcing_file(av[1], g_Data);
     else if (ac == 1)

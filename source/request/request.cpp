@@ -23,7 +23,7 @@ request::request(int socketID, ServerConf *server, std::string _request, std::st
          _requestHeader = _request.substr(0, splitIndex);
          _requestBody = _request.substr(splitIndex + 4, _request.length());
     }
-    // std::cout << "BODY\n" << _request << std::endl;
+    // std::cout << "_requestHeader\n" << MAUVE<< _requestHeader <<  END_CLR << std::endl;
     // _requestHeader.clear();
     // _requestBody.clear();
     // _requestHeader.append(req_vector[0]);
@@ -127,7 +127,11 @@ void request::sand(int socketID, std::string body)
 
 bool request::Verifying_Body(std::string req)
 {
-
+    if (req.empty())
+    {
+        std::cout << "waaaaa khawiii \n";
+        return false;
+    }
     /** 
      * ! Body synthax 
         HTTP/1.1 206 Partial Content
@@ -184,8 +188,6 @@ bool request::Verifying_Body(std::string req)
     }
     else if (ContentType["type"].compare("multipart/form-data") == 0)
     {
-        std::cout << "content Type :" << Content_Type << std::endl;
-
         std::string  string_separates;
         std::string  END_body;
 
@@ -212,7 +214,8 @@ bool request::Verifying_Body(std::string req)
 
     }
     else{ // theres no boundary
-        std::cout << "chi7aja khra\n";
+
+        std::cout << " :" << this->Content_Type << "| "<<"chi7aja khra ******* * * * * \n";
     }
 
 

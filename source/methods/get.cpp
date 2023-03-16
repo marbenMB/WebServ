@@ -382,7 +382,7 @@ int get::execute_method(request _request)
     size_t pos = _request.getrequest_URI().rfind(".");
     std::string extension = _request.getrequest_URI().substr(pos + 1, _request.getrequest_URI().length());
     this->addHeader("Cache-Control", "no-cache");
-    this->addHeader("Content-Type", _request.getType(extension));
+    this->addHeader("Content-Type", Assets::__getType(extension));
     this->addHeader("Content-Length", std::to_string(this->getResponseBody().length()));
     return 1;
 }

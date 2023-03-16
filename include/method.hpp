@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "./request.hpp"
+#include "./Assets.hpp"
 
 
 class request;
