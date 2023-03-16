@@ -4,7 +4,7 @@ REQUEST_PATH = ./source/request/
 METHODS_PATH = ./source/methods/
 CONFIGFILE_PATH = ./source/config_file/
 INCLUDES_PATH = ./include/
-FLAGS =  -Wall -Wextra -Werror -std=c++98  #-fsanitize=address
+FLAGS =  -Wall -Wextra -Werror -std=c++98  -fsanitize=address
 
 
 
@@ -31,7 +31,7 @@ DEPS =  $(INCLUDES_PATH)request.hpp $(INCLUDES_PATH)method.hpp $(INCLUDES_PATH)W
 all: $(NAME)
 
 $(NAME): $(OBJS) $(config_OBJS) $(request_OBJS) $(method_OBJS)
-	${CC}  ${FLAGS} $(config_OBJS) $(OBJS)  $(request_OBJS) $(method_OBJS) -o $(NAME) -g
+	${CC}  ${FLAGS} $(config_SRCS) $(SRCS)  $(request_SRCS) $(method_SRCS) -o $(NAME) -g
 	# @make clean -C ./
 
 push:fclean

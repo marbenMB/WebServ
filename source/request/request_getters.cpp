@@ -256,3 +256,63 @@ bool request::getCGIstatus( void ) const{
 std::string const &request::getReason(std::string key){
     return this->_statusCode[key];
 }
+
+void request::initializationFILES(std::vector<std::string> filesVECTER)
+{
+    std::vector<std::pair<std::string, std::string> > _files;
+    std::vector<std::string> tmp;
+    std::vector<std::string> file_header;
+    std::vector<std::string> content_disposition;
+    std::vector<std::string>::iterator it = filesVECTER.begin();
+
+    while (it != filesVECTER.end())
+    {
+
+           std::ofstream _outfile;
+
+
+    _outfile.open("file", std::ifstream::out);
+
+    _outfile << it[0] ;
+
+        tmp = split((std::string)it[0], CRLF_2);
+        file_header = split((std::string)tmp[0], CRLF);
+
+        content_disposition = split(file_header[0], "; ");
+        std::string filename;
+        if (content_disposition[2].length() > 11){
+
+        int endfilename = content_disposition[2].length() - 11;
+
+        filename.append(content_disposition[2].substr(10, endfilename));
+        std::cout << "Filename :" << filename << std::endl;
+        }
+        else
+        {
+            std::cout << "3iw haschi khawi\n";
+        }
+        // std::cout << "content_disposition[2] :" << content_disposition[2] <<"|"<< std::endl;
+
+
+        // std::cout << "content_disposition[2].length() :" << content_disposition[2].length() << std::endl;
+        // std::cout << "endfilename :" << endfilename << std::endl;
+        // std::cout << "filename.length() :" << filename.length() << std::endl;
+        /*
+        
+        
+       tmp[0] :"\r\nContent-Disposition: form-data; name=\"namecdvsdfdf\"; filename=\"unitTests.hpp\"\r\nContent-Type: application/octet-stream
+
+
+       tmp[1] :#ifndef\tU_T_H\n#define\tU_T_H\n\n#include \"serverSide.hpp\"\n\ntemplate <typename T>\nvoid\tprintVector(std::vector<T> vec, std::string forWhat)\n{\n\ttypename std::vector<T>::iterator\tit;\n\n\tit = vec.begin();\n\tstd::cout << forWhat;\n\twhile (it != vec.end())\n\t{\n\t\tstd::cout << *it << \" \";\n\t\tit++;\n\t}\n\tstd::cout << std::endl;\n}\n\nvoid\tprintMultiMap(std::multimap<std::string, int> mmap);\nvoid\tprintWebServ (WebServ &myServ);\nvoid\tprintSockProp (std::map<SockProp, std::vector<Server> > m);\nvoid\tprintMapClient (std::map<int, ClientSock> m);\nvoid\tdebug();\n\n#endif\r\n-"
+        
+        
+        
+        
+        
+        **/
+
+        it++;
+    }
+    
+
+}

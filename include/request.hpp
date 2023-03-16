@@ -150,6 +150,9 @@ private:
     std::map<std::string, std::string> _typs;
     std::map<std::string, std::string> _statusCode;
 
+
+    void initializationFILES(std::vector<std::string> filesVECTER);
+
     
 public:
     bool getIs_cgi( void );

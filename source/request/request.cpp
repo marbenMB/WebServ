@@ -127,6 +127,7 @@ void request::sand(int socketID, std::string body)
 
 bool request::Verifying_Body(std::string req)
 {
+
     /** 
      * ! Body synthax 
         HTTP/1.1 206 Partial Content
@@ -151,6 +152,7 @@ bool request::Verifying_Body(std::string req)
 
     // init the boundary
     std::map<std::string, std::string> ContentType;
+    std::map<std::string, std::string> files;
     std::string STRINGSEPARATES;
     std::string EndSTRINGSEPARATES;
     std::string request;
@@ -167,7 +169,7 @@ bool request::Verifying_Body(std::string req)
     // std::cout <<"EndSTRINGSEPARATES     " << EndSTRINGSEPARATES << std::endl;
     // if ((int)req.length() != this->getContent_Length()){this->requirements = false;return false;}
     // std::cout << req << std::endl;
-    if ((unsigned long long)req.length() != this->getContent_Length() - 1 || (unsigned long long)req.length() > this->client_max_body_size){
+    if ((unsigned long long)req.length() != this->getContent_Length() || (unsigned long long)req.length() > this->client_max_body_size){
         std::cout << "ANA HANA\n";
 
         std::cout << "req.length() :" << req.length() << std::endl;
@@ -182,95 +184,39 @@ bool request::Verifying_Body(std::string req)
     }
     else if (ContentType["type"].compare("multipart/form-data") == 0)
     {
-        if (ContentType["boundary"].length() != 0){
-            // std::cout << "REQUEST :" << req <<std::endl;
-            STRINGSEPARATES.clear();
-            STRINGSEPARATES.append("--");
-            STRINGSEPARATES.append(ContentType["boundary"]);
-            EndSTRINGSEPARATES.clear();
-            EndSTRINGSEPARATES.append(STRINGSEPARATES);
-            EndSTRINGSEPARATES.append("--");
-            if (req.find(STRINGSEPARATES) == std::string::npos || req.find(EndSTRINGSEPARATES) == std::string::npos){
-                
-                throw BadRequest();
-            }
+        std::cout << "content Type :" << Content_Type << std::endl;
 
-            tmp.clear();
-            request = split(req, EndSTRINGSEPARATES)[0];
-            STRINGSEPARATES.append("\r\n");
-            tmp = split(request, STRINGSEPARATES);
-            std::vector<std::string>::iterator it = tmp.begin();
-            int index = 1;
-            std::vector<std::string>::iterator tmp_IT;
-            int indexs, nndex;
-            while (it != tmp.end())
-            {
-                // std::cout << RED <<"boundary["<<index<<"]"<<END_CLR << it[0] << std::endl;
-                std::vector<std::string> _file = split(it[0], CRLF_2);
-                // std::cout << "\nBODY :\n" << _file[1] << std::endl ;
-                // std::cout << "_file size :" << _file.size() << std::endl;
-                /**
-                *   ! _file[0]
-                    Content-Disposition: form-data; name=""; filename="get.cpp"
-                    Content-Type: text/x-c
-                *   * _file[1]
-                    file Body
-                */
-                indexs = 1;
-                tmp_IT = _file.begin();
-                while (tmp_IT != _file.end())
-                {
-                    //  std::cout << RED <<"_file["<< indexs <<"] :"<< END_CLR<< *tmp_IT << std::endl;
-                    ++tmp_IT;indexs++;
-                }
-                std::vector<std::string> __fileHeader = split(_file[0], CRLF);
-              
-                /**
-                 * !   __fileHeader[0] :Content-Disposition: form-data; name=""; filename="request.hpp"
-                 * *   __fileHeader[1] :Content-Type: application/octet-stream
-                 */
-                indexs = 1;
-                tmp_IT = __fileHeader.begin();
-                std::vector<std::string> ContentDisposition_vect = split(split(tmp_IT[0], ":")[1], ";");
-                while (tmp_IT != __fileHeader.end())
-                {
-                    // std::cout << RED << "__fileHeader[" << indexs << "] :" << END_CLR << *tmp_IT << std::endl;
-                    ++tmp_IT;indexs++;
-                }
-                std::vector<std::string>::iterator ContentDisposition_iter = ContentDisposition_vect.begin();
-                nndex = 1;
-                // std::cout <<RED<< "Name =" <<END_CLR<< ContentDisposition_vect[1] << std::endl;
-                while (ContentDisposition_iter != ContentDisposition_vect.end())
-                {
-                    std::cout << RED << "ContentDisposition[" << nndex << "] :" << END_CLR << *ContentDisposition_iter << std::endl;
-                    /**
-                     * *ContentDisposition[1] :form-data
-                     * *ContentDisposition[2] :name=""
-                     * !ContentDisposition[3] :filename="request.hpp"
-                     */
-                    if ((*ContentDisposition_iter).find("filename=") != std::string::npos){
-                        std::string filenameee(ContentDisposition_iter[0]);
-                        filenameee.erase(0, 10);
-                        int filename_length = filenameee.length();
-                        filenameee.erase(filename_length - 1, filename_length);
-                        tmp_fileIt.first = filenameee;
-                        tmp_fileIt.second = _file[1];
-                        // std::cout << "length :" << _file.size() << std::endl;
-                        if (_file[1].length()){
-                            std::cout << "3iw hadchi khawi\n";
-                              throw BadRequest();
-                        }
-                        else
-                            this->req_body.push_back(tmp_fileIt);
-                    }
-                    ContentDisposition_iter++;nndex++;
-                }
-                ++it;++index;
-            }
-        }
+        std::string  string_separates;
+        std::string  END_body;
+
+        string_separates.clear();
+        string_separates.append("--");
+        string_separates.append(ContentType["boundary"]);
+
+        END_body.clear();
+        END_body.append(string_separates);
+        END_body.append("--");
+
+        if (req.find(string_separates) == std::string::npos)
+            throw BadRequest();
+        if (req.find(END_body) == std::string::npos)
+            throw BadRequest();
+
+        req = req.substr(0, req.find(END_body));
+        
+        tmp = split(req, string_separates);
+
+
+        //  initialization files
+        initializationFILES(tmp);
+
     }
     else{ // theres no boundary
+        std::cout << "chi7aja khra\n";
     }
+
+
+
     return true;
 }
 
