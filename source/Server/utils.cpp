@@ -10,6 +10,12 @@ long long	ft_gettime(void)
 	return (time);
 }
 
+/**
+ * @brief Set the Option Socket object
+ * 
+ * @param int:fd 
+ * @return int 
+ */
 int	setOptionSocket(int fd)
 {
 	int	optval = 1;
