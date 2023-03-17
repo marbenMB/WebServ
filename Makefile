@@ -11,7 +11,8 @@ CXXFLAGS =  -Wall -Wextra -Werror -std=c++98 #-fsanitize=address
 
 
 config_SRCS = $(CONFIGFILE_PATH)ConfigFile.cpp $(CONFIGFILE_PATH)CheckValidity.cpp $(CONFIGFILE_PATH)ft_error.cpp $(CONFIGFILE_PATH)save_data.cpp $(CONFIGFILE_PATH)tool.cpp
-SERVSRC = $(SERV_PATH)Server.cpp $(SERV_PATH)ServerClass.cpp $(SERV_PATH)utils.cpp $(SERV_PATH)Check.cpp $(SERV_PATH)unitTests.cpp
+SERVSRC = $(SERV_PATH)Server.cpp $(SERV_PATH)ServerClass.cpp $(SERV_PATH)utils.cpp $(SERV_PATH)Check.cpp $(SERV_PATH)unitTests.cpp \
+			$(SERV_PATH)acceptProcess.cpp
 method_SRCS =  $(METHODS_PATH)get.cpp  $(METHODS_PATH)method.cpp $(METHODS_PATH)delete.cpp  $(METHODS_PATH)post.cpp  $(METHODS_PATH)error.cpp
 request_SRCS =  $(REQUEST_PATH)request.cpp $(REQUEST_PATH)split.cpp $(REQUEST_PATH)trimFront.cpp $(REQUEST_PATH)parse.cpp $(REQUEST_PATH)request_getters.cpp \
 				$(REQUEST_PATH)redirection.cpp $(REQUEST_PATH)execute_request.cpp $(REQUEST_PATH)Retrieving_requested_resource.cpp $(REQUEST_PATH)create_response.cpp \
@@ -34,6 +35,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	${CC}  ${CXXFLAGS} $(OBJS) -o $(NAME) -g
+	mkdir var/upload/Default
 	# @make clean -C ./
 
 push:fclean

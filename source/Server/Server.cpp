@@ -166,14 +166,9 @@ void	acceptClients(WebServ &serv)
 	int		nFd;
 
 	//?:	Accept var
-	// int					optval = 1;
 	int					clientFD;
 	struct sockaddr_in	clientAddr;
 	int					clientLen = sizeof(clientAddr);
-
-	//?:	Read var
-	char	buffer[MAXREAD];
-	int		byte;
 
 	//?:	Response Var
 	int		toSend;
@@ -220,68 +215,15 @@ void	acceptClients(WebServ &serv)
 			}
 			else
 			{
-				bzero(&buffer, MAXREAD);
-
 				//?:	check the POLLIN event in the client socket
 				if (serv.vecPoll[idx].revents & POLLIN)
 				{
-					byte = recv(serv.vecPoll[idx].fd, &buffer, MAXREAD, 0);
-					
-					//?:	check if recv returns <= 0 (error case -> erase client socket)
-					if (byte <= 0)
-					{
-						close(serv.vecPoll[idx].fd);
-						std::vector<struct pollfd>::iterator it = serv.vecPoll.begin() + (idx);
-						serv.clientMap.erase(it->fd);
-						serv.vecPoll.erase(it);
-						continue;
-					}
-					
-					//?:	check if the first read in the socket
-					if (serv.clientMap[serv.vecPoll[idx].fd]._InitialRead)
-					{
-						serv.clientMap[serv.vecPoll[idx].fd]._tmp.append(buffer, byte);
-						//?:	set Initial read to false
-						serv.clientMap[serv.vecPoll[idx].fd]._InitialRead = false;
-
-						//?:	separate request headers than body
-						serv.clientMap[serv.vecPoll[idx].fd].separateHeadBody(serv.clientMap[serv.vecPoll[idx].fd]._tmp);
-
-						if (!serv.clientMap[serv.vecPoll[idx].fd]._InitialRead)
-						{
-							//?:	check transfer encoding of the request body and save content-length if not chunked
-							serv.clientMap[serv.vecPoll[idx].fd].transferEncoding();
-							// std::cout << "====== BYTE TO READ ===== : " << serv.clientMap[serv.vecPoll[idx].fd].byteToRead 
-							// << " ====== Content-Length ===== : " << serv.clientMap[serv.vecPoll[idx].fd]._content_lenght << std::endl;
-
-							//?:	checking the connexion sent with request
-							serv.clientMap[serv.vecPoll[idx].fd].sockConnection();
-							
-							//?:	Determin which server is responsible for the request
-							serv.clientMap[serv.vecPoll[idx].fd].hostResp();
-						}
-					}
-					else
-					{
-						serv.clientMap[serv.vecPoll[idx].fd]._reqBody.append(buffer, byte);
-					}
-					// tmp.clear();
-					serv.clientMap[serv.vecPoll[idx].fd].byteRead += byte;
-					if (serv.clientMap[serv.vecPoll[idx].fd].byteToRead && serv.clientMap[serv.vecPoll[idx].fd].byteRead >= serv.clientMap[serv.vecPoll[idx].fd].byteToRead)
-					{
-						serv.clientMap[serv.vecPoll[idx].fd]._readiness = true;
-
-						//?:	Forming request by assambling headers and body together to be traited in the req-resp part
-						serv.clientMap[serv.vecPoll[idx].fd].formRequest();
-						// std::cout << "+++ REQUEST LENGTH : " << serv.clientMap[serv.vecPoll[idx].fd]._request.length() << " ++++ \n\n";
-						// std::cout << serv.clientMap[serv.vecPoll[idx].fd]._request;
-
-						//?:	Create Response 
-						serv.clientMap[serv.vecPoll[idx].fd].formResponse();
-					}
-					if (serv.clientMap[serv.vecPoll[idx].fd]._chunkedBody)
-						std::cout << std::string(buffer, byte) << std::endl;
+					if (serv.readRequest(serv.vecPoll.begin() + idx))
+						continue ;
 				}
+
+				//?:	checking socket Readiness to POLLOUT
+				serv.socketReadiness(serv.vecPoll.begin() + idx);
 
 				//?:	check the POLLOUT event in the client socket
 				if (serv.vecPoll[idx].revents & POLLOUT && serv.clientMap[serv.vecPoll[idx].fd]._readiness)

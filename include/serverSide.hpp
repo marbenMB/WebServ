@@ -14,7 +14,7 @@
 #define DEFAULT_IP "0.0.0.0"
 #define	DEFAULT_PORT 80
 
-#define	MAXREAD	1024
+#define	MAXREAD	500000
 #define	MAXSEND	500000
 
 #define	OUTTIME	300
@@ -161,6 +161,8 @@ class	WebServ
 
 		const SockProp&	findServSocket(int sockFd);
 		void	closeClientConn(std::vector<struct pollfd>::iterator socket);
+		int		readRequest(std::vector<struct pollfd>::iterator client);
+		void	socketReadiness(std::vector<struct pollfd>::iterator client);
 };
 
 //	****	*********	****	//
