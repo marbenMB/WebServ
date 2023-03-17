@@ -51,6 +51,8 @@ int	WebServ::readRequest(std::vector<struct pollfd>::iterator client)
 		//?:	Appending to body after separating header and body and Initial read is set to false
 		clientMap[client->fd]._reqBody.append(buffer, byte);
 	}
+	if (clientMap[client->fd]._chunkedBody)
+		clientMap[client->fd].readChunkBody();
 	
 	//?:	Appending byte read by recv() to know how many bytes are read
 	clientMap[client->fd].byteRead += byte;
@@ -66,12 +68,10 @@ void	WebServ::socketReadiness(std::vector<struct pollfd>::iterator client)
 
 		//?:	Forming request by assambling headers and body together to be traited in the req-resp part
 		clientMap[client->fd].formRequest();
-		// std::cout << "+++ REQUEST LENGTH : " << clientMap[client->fd]._request.length() << " ++++ \n\n";
-		// std::cout << clientMap[client->fd]._request;
 
 		//?:	Create Response 
 		clientMap[client->fd].formResponse();
 	}
-	if (clientMap[client->fd]._chunkedBody)
-		std::cout << "CHUNKED BODY" << std::endl;
+	// if (clientMap[client->fd]._chunkedBody)
+	// 	std::cout << "CHUNKED BODY" << std::endl;
 }

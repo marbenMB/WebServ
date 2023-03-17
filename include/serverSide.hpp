@@ -111,7 +111,7 @@ class	ClientSock : public SockProp
 		std::string	findHeaderValue(std::string header);
 		void	sockConnection(void);
 		void	hostResp(void);
-		void	readBody(void);
+		void	readChunkBody(void);
 
 		void	formResponse(void);
 		void	reFormResponse(int sent);

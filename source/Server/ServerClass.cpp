@@ -212,9 +212,29 @@ void	ClientSock::hostResp(void)
 		_serverResponding = vecServ.begin()->getServconf();
 }
 
-void	ClientSock::readBody(void)
+void	ClientSock::readChunkBody(void)
 {
-	std::cout << std::endl;
+	std::stringstream	bodyStream;
+	std::string			hexStr;
+	long long			byte;
+
+	std::cout << MAUVE << _reqBody << RED "++END BODY++" END_CLR << std::endl;
+
+	bodyStream << _reqBody;
+
+	std::getline(bodyStream, hexStr);
+	hexStr.append("\n");
+	
+	byte = std::stoi(hexStr, nullptr, 16);
+
+	std::cout << "- STR : " << hexStr
+			<<	"- bytes : " << byte << std::endl;
+
+	
+
+	bodyStream << "";
+	bodyStream.clear();
+
 }
 
 //	--- Response part

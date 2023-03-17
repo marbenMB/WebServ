@@ -240,9 +240,7 @@ void	acceptClients(WebServ &serv)
 					serv.clientMap[serv.vecPoll[idx].fd].byteSent += sent;
 					serv.clientMap[serv.vecPoll[idx].fd].reFormResponse(sent);
 
-					// std::cout << RED << "+> Byte sent : " << sent << END_CLR << std::endl;
-					// std::cout << RED << "+> Byte sent from Response : " << serv.clientMap[serv.vecPoll[idx].fd].byteSent << END_CLR << std::endl;
-
+					//?:	The end of Response send
 					if (serv.clientMap[serv.vecPoll[idx].fd]._done)
 					{
 						// ********* reset client data first **************
