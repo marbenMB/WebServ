@@ -4,7 +4,8 @@ request::request(int socketID, ServerConf *server, std::string _request, std::st
                                                                                                         autoindex(AUTOINDEX_OFF),
                                                                                                         __post(NOT_ALLOWED),
                                                                                                         __delete(NOT_ALLOWED),
-                                                                                                        __get(NOT_ALLOWED)
+                                                                                                        __get(NOT_ALLOWED),
+                                                                                                        __noImplimented(NOT_ALLOWED)
 {
     std::string _requestBody;
     std::string _requestHeader;
@@ -23,7 +24,7 @@ request::request(int socketID, ServerConf *server, std::string _request, std::st
          _requestHeader = _request.substr(0, splitIndex);
          _requestBody = _request.substr(splitIndex + 4, _request.length());
     }
-    // std::cout << "_requestHeader\n" << MAUVE<< _requestHeader <<  END_CLR << std::endl;
+    // std::cout << "_request\n" << MAUVE<< _request <<  END_CLR << std::endl;
     // _requestHeader.clear();
     // _requestBody.clear();
     // _requestHeader.append(req_vector[0]);
@@ -57,13 +58,8 @@ request::request(int socketID, ServerConf *server, std::string _request, std::st
         reqmethod = this->execute_request();
 
     }
-    catch(request::BadRequest & e){ reqmethod = e.createError(*this);}
-    catch(request::NotImplemented & e){ reqmethod = e.createError(*this);}
-    catch(request::NotAllowed & e){ reqmethod = e.createError(*this);}
-    catch(request::NotFound & e){ reqmethod = e.createError(*this);}
-    catch(request::Forbiden & e){ reqmethod = e.createError(*this);}
-    catch(request::InternalServerError & e){ reqmethod = e.createError(*this);}
     catch(request::CGI & e){ reqmethod = e.runCGI(*this);}
+    catch(_Exception & e){ reqmethod = e.what(*this);}
     
     // * parse Header :
     // 1 - cheack for Header
@@ -179,7 +175,7 @@ bool request::Verifying_Body(std::string req)
         std::cout << "req.length() :" << req.length() << std::endl;
         std::cout << "this->getContent_Length() :" << this->getContent_Length() << std::endl;
         std::cout << "this->client_max_body_size :" << this->client_max_body_size << std::endl;
-        throw BadRequest();
+        throw _Exception(BAD_REQUEST);
     }
     if (ContentType["type"].compare("application/x-www-form-urlencoded") == 0){
         url_decode(req);
@@ -200,9 +196,9 @@ bool request::Verifying_Body(std::string req)
         END_body.append("--");
 
         if (req.find(string_separates) == std::string::npos)
-            throw BadRequest();
+            throw _Exception(BAD_REQUEST);
         if (req.find(END_body) == std::string::npos)
-            throw BadRequest();
+            throw _Exception(BAD_REQUEST);
 
         req = req.substr(0, req.find(END_body));
         
@@ -234,7 +230,7 @@ void request::url_decode(std::string &url) {
             hex += url[++i];
             char decoded = strtol(hex.c_str(), &end, 16);
             if (*end != '\0')
-                throw BadRequest();
+                throw _Exception(BAD_REQUEST);
             unescaped << decoded;
         }
         else if (url[i] == '+')
@@ -253,8 +249,8 @@ bool request::Verifying_Header(std::string req)
     std::vector<std::string> spl;
 
     spl = split((std::string)itH[0], " ");
-    if (spl.size() != 2)
-        throw BadRequest();
+    if (spl.size() < 2)
+        throw _Exception(BAD_REQUEST);
     this->req_method = spl[0];
    
     std::string _request_URI = spl[1];
@@ -277,14 +273,14 @@ bool request::Verifying_Header(std::string req)
     else{this->setrequest_URI(_request_URI); }
 
     // std::cout << "request_URI : |" << this->getrequest_URI() << std::endl; 
-    //     throw NotAllowed();
+    //     throw  _Exception(METHOD_NO_ALLOWED);
     // this->_error.setCode_status(404);
     // this->_error.setReason_phrase("Bad Request");
     // this->_error = Error(401, "Bad Request");
 
     this->http_version = spl[2];
     if (this->http_version.compare("HTTP/1.1") != 0)
-        throw BadRequest();
+        throw _Exception(BAD_REQUEST);;
     // std::cout << "\nsetquery_string :" << this->getquery_string() << std::endl;
     // std::cout << "setrequest_URI :" << this->getrequest_URI() << std::endl;
     while (++itH != requestHeaders.end())
@@ -303,10 +299,8 @@ bool request::Verifying_Header(std::string req)
     }
     if (this->req_method.empty() || this->host.empty() || this->request_URI.empty() || this->http_version.empty())
     {
-        // this->_error = Error(401, "Bad Request");
         this->requirements = false;
-        throw BadRequest();
-        return false;
+        throw _Exception(BAD_REQUEST);
     }
 
 

@@ -103,7 +103,7 @@ int get::execute_method(request _request)
     else if (Is_cgi(filename)){ throw request::CGI();}
     else if (stat(filename.c_str(), &STATInfo) != 0)
     { // not exist
-        throw request::NotFound();
+        throw  _Exception(NOT_FOUND);
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFREG) { // is file   S_ISREG(fileStat.st_mode)
         
@@ -344,7 +344,7 @@ int get::execute_method(request _request)
             // std::cout << "</Line >" << std::endl;
             inFile.close();
         }
-        else throw request::Forbiden();
+        else throw  _Exception(FORBIDDEN);
     }
     else
     {

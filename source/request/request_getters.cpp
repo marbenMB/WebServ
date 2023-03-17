@@ -182,7 +182,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
         }
     }
     if (this->is_cgi && locationId == -1)
-        throw NotImplemented();
+        throw  _Exception(NOT_IMPLEMENTED);
     return locationId;
 }
 
@@ -228,7 +228,7 @@ bool request::uploadType(void ){
 
     file.open(MIME_TYPE_PATH, std::ifstream::in);
     if (!file.is_open())
-        throw InternalServerError();
+        throw  _Exception(INTERNAL_SERVER_ERROR);
     while (std::getline(file, buffer))
     {
         _split = split(buffer, ": ");
@@ -297,13 +297,18 @@ void request::initializationFILES(std::vector<std::string> filesVECTER)
             catch(const std::exception& e)
             {
                 std::cerr << e.what() << '\n';
-                // throw InternalServerError();
+                // throw  _Exception(INTERNAL_SERVER_ERROR);
             }
             it++;
         }
         if (_files.size())
             this->req_body = _files;
         else{
-            throw InternalServerError();
+            throw  _Exception(INTERNAL_SERVER_ERROR);
         }
+}
+
+
+int  request::getExceptionCode(){
+    return this->_ExceptionCode ;
 }

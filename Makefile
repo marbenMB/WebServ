@@ -15,7 +15,7 @@ config_SRCS = $(CONFIGFILE_PATH)ConfigFile.cpp $(CONFIGFILE_PATH)CheckValidity.c
 
 method_SRCS =  $(METHODS_PATH)get.cpp  $(METHODS_PATH)method.cpp $(METHODS_PATH)delete.cpp  $(METHODS_PATH)post.cpp  $(METHODS_PATH)error.cpp
 request_SRCS =  $(REQUEST_PATH)request.cpp $(REQUEST_PATH)split.cpp $(REQUEST_PATH)trimFront.cpp $(REQUEST_PATH)parse.cpp $(REQUEST_PATH)request_getters.cpp $(REQUEST_PATH)redirection.cpp $(REQUEST_PATH)execute_request.cpp $(REQUEST_PATH)Retrieving_requested_resource.cpp $(REQUEST_PATH)create_response.cpp $(REQUEST_PATH)GETstatusOfexecution.cpp
-SRCS =  ./source/main.cpp  ./source/Assets.cpp $(REQUEST_PATH)request_errors.cpp $(REQUEST_PATH)is__subdir.cpp $(REQUEST_PATH)is_cgi.cpp $(REQUEST_PATH)retrievingStatusCodeFile.cpp $(SERVSRC)
+SRCS =  ./source/main.cpp  ./source/Assets.cpp  ./source/_Exception.cpp $(REQUEST_PATH)request_errors.cpp $(REQUEST_PATH)is__subdir.cpp $(REQUEST_PATH)is_cgi.cpp $(REQUEST_PATH)retrievingStatusCodeFile.cpp $(SERVSRC)
 
 method_OBJS	= $(method_SRCS:.cpp=.o)
 request_OBJS = $(request_SRCS:.cpp=.o)
@@ -31,7 +31,7 @@ FILES_SRC = $(config_SRCS) $(SRCS)  $(request_SRCS) $(method_SRCS)
 all: $(NAME)
 
 $(NAME): $(FILES_OBJ) 
-	${CC}  ${FLAGS}  $(FILES_SRC) -o $(NAME) -g
+	${CC}  ${FLAGS}  $(FILES_OBJ) -o $(NAME) -g
 	# @make clean -C ./
 
 push:fclean

@@ -6,7 +6,7 @@
 /*   By: mmasstou <mmasstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 19:13:05 by mmasstou          #+#    #+#             */
-/*   Updated: 2023/03/16 19:30:11 by mmasstou         ###   ########.fr       */
+/*   Updated: 2023/03/17 13:20:27 by mmasstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,7 @@ std::string Assets::getError( int code ){
    return Assets::_errorList[std::to_string(code)];
 }
 std::string Assets::__getType(std::string extension){
+    if (Assets::_mimeTypes[extension].empty())
+        return ("text/html");
     return Assets::_mimeTypes[extension];
 }

@@ -39,12 +39,12 @@ int deleteMethod::execute_method(request _request)
     // * if the result == S_IFREG => the path is file 
     // * if the result == S_IFDIR => the path is dir (folder)
     if (stat(filename.c_str(), &STATInfo) != 0){ // 404 not Found => the file dose not existe 
-        throw request::NotFound();
+        throw  _Exception(NOT_FOUND);
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFREG){ // 202 No Content => the file exist 
         int remove_status = remove(filename.c_str());
         if (remove_status != 0){ // this file can removed becouse of permistion
-            throw request::Forbiden();
+            throw  _Exception(FORBIDDEN);
         }
         else{ // the file that passed he dir is removed success ; we shuld check a redirection in confg file
             this->setStatuscode(202);
@@ -54,7 +54,7 @@ int deleteMethod::execute_method(request _request)
         }
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFDIR){ // 403 Forbidden => the path that passed is for Folder and we shuld not remove it
-       throw request::Forbiden();
+       throw  _Exception(FORBIDDEN);
     }
     inFilemessage.open(line, std::ifstream::in);  // for ech case the line string is append a path for the file that we chuld get from the html to rander it to bady response
     line.clear(); // after we open the file , clear the string to append it data of the file

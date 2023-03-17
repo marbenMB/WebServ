@@ -9,13 +9,12 @@
 
 #include "./request.hpp"
 #include "./Assets.hpp"
-
+#include "./_Exception.hpp"
 
 class request;
 class method
 {
 private:
-
     std::map<std::string, std::string> _Headers;
     std::string responseBody;
 
@@ -77,7 +76,7 @@ public:
     void setRedirect_status(int redirect_status);
     std::string const &getredirect_URL(void) const;
     void setredirect_URL(std::string redirect_URL);
-    
+
     // ! Header for response :
     void addHeader(std::string, std::string);
     std::map<std::string, std::string> const &getHeader(void) const;
@@ -125,9 +124,9 @@ public:
     void setName(std::string value);
     void setContent(std::string value);
     // getter :
-    std::string const &getFilename( void );
-    std::string const &getName( void );
-    std::string const &getContent( void );
+    std::string const &getFilename(void);
+    std::string const &getName(void);
+    std::string const &getContent(void);
 };
 
 class Error : public method

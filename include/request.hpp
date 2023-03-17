@@ -42,6 +42,7 @@
 #include "./WebServer.hpp"
 
 #include "./method.hpp"
+#include "./_Exception.hpp"
 #include <stdlib.h>
 
 
@@ -79,7 +80,7 @@ private:
    
 
 
-
+    int _ExceptionCode;
     bool requirements;
     int socketID;
     std::string root;
@@ -141,6 +142,7 @@ private:
     int __post;
     int __delete;
     int __get;
+    int __noImplimented;
     request(){};
     std::vector<std::string> message;
     //  error 
@@ -155,6 +157,12 @@ private:
 
     
 public:
+    // Request Exception :
+    int  getExceptionCode();
+
+
+
+
     bool getIs_cgi( void );
     void addType(std::string, std::string);
     std::string const &getType(std::string);
