@@ -74,10 +74,17 @@ ClientSock::ClientSock () :  SockProp(0, 0, "", CLIENT_SOCK) {};
 
 ClientSock::ClientSock (int fd, int port, std::string ip) : SockProp(fd, port, ip, CLIENT_SOCK) 
 {
-	byteRead = 0;
-	byteToRead = 0;
 	_InitialRead = true;
 	_readiness = false;
+	_chunkedBody = false;
+	_done = false;
+	_connexion = SET_CNX;
+	_reqStat = STAT;
+	byteRead = 0;
+	byteToRead = 0;
+	byteToSend = 0;
+	byteSent = 0;
+	_content_lenght = 0;
 }
 
 ClientSock::~ClientSock () {};
@@ -242,21 +249,27 @@ void	ClientSock::reFormResponse(int sent)
 void	ClientSock::resetClientProp(void)
 {
 	_host.clear();
-	byteRead = 0;
-	byteToRead = 0;
+
 	_InitialRead = true;
 	_readiness = false;
 	_chunkedBody = false;
 	_connexion = SET_CNX;
+	_reqStat = STAT;
+
+//	-- Request
 	_tmp.clear();
-	_request.clear();
 	_reqHeader.clear();
 	_reqBody.clear();
-	_bodyChunk.clear();
 	byteRead = 0;
 	byteToRead = 0;
+	_request.clear();
+
+//	-- Chunked body :
+	_bodyChunk.clear();
 	_content_lenght = 0;
 
+//	--	Response :
+	_response.clear();
 	byteToSend = 0;
 	byteSent = 0;
 	_done = false;

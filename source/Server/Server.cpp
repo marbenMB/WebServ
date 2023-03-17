@@ -173,7 +173,9 @@ void	acceptClients(WebServ &serv)
 	//?:	Response Var
 	int		toSend;
 	int		sent;
-	// std::string	tmp;
+
+	//?:	sockets
+	std::vector<struct pollfd>::iterator socket;
 
 	while (true)
 	{
@@ -215,16 +217,17 @@ void	acceptClients(WebServ &serv)
 			}
 			else
 			{
+				socket = serv.vecPoll.begin() + idx;
 				//?:	check the POLLIN event in the client socket
 				if (serv.vecPoll[idx].revents & POLLIN)
 				{
 					//?:	Reading Client Request if prob in recv() erase client & continue
-					if (serv.readRequest(serv.vecPoll.begin() + idx))
+					if (serv.readRequest(socket))
 						continue ;
 				}
 
 				//?:	checking socket Readiness to POLLOUT
-				serv.socketReadiness(serv.vecPoll.begin() + idx);
+				serv.socketReadiness(socket);
 
 				//?:	check the POLLOUT event in the client socket
 				if (serv.vecPoll[idx].revents & POLLOUT && serv.clientMap[serv.vecPoll[idx].fd]._readiness)
@@ -246,19 +249,13 @@ void	acceptClients(WebServ &serv)
 						if (serv.clientMap[serv.vecPoll[idx].fd]._connexion == KEEP_ALIVE)
 							serv.clientMap[serv.vecPoll[idx].fd].resetClientProp();
 						else if (serv.clientMap[serv.vecPoll[idx].fd]._connexion == CLOSE)
-						{
-							// close(serv.vecPoll[idx].fd);
-							// std::vector<struct pollfd>::iterator it = serv.vecPoll.begin() + (idx);
-							// serv.clientMap.erase(it->fd);
-							// serv.vecPoll.erase(it);
-							serv.closeClientConn(serv.vecPoll.begin() + idx);
-						}
+							serv.closeClientConn(socket);
 					}
 				}
 
 				//?:	check the POLLIN event in the client socket
 				if (serv.vecPoll[idx].revents & POLLERR || serv.vecPoll[idx].revents & POLLHUP)
-					serv.closeClientConn(serv.vecPoll.begin() + idx);
+					serv.closeClientConn(socket);
 			}
 		}
 	}

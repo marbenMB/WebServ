@@ -40,6 +40,7 @@ enum defines
 	N_READY,
 
 	//	** Request stat
+	STAT = 199,
 	WELL = 200,
 	TIMEOUT
 };
