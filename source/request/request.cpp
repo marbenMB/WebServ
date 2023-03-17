@@ -104,7 +104,7 @@ request::request(int socketID, ServerConf *server, std::string _request, std::st
         color_status = GREEN;
     else
         color_status = RED;
-    std::cout << color_status << "127.0.0.1 " << this->getmethod() << " HTTP/1.1 " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase() << " " << this->getrequest_URI() << END_CLR <<std::endl ;
+    std::cout << color_status << this->host.substr(0, this->host.find(":")) <<" " << this->getmethod() << " HTTP/1.1 " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase() << " " << this->getrequest_URI()  << 2346 << END_CLR <<std::endl ;
     delete reqmethod;
 }
 
@@ -253,6 +253,8 @@ bool request::Verifying_Header(std::string req)
     std::vector<std::string> spl;
 
     spl = split((std::string)itH[0], " ");
+    if (spl.size() != 2)
+        throw BadRequest();
     this->req_method = spl[0];
    
     std::string _request_URI = spl[1];

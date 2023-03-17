@@ -107,7 +107,6 @@ int run_cgi(char **envp, std::string &_body) {
     if (access(filename.c_str(), R_OK) == -1) {
         return (ERR_FILE);
     }
-
     else {
         pid = fork();
         if (pid < 0)
@@ -144,15 +143,15 @@ int run_cgi(char **envp, std::string &_body) {
 
     }
 
-    // if (!result) {
-        body_file.open("source/cgi_files/cgi_pages/file_cgi.html");
-        if (body_file.is_open()) {
-            while(std::getline(body_file, line)) {
-                _body.append(line);
-            }
-            return (SUCCESS);
+    if (!result) {};
+    body_file.open("source/cgi_files/cgi_pages/file_cgi.html");
+    if (body_file.is_open()) {
+        while(std::getline(body_file, line)) {
+            _body.append(line);
         }
-        return (ERR_SERV);
+        return (SUCCESS);
+    }
+    return (ERR_SERV);
     // }
     // else
     //     return (result);

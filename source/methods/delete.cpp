@@ -31,25 +31,20 @@ int deleteMethod::execute_method(request _request)
     // check config file if the method is allowed:
     std::string filename;
     filename.clear(); // clear for delete the garbidge value 
-    filename.append(this->getRootPath()); // append the root path that get it from the config file
-    filename.append(_request.getrequest_URI()); // append the request URI that get it also from request line 
+    // filename.append(this->getRootPath()); // append the root path that get it from the config file
+    filename.append(_request.getrequest_URI());
+    std::cout << "Filename :" << filename <<std::endl; // append the request URI that get it also from request line 
     // * stat is function that check a psth if exist and store the more Info for this path in 'STATInfo' that we passe as reference 
     // * if the result return != 0 => the path no exist 
     // * if the result == S_IFREG => the path is file 
     // * if the result == S_IFDIR => the path is dir (folder)
     if (stat(filename.c_str(), &STATInfo) != 0){ // 404 not Found => the file dose not existe 
-        this->setStatuscode(404);
-        this->setreason_phrase("Not Found");
-        line.clear();
-        line.append("./var/srcs/notfound.html");
+        throw request::NotFound();
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFREG){ // 202 No Content => the file exist 
         int remove_status = remove(filename.c_str());
         if (remove_status != 0){ // this file can removed becouse of permistion
-            this->setStatuscode(403);
-            this->setreason_phrase("Forbidden");
-            line.clear();
-            line.append("./var/srcs/forbidden.html");
+            throw request::Forbiden();
         }
         else{ // the file that passed he dir is removed success ; we shuld check a redirection in confg file
             this->setStatuscode(202);
@@ -59,10 +54,7 @@ int deleteMethod::execute_method(request _request)
         }
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFDIR){ // 403 Forbidden => the path that passed is for Folder and we shuld not remove it
-        this->setStatuscode(403);
-        this->setreason_phrase("Forbidden");
-        line.clear();
-        line.append("./var/srcs/forbidden.html");
+       throw request::Forbiden();
     }
     inFilemessage.open(line, std::ifstream::in);  // for ech case the line string is append a path for the file that we chuld get from the html to rander it to bady response
     line.clear(); // after we open the file , clear the string to append it data of the file
@@ -71,6 +63,12 @@ int deleteMethod::execute_method(request _request)
     while (std::getline(inFilemessage, buffer)){
         line.append(buffer);
     }
+
+
     this->setResponseBody(line); // set the data that previce read from the file to the body response 
+
+    this->addHeader("Cache-Control", "no-cache");
+    this->addHeader("Content-Type",Assets::__getType("html"));
+    this->addHeader("Content-Length", std::to_string(this->getResponseBody().length()));
     return 1; 
 }

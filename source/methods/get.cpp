@@ -379,9 +379,14 @@ int get::execute_method(request _request)
 
     // std::cout << "response : \n" << this->getResponseBody() << std::endl;
     // std::string tt( _request.getrequest_URI());
+    std::string extension;
     size_t pos = _request.getrequest_URI().rfind(".");
-    std::string extension = _request.getrequest_URI().substr(pos + 1, _request.getrequest_URI().length());
+    if (pos == 0)
+        extension = "html";
+    else 
+        extension = _request.getrequest_URI().substr(pos + 1, _request.getrequest_URI().length());
     this->addHeader("Cache-Control", "no-cache");
+    std::cout << "Assets::__getType(extension) :" << Assets::__getType(extension)  << " :>" << extension << std::endl;
     this->addHeader("Content-Type", Assets::__getType(extension));
     this->addHeader("Content-Length", std::to_string(this->getResponseBody().length()));
     return 1;

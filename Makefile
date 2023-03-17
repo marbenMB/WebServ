@@ -23,15 +23,15 @@ config_OBJS = $(config_SRCS:.cpp=.o)
 OBJS	= $(SRCS:.cpp=.o)
 DEPS =  $(INCLUDES_PATH)request.hpp $(INCLUDES_PATH)method.hpp $(INCLUDES_PATH)WebServer.hpp $(INCLUDES_PATH)ConfigFile.hpp $(INCLUDES_PATH)classes.hpp $(INCLUDES_PATH)serverSide.hpp $(INCLUDES_PATH)header.hpp $(INCLUDES_PATH)unitTests.hpp $(INCLUDES_PATH)Assets.hpp
 
-
-
+FILES_OBJ = $(OBJS) $(config_OBJS) $(request_OBJS) $(method_OBJS)
+FILES_SRC = $(config_SRCS) $(SRCS)  $(request_SRCS) $(method_SRCS)
 %.o:%.cpp $(DEPS)
 	${CC} ${FLAGS}  -o $@ -c $<
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(config_OBJS) $(request_OBJS) $(method_OBJS)
-	${CC}  ${FLAGS} $(config_SRCS) $(SRCS)  $(request_SRCS) $(method_SRCS) -o $(NAME) -g
+$(NAME): $(FILES_OBJ) 
+	${CC}  ${FLAGS}  $(FILES_SRC) -o $(NAME) -g
 	# @make clean -C ./
 
 push:fclean

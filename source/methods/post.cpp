@@ -91,8 +91,13 @@ int Post::execute_method(request _request)
                     ++file_It;
                 }
             }
+            // buffer = filename; 
+            // std::stringstream ssbuf;
+            // ssbuf << file_It[0].second;
 
-            outFile << (*file_It).second;
+            // std::string uploadfile ;
+            // ssbuf >> uploadfile;
+            outFile << file_It[0].second;
             // std::cout <<RED<< "filenameee =" <<END_CLR<< (*file_It).first << std::endl;
             // std::cout <<RED<< "Body       =" <<END_CLR<< (*file_It).second << std::endl;
             outFile.close();
@@ -102,11 +107,11 @@ int Post::execute_method(request _request)
             // forbiden
             this->setStatuscode(201);
             this->setreason_phrase(_request.getReason("201"));
-            filename.clear();
-            filename.append("./var/srcs/success.html");
+            buffer.clear();
+            buffer.append("./var/srcs/success.html");
             body.clear();
             std::stringstream ssbuf;
-             inFile.open(filename, std::ifstream::in);
+             inFile.open(buffer, std::ifstream::in);
             ssbuf << inFile.rdbuf();
             body.append(ssbuf.str());
             // while (std::getline(inFile, buffer))
@@ -124,6 +129,7 @@ int Post::execute_method(request _request)
     this->addHeader("Cache-Control", "no-cache");
     this->addHeader("Content-Type",Assets::__getType("html"));
     this->addHeader("Content-Length", std::to_string(this->getResponseBody().length()));
+    _request.setrequest_URI(filename);
     return true;
 }
 
