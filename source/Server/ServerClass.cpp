@@ -203,7 +203,6 @@ void	ClientSock::hostResp(void)
 		_serverResponding = servIt->getServconf();
 	else
 		_serverResponding = vecServ.begin()->getServconf();
-	// std::cout << "Server Name : " << _serverResponding.server_data["server_name"][1] << std::endl;
 }
 
 void	ClientSock::readBody(void)
@@ -217,27 +216,15 @@ void	ClientSock::formResponse(void)
 {
 	//	**************************************************************************
 
+	//!	Request stat if is it WELL || TIMEOUT
 	_reqStat = WELL;
-		// _reponse = generateResponse(_request, _serverResponding, _reqStat);
-		request *req = new request(_fd ,&_serverResponding, _request, _response);
+	//*	generate Request
+	request *req = new request(_fd ,&_serverResponding, _request, _response);
 
-		delete req;
-
-	// std::string body = std::string("<html>\n<head>\
-	// \n<title>Hello World 1</title> \
-	// </head>\n<body>\
-	// \n<h1>Hello World I</h1>\n\
-	// \n<p style=\"color:red;\">THIS IS MAR-BEN</p>\n\
-	// </body>\n</html>");
-
-	// _response = std::string("HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: ");
-	// _response.append(std::to_string(body.length()).append("\r\n\r\n"));
-	// _response.append(body);
+	delete req;
 	//	**************************************************************************
 
-
 	byteToSend = _response.length();
-	// std::cout << GREEN << "+> Byte TO send : " << byteToSend << END_CLR << std::endl;
 	byteSent = 0;
 	_done = false;
 }

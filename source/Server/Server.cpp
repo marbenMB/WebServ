@@ -218,6 +218,7 @@ void	acceptClients(WebServ &serv)
 				//?:	check the POLLIN event in the client socket
 				if (serv.vecPoll[idx].revents & POLLIN)
 				{
+					//?:	Reading Client Request if prob in recv() erase client & continue
 					if (serv.readRequest(serv.vecPoll.begin() + idx))
 						continue ;
 				}
