@@ -1,6 +1,6 @@
 #include "../../include/method.hpp"
 
-Post::Post(request rhs)
+_Post::_Post(request rhs)
 {
     this->setHost(rhs.gethost());
     this->setRequest_URI(rhs.getrequest_URI());
@@ -15,10 +15,10 @@ Post::Post(request rhs)
     this->setStatuscode(201);
     this->setreason_phrase("Created");
 }
-Post::~Post()
+_Post::~_Post()
 {
 }
-int Post::execute_method(request _request)
+int _Post::execute_method(request _request)
 {
     std::string buffer;
     std::string body;
@@ -91,8 +91,14 @@ int Post::execute_method(request _request)
                     ++file_It;
                 }
             }
-            outFile << (*file_It).second;
-            std::cout <<RED<< "filenameee =" <<END_CLR<< (*file_It).first << std::endl;
+            // buffer = filename; 
+            // std::stringstream ssbuf;
+            // ssbuf << file_It[0].second;
+
+            // std::string uploadfile ;
+            // ssbuf >> uploadfile;
+            outFile << file_It[0].second;
+            // std::cout <<RED<< "filenameee =" <<END_CLR<< (*file_It).first << std::endl;
             // std::cout <<RED<< "Body       =" <<END_CLR<< (*file_It).second << std::endl;
             outFile.close();
             ++file_It;
@@ -101,20 +107,33 @@ int Post::execute_method(request _request)
             // forbiden
             this->setStatuscode(201);
             this->setreason_phrase(_request.getReason("201"));
-            filename.clear();
-            filename.append("./var/srcs/success.html");
+            buffer.clear();
+            buffer.append("./var/srcs/success.html");
+            body.clear();
+            std::stringstream ssbuf;
+             inFile.open(buffer, std::ifstream::in);
+            ssbuf << inFile.rdbuf();
+            body.append(ssbuf.str());
+            // while (std::getline(inFile, buffer))
+            // {
+            //     // std::cout << buffer << std::endl;
+            //     line.append(buffer);
+            // }
+            inFile.close();
+
         }
 
     }
     
     this->setResponseBody(body);
     this->addHeader("Cache-Control", "no-cache");
-    this->addHeader("Content-Type", _request.getType("html"));
+    this->addHeader("Content-Type",Assets::__getType("html"));
     this->addHeader("Content-Length", std::to_string(this->getResponseBody().length()));
+    _request.setrequest_URI(filename);
     return true;
 }
 
-bool Post::parseBody()
+bool _Post::parseBody()
 {
     // std::cout << "parseBody_Content_Length\n";
     std::vector<std::string> reqbody;
@@ -125,16 +144,16 @@ bool Post::parseBody()
     std::cout << "get +> <Content_Type size='" << tmp.size() << "' type='" << tmp["type"] << "'   boundary='" << tmp["boundary"] << "'>" << std::endl;
     return 1;
 }
-bool Post::parseBody_Transfer_Encoding()
+bool _Post::parseBody_Transfer_Encoding()
 {
     std::cout << "parseBody_Transfer_Encoding\n";
     return 1;
 }
-std::vector<std::string> const &Post::getRequestBody(void) const
+std::vector<std::string> const &_Post::getRequestBody(void) const
 {
     return (this->requestBody);
 }
-void Post::setRequestBody(std::vector<std::string> reqBody)
+void _Post::setRequestBody(std::vector<std::string> reqBody)
 {
     this->requestBody = reqBody;
 }
@@ -159,24 +178,24 @@ void method::setTransfer_Encoding(std::string Transfer_Encoding)
     this->Transfer_Encoding = Transfer_Encoding;
 }
 
-void Post::setFilename(std::string value)
+void _Post::setFilename(std::string value)
 {
     this->_filename = value;
 }
-void Post::setName(std::string value)
+void _Post::setName(std::string value)
 {
     this->_name = value;
 }
-void Post::setContent(std::string value)
+void _Post::setContent(std::string value)
 {
     this->_content = value;
 }
- std::string const &Post::getFilename( void ){
+ std::string const &_Post::getFilename( void ){
     return this->_filename;
  }
-std::string const &Post::getName( void ){
+std::string const &_Post::getName( void ){
     return this->_name;
 }
-std::string const &Post::getContent( void ){
+std::string const &_Post::getContent( void ){
     return this->_content;
 }

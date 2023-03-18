@@ -127,7 +127,12 @@ void method::createresponse(void /*  content_type, code_status, reason_phrase, b
     this->setResponseBody(status_line);
 }
 
-std::string _CREATEresponse(std::map<std::string, std::string> _header, int code_status, std::string reason_phrase, std::string body)
+std::string _CREATEresponse(
+    std::map<std::string,
+    std::string> _header,
+    int code_status,
+    std::string reason_phrase,
+    std::string body)
 {
     std::string fields;
     std::map<std::string, std::string>::iterator it = _header.begin();
@@ -149,8 +154,7 @@ std::string _CREATEresponse(std::map<std::string, std::string> _header, int code
             fields.append(LF);
     }
     status_line.append(fields);
-    status_line.append(CRLF);
-    status_line.append(CRLF);
+    status_line.append(CRLF_2);
     // Body :
     status_line.append(body);
 

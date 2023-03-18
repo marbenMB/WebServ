@@ -73,7 +73,7 @@ void    request::Retrieving_requested_resource(ServerConf *server)
     
     // if is not CGI and requestURI is not in root dir 
     if (!this->is_cgi && !is__subDir(this->root, this->getrequest_URI())){
-        throw BadRequest();
+        throw _Exception(BAD_REQUEST);
     }
     // check for index in Location
     checkForIndex(location_vars["index"]);
@@ -126,20 +126,18 @@ void    request::Retrieving_requested_resource(ServerConf *server)
     iitt = location_vars["allow_methods"].begin();
     if (location_vars["allow_methods"].size()){
         while (iitt != location_vars["allow_methods"].end()){
-            std::vector<std::string> vect_allow_methods = split(*iitt, ",");
-            std::vector<std::string>::iterator iter_allow_methods = vect_allow_methods.begin();
-            while(iter_allow_methods != vect_allow_methods.end()){
-                if ((*iter_allow_methods).compare(this->req_method) == 0)
-                {
-                    if (this->req_method.compare("POST") == 0) {this->__post = ALLOWED;}
-                    if (this->req_method.compare("GET") == 0) {this->__get = ALLOWED;}
-                    if (this->req_method.compare("DELETE") == 0) {this->__delete = ALLOWED;}
-                    // allow_methods = true;
-                }
-                // std::cout << "      +[allow_methods]["<< j <<"]>" << *iter_allow_methods << std::endl;
-                ++iter_allow_methods;
+            if ((*iitt).compare(this->req_method) == 0)
+            {
+                if (this->req_method.compare("POST") == 0) {this->__post = ALLOWED;}
+                else if (this->req_method.compare("GET") == 0) {this->__get = ALLOWED;}
+                else if (this->req_method.compare("DELETE") == 0) {this->__delete = ALLOWED;}
+                // allow_methods = true;
             }
             ++iitt;
+            std::cout << "req method :" << this->req_method << std::endl;
+
         }
     }
+    if ((this->req_method.compare("POST") != 0 ) && (this->req_method.compare("GET") != 0) && (this->req_method.compare("DELETE")))
+            this->__noImplimented = ALLOWED;
 }

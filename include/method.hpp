@@ -8,13 +8,13 @@
 #include <vector>
 
 #include "./request.hpp"
-
+#include "./Assets.hpp"
+#include "./_Exception.hpp"
 
 class request;
 class method
 {
 private:
-
     std::map<std::string, std::string> _Headers;
     std::string responseBody;
 
@@ -76,7 +76,7 @@ public:
     void setRedirect_status(int redirect_status);
     std::string const &getredirect_URL(void) const;
     void setredirect_URL(std::string redirect_URL);
-    
+
     // ! Header for response :
     void addHeader(std::string, std::string);
     std::map<std::string, std::string> const &getHeader(void) const;
@@ -84,25 +84,25 @@ public:
     // virtual bool intmethod(void) = 0;
 };
 
-class get : public method
+class _Get : public method
 {
 
 public:
-    get(request rhs);
-    ~get();
+    _Get(request rhs);
+    ~_Get();
     int execute_method(request _request);
 };
 
-class deleteMethod : public method
+class _Delete : public method
 {
 
 public:
-    deleteMethod(request rhs);
-    ~deleteMethod();
+    _Delete(request rhs);
+    ~_Delete();
     int execute_method(request _request);
 };
 
-class Post : public method
+class _Post : public method
 {
 private:
     std::vector<std::string> requestBody;
@@ -111,8 +111,8 @@ private:
     std::string _content;
 
 public:
-    Post(request rhs);
-    ~Post();
+    _Post(request rhs);
+    ~_Post();
     int execute_method(request _request);
     bool parseBody();
     bool parseBody_Transfer_Encoding();
@@ -124,9 +124,9 @@ public:
     void setName(std::string value);
     void setContent(std::string value);
     // getter :
-    std::string const &getFilename( void );
-    std::string const &getName( void );
-    std::string const &getContent( void );
+    std::string const &getFilename(void);
+    std::string const &getName(void);
+    std::string const &getContent(void);
 };
 
 class Error : public method

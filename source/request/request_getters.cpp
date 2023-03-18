@@ -182,7 +182,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
         }
     }
     if (this->is_cgi && locationId == -1)
-        throw NotImplemented();
+        throw  _Exception(NOT_IMPLEMENTED);
     return locationId;
 }
 
@@ -228,7 +228,7 @@ bool request::uploadType(void ){
 
     file.open(MIME_TYPE_PATH, std::ifstream::in);
     if (!file.is_open())
-        throw InternalServerError();
+        throw  _Exception(INTERNAL_SERVER_ERROR);
     while (std::getline(file, buffer))
     {
         _split = split(buffer, ": ");
@@ -255,4 +255,60 @@ bool request::getCGIstatus( void ) const{
 
 std::string const &request::getReason(std::string key){
     return this->_statusCode[key];
+}
+
+void request::initializationFILES(std::vector<std::string> filesVECTER)
+{
+    std::vector<std::pair<std::string, std::string> > _files;
+    std::pair<std::string, std::string>  _filesContent;
+    std::vector<std::string> tmp;
+    std::vector<std::string> file_header;
+    std::vector<std::string> content_disposition;
+    std::vector<std::string>::iterator it = filesVECTER.begin();
+    // try
+    // {
+        /* code */
+        while (it != filesVECTER.end()){
+            try{
+            tmp = split((std::string)it[0], CRLF_2);
+            if (tmp.size() != 2){
+                throw std::invalid_argument("makayench Bady ...");
+            }
+            file_header = split((std::string)tmp[0], CRLF);
+            if (file_header.size() != 2){
+                throw std::invalid_argument("chi7aja wa93a ...");
+            }
+            content_disposition = split(file_header[0], "; ");
+            std::string filename;
+            if (content_disposition.size() == 3 && content_disposition[2].length() > 11) // if post is not empty
+            {
+
+                int endfilename = content_disposition[2].length() - 11;
+
+                filename.append(content_disposition[2].substr(10, endfilename));
+                _filesContent.first = filename;
+                _filesContent.second = tmp[1];
+                _files.push_back(_filesContent);
+                // std::cout << "_filesContent.first :" << _filesContent.first << std::endl;
+                // std::cout << "_filesContent.second :" << _filesContent.second << std::endl;
+
+            }
+            else{throw std::invalid_argument("3iw haschi khawi");}}
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+                // throw  _Exception(INTERNAL_SERVER_ERROR);
+            }
+            it++;
+        }
+        if (_files.size())
+            this->req_body = _files;
+        else{
+            throw  _Exception(INTERNAL_SERVER_ERROR);
+        }
+}
+
+
+int  request::getExceptionCode(){
+    return this->_ExceptionCode ;
 }

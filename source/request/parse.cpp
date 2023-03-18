@@ -22,6 +22,7 @@ void request::checkForIndex(std::vector<std::string> vect){
     // std::cout << "out Default Index : " << this->default_index << std::endl;
 }
 void request::checkForErrorPage(std::vector<std::string> vect){
+    struct stat STATFile;
     std::vector<std::string>::iterator errorspage_iterator = vect.begin();
     int NbeOfPages = 0;
     bool one = false, two = false, three = false, fore = false, five = false;
@@ -36,16 +37,42 @@ void request::checkForErrorPage(std::vector<std::string> vect){
             // std::cout << "type :"<< (*errorspage_iterator)[0]<< std::endl;
         }
         if ((*errorspage_iterator).find(".html") != std::string::npos){
-            if (one) this->default_10x = *errorspage_iterator;
-            if (two) this->default_20x = *errorspage_iterator;
-            if (three) this->default_30x = *errorspage_iterator;
-            if (fore) this->default_40x = *errorspage_iterator;
-            if (five) this->default_50x = *errorspage_iterator;
+            if (one) {
+
+                this->default_10x = this->root + *errorspage_iterator;
+                if (stat(this->default_10x.c_str(), &STATFile) != 0){
+                   this->default_10x = ERROR_PATH;
+                }
+            }
+            if (two){
+                 this->default_20x = this->root + *errorspage_iterator;
+                if (stat(this->default_20x.c_str(), &STATFile) != 0){
+                   this->default_20x = ERROR_PATH;
+                }
+            }
+            if (three){
+                 this->default_30x = this->root + *errorspage_iterator;
+                if (stat(this->default_30x.c_str(), &STATFile) != 0){
+                   this->default_30x = ERROR_PATH;
+                }
+            }
+            if (fore){
+                 this->default_40x = this->root + *errorspage_iterator;
+                if (stat(this->default_40x.c_str(), &STATFile) != 0){
+                   this->default_40x = ERROR_PATH;
+                }
+            }
+            if (five){
+                this->default_50x = this->root + *errorspage_iterator;
+                if (stat(this->default_50x.c_str(), &STATFile) != 0){
+                   this->default_50x = ERROR_PATH;
+                }
+            }
             one = two = three = fore = five = false;
             NbeOfPages++;
         }
         ++errorspage_iterator;
-    }
+    }  
 }
 
 std::vector<std::string> &request::execute(std::string body, Data *_confdata)
@@ -207,15 +234,15 @@ std::vector<std::string> &request::execute(std::string body, Data *_confdata)
   
     if (__get || __post || __delete){
         if (this->req_method.compare("GET") == 0)
-            reqmethod = new get(*this);
+            reqmethod = new _Get(*this);
         else if (this->req_method.compare("DELETE") == 0 )
         {
-            reqmethod = new deleteMethod(*this);
+            reqmethod = new _Delete(*this);
         }
         else if (this->req_method.compare("POST") == 0 )
         {
             this->setRequestBody(rBody);
-            reqmethod = new Post(*this);
+            reqmethod = new _Post(*this);
         }
         __body = _CREATEresponse(reqmethod->getContent_Type(), reqmethod->getStatuscode(), reqmethod->getreason_phrase(), reqmethod->getResponseBody());
     } 

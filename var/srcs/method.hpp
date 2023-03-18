@@ -80,21 +80,21 @@ class get : public method
 {
 
 public:
-    get(request rhs);
-    ~get();
+    _Get(request rhs);
+    ~_Get();
     int execute_method(request _request);
 };
 
-class deleteMethod : public method
+class _Delete : public method
 {
 
 public:
-    deleteMethod(request rhs);
-    ~deleteMethod();
+    _Delete(request rhs);
+    ~_Delete();
     int execute_method(request _request);
 };
 
-class Post : public method
+class _Post : public method
 {
 private:
     std::vector<std::string> requestBody;
@@ -103,7 +103,7 @@ private:
     std::string _content;
 
 public:
-    Post(request rhs);
+    _Post(request rhs);
     ~Post();
     int execute_method(request _request);
     bool parseBody();
