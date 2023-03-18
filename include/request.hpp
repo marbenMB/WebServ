@@ -113,7 +113,7 @@ private:
     std::string Content_Transfer_Encoding;
     std::string Transfer_Encoding;
     int autoindex;
-    std::vector<std::pair<std::string, std::string>> req_body;
+    std::vector<std::pair<std::string, std::string> > req_body;
 
     // cgi
     std::string CGIbody;
@@ -158,7 +158,7 @@ public:
     void Retrieving_requested_resource(ServerConf *server);
     void GETstatusOfexecution(method *req_method) const;
     std::vector<std::string> const &create_response();
-    int findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string>>>>);
+    int findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >);
     void sand(int socketID, std::string body);
 
     ~request();
@@ -202,7 +202,7 @@ public:
     int getAllowedDelete() const;
     int getAllowedGet() const;
 
-    std::vector<std::pair<std::string, std::string>> const &getReqBody(void) const;
+    std::vector<std::pair<std::string, std::string> > const &getReqBody(void) const;
 
     // error pages :
     std::string const &getDefault_40x(void);
@@ -223,7 +223,7 @@ public:
     class CGI
     {
     public:
-        method *runCGI(request req) const throw();
+        method *runCGI(request req);
     };
 };
 std::vector<std::string> split(const std::string &str, const std::string &delimiter);

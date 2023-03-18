@@ -116,7 +116,7 @@ int _Get::execute_method(request _request)
             inFile.clear();
             inFile.open(AOTUINDEX_PATH, std::ifstream::in);
             if (!inFile.is_open())
-                throw request::InternalServerError(); // r************
+                throw _Exception(INTERNAL_SERVER_ERROR); // r************
             while (std::getline(inFile, buffer))
             {
                 if (buffer.find("<title>") != std::string::npos) // title

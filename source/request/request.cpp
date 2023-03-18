@@ -58,9 +58,12 @@ request::request(int socketID, ServerConf *server, std::string _request, std::st
         reqmethod = this->execute_request();
 
     }
-    catch(request::CGI & e){ reqmethod = e.runCGI(*this);}
     catch(_Exception & e){ reqmethod = e.what(*this);}
-    
+    catch(request::CGI & e){ 
+        try{reqmethod = e.runCGI(*this);}
+        catch(_Exception & e){ reqmethod = e.what(*this);}   
+    }
+
     // * parse Header :
     // 1 - cheack for Header
     // std::cout << MAUVE << "   @VERIFYING  Header" << END_CLR << std::endl;

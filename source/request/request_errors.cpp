@@ -55,7 +55,7 @@ void set_error(method* &resp, int code_status) {
     resp->addHeader("Content-Length", std::to_string(_body.length()));
 }
 
-method * request::CGI::runCGI(request req) const throw(){
+method * request::CGI::runCGI(request req){
     char** envp;
     std::vector<char*> env_vec;
     std::string _body;
@@ -81,6 +81,6 @@ method * request::CGI::runCGI(request req) const throw(){
         resp->addHeader("Set-Cookie", Cookie);
     }
     else
-        set_error(resp, status);
+       throw _Exception(status);
     return resp;
 }
