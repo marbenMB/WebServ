@@ -1,6 +1,6 @@
 #include "../../include/request.hpp"
 
-request::request(int socketID, ServerConf *server, std::string _request, std::string &response) : Content_Length(-1),
+request::request(int status, ServerConf *server, std::string _request, std::string &response) : Content_Length(-1),
                                                                                                         autoindex(AUTOINDEX_OFF),
                                                                                                         __post(NOT_ALLOWED),
                                                                                                         __delete(NOT_ALLOWED),
@@ -9,11 +9,14 @@ request::request(int socketID, ServerConf *server, std::string _request, std::st
 {
     std::string _requestBody;
     std::string _requestHeader;
-    std::string _reaponseBody;
-    method *reqmethod;
+    method      *reqmethod;
     // std::vector<std::string> req_vector = split(request, "\r\n\r\n");
+try
+    {
+    if (status == TIMEOUT)
+        throw _Exception(BAD_REQUEST);
 
-    size_t splitIndex = _request.find("\r\n\r\n");
+    size_t splitIndex = _request.find(CRLF_2);
      _requestHeader.clear();
     _requestBody.clear();
     if (splitIndex == std::string::npos){
@@ -21,31 +24,17 @@ request::request(int socketID, ServerConf *server, std::string _request, std::st
     }
     else
     {
-         _requestHeader = _request.substr(0, splitIndex);
-         _requestBody = _request.substr(splitIndex + 4, _request.length());
+        _requestHeader = _request.substr(0, splitIndex);
+        _requestBody = _request.substr(splitIndex + 4, _request.length());
     }
-    // std::cout << "_request\n" << MAUVE<< _request <<  END_CLR << std::endl;
-    // _requestHeader.clear();
-    // _requestBody.clear();
-    // _requestHeader.append(req_vector[0]);
-    // int i = 0;
-
-    // while (++i < (int)req_vector.size())
-    // {
-    //     _requestBody.append(req_vector[i]);
-    //     if (i != (int)req_vector.size() - 1)
-    //         _requestBody.append("\n\r\n\r");
-    //     // std::cout << RED << "<req id=" << i << " size=" << requestheader[i].size() << ">\n"
-    //     //           << END_CLR << requestheader[i] << RED << "\n</req>" << END_CLR << std::endl;
-    // }
+   
     // * Init vars :
     // this->requirements = true;
-    this->setsocketID(socketID);
+
     this->setRedirect_status(-1);
     this->setcompare_URI("");
     this->is_cgi = false;
-    try
-    {
+    
         this->uploadType();
         this->retrievingsatatuscodeFile();
         this->Verifying_Header(_requestHeader);
@@ -152,7 +141,6 @@ bool request::Verifying_Body(std::string req)
         --THIS_STRING_SEPARATES--
     */
     //  ! check redirection && CGI :
-
     // init the boundary
     std::map<std::string, std::string> ContentType;
     std::map<std::string, std::string> files;
@@ -164,19 +152,11 @@ bool request::Verifying_Body(std::string req)
     ContentType["type"] = (std::string)tmp[0];
     if (tmp.size() == 2)
         ContentType["boundary"] = trimFront((std::string)tmp[1], "boundary=");
-
-   
-    // std::cout <<"ContentType['type']    " << ContentType["type"] << std::endl;
-    // std::cout <<"ContentType['boundary']" << ContentType["boundary"] << std::endl;
-    // std::cout <<"STRINGSEPARATES        " << STRINGSEPARATES << std::endl;
-    // std::cout <<"EndSTRINGSEPARATES     " << EndSTRINGSEPARATES << std::endl;
-    // if ((int)req.length() != this->getContent_Length()){this->requirements = false;return false;}
-    // std::cout << req << std::endl;
-    if ((unsigned long long)req.length() != this->getContent_Length() || (unsigned long long)req.length() > this->client_max_body_size){
+    if ((unsigned long long)req.length() != this->Content_Length || (unsigned long long)req.length() > this->client_max_body_size){
         std::cout << "ANA HANA\n";
 
         std::cout << "req.length() :" << req.length() << std::endl;
-        std::cout << "this->getContent_Length() :" << this->getContent_Length() << std::endl;
+        std::cout << "this->Content_Length :" << this->Content_Length << std::endl;
         std::cout << "this->client_max_body_size :" << this->client_max_body_size << std::endl;
         throw _Exception(BAD_REQUEST);
     }

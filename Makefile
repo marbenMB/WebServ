@@ -31,7 +31,7 @@ FILES_SRC = $(config_SRCS) $(SRCS)  $(request_SRCS) $(method_SRCS)
 all: $(NAME)
 
 $(NAME): $(FILES_OBJ) 
-	${CC}  ${FLAGS}  $(FILES_SRC) -o $(NAME) -g
+	${CC}  ${FLAGS}  $(FILES_OBJ) -o $(NAME) -g
 	# @make clean -C ./
 
 push:fclean

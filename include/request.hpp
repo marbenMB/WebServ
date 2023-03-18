@@ -38,6 +38,7 @@
 
 #include "./method.hpp"
 #include "./_Exception.hpp"
+#include "./serverSide.hpp"
 #include <stdlib.h>
 
 /*

@@ -236,6 +236,7 @@ bool request::uploadType(void ){
         // std::cout << " VALUE :" << _split[0] << std::endl;
         this->addType(_split[1], _split[0]);
     }
+    file.close();
     return true;
 }
 
@@ -304,7 +305,7 @@ void request::initializationFILES(std::vector<std::string> filesVECTER)
         if (_files.size())
             this->req_body = _files;
         else{
-            throw  _Exception(INTERNAL_SERVER_ERROR);
+            throw  _Exception(NOT_FOUND);
         }
 }
 

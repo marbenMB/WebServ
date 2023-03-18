@@ -14,5 +14,6 @@ bool request::retrievingsatatuscodeFile(void)
         // std::cout << _split[0] << " :" << _split[1] << std::endl;
         this->_statusCode[_split[0]] = _split[1];
     }
+    file.close();
     return true;
 }

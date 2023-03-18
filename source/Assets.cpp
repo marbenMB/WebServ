@@ -6,7 +6,7 @@
 /*   By: mmasstou <mmasstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 19:13:05 by mmasstou          #+#    #+#             */
-/*   Updated: 2023/03/17 13:20:27 by mmasstou         ###   ########.fr       */
+/*   Updated: 2023/03/18 19:53:20 by mmasstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ Assets::Assets()
         _split = split(buffer, ": ");
         Assets::_mimeTypes[_split[1]] = _split[0];
     }
+    file.close();
     Assets::_errorList.clear();
     file.open(STATUS_CODE_PATH, std::ifstream::in);
     while (std::getline(file, buffer))
@@ -37,6 +38,7 @@ Assets::Assets()
         _split = split(buffer, ": ");
         Assets::_errorList[_split[0]] = _split[1];
     }
+    file.close();
 }
 
 std::string 

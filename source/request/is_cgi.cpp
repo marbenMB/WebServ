@@ -134,6 +134,7 @@ int run_cgi(char **envp, std::string &_body) {
             if (execve(argv[0], argv, envp) == -1){
                 exit (ERR_SERV);
             }
+            close(fd_out);
         }
         else {
             waitpid(pid, &status, 0);
@@ -149,8 +150,10 @@ int run_cgi(char **envp, std::string &_body) {
         while(std::getline(body_file, line)) {
             _body.append(line);
         }
+        body_file.close();
         return (SUCCESS);
     }
+    body_file.close();
     return (ERR_SERV);
     // }
     // else

@@ -64,7 +64,7 @@ int _Delete::execute_method(request _request)
         line.append(buffer);
     }
 
-
+    inFilemessage.close();
     this->setResponseBody(line); // set the data that previce read from the file to the body response 
     this->addHeader("Cache-Control", "no-cache");
     this->addHeader("Content-Type",Assets::__getType("html"));

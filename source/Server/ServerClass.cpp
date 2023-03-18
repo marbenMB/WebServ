@@ -212,7 +212,7 @@ void	ClientSock::formResponse(void)
 
 	_reqStat = WELL;
 		// _reponse = generateResponse(_request, _serverResponding, _reqStat);
-		request *req = new request(_fd ,&_serverResponding, _request, _response);
+		request *req = new request(_reqStat ,&_serverResponding, _request, _response);
 
 		delete req;
 
