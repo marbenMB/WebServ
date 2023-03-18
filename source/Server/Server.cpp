@@ -140,7 +140,7 @@ void	createSockets(WebServ &serv)
 			if (def)
 			{
 				//?:	Listening to socket
-				if (listen(sockFd, 5))
+				if (listen(sockFd, SOMAXCONN))
 					throw	std::runtime_error("Listen() Failed !!");
 				
 				//?:	Create sockPorp for each socket and insert it to the map
