@@ -17,12 +17,12 @@
 #include <iostream>
 #include <cstring>
 
-
 #include "Assets.hpp"
 #include "method.hpp"
 #include "request.hpp"
 
-enum _ErrorsCode{
+enum _ErrorsCode
+{
     OK = 200,
     CREATED,
     NO_CONTENT = 204,
@@ -49,10 +49,11 @@ private:
     std::string _body;
     void generateBody(std::string reason_phrase);
     void set_Body(std::string);
+
 public:
     _Exception(int code);
     ~_Exception();
-    method * what(request req) throw();
+    method *what(request req) throw();
 };
 
 #endif

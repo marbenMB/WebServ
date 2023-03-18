@@ -23,6 +23,7 @@ void
 _Exception::set_Body(std::string body){
     this->_body = body;
 }
+
 void 
 _Exception::generateBody(std::string reason_phrase) {
     std::ifstream inFile;
@@ -38,7 +39,7 @@ _Exception::generateBody(std::string reason_phrase) {
             buffer.append(std::to_string(this->_ExceptionCode));
             buffer.append(" ");
             buffer.append(reason_phrase);
-            buffer.append("</title>\n\r");
+            buffer.append("</title>\r\n");
         }
         if (buffer.find("id=\"error_title\"") != std::string::npos){
             buffer.clear();
@@ -46,11 +47,11 @@ _Exception::generateBody(std::string reason_phrase) {
             buffer.append(std::to_string(this->_ExceptionCode));
             buffer.append(" ");
             buffer.append(reason_phrase);
-            buffer.append("</h1>\n\r");
+            buffer.append("</h1>\r\n");
         }
        
         _body.append(buffer);
-        _body.append("\n\r");
+        // _body.append("\n\r");
     }
     inFile.close();
     this->set_Body(_body);
@@ -59,13 +60,10 @@ _Exception::generateBody(std::string reason_phrase) {
  
 method * 
 _Exception::what(request req) throw(){
-    
-
-    
-
-    std::ifstream inFile;
-    std::string buffer;
-    std::string reason(req.getReason(std::to_string(this->_ExceptionCode)));
+    std::string reason(
+        req.getReason(
+            std::to_string(this->_ExceptionCode)
+            ));
     method *resp;
 
     resp = new Error(req);

@@ -1,6 +1,6 @@
 #include "../../include/method.hpp"
 
-deleteMethod::deleteMethod(request rhs)
+_Delete::_Delete(request rhs)
 {
     this->setHost(rhs.gethost());
     // this->setRequest_URI(rhs.getrequest_URI());
@@ -15,11 +15,11 @@ deleteMethod::deleteMethod(request rhs)
     this->execute_method(rhs);
 }
 
-deleteMethod::~deleteMethod()
+_Delete::~_Delete()
 {
 }
 
-int deleteMethod::execute_method(request _request)
+int _Delete::execute_method(request _request)
 {
     std::ifstream inFile;
     std::ifstream inFilemessage;
@@ -66,7 +66,6 @@ int deleteMethod::execute_method(request _request)
 
 
     this->setResponseBody(line); // set the data that previce read from the file to the body response 
-
     this->addHeader("Cache-Control", "no-cache");
     this->addHeader("Content-Type",Assets::__getType("html"));
     this->addHeader("Content-Length", std::to_string(this->getResponseBody().length()));

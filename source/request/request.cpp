@@ -100,7 +100,7 @@ request::request(int socketID, ServerConf *server, std::string _request, std::st
         color_status = GREEN;
     else
         color_status = RED;
-    std::cout << color_status << this->host.substr(0, this->host.find(":")) <<" " << this->getmethod() << " HTTP/1.1 " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase() << " " << this->getrequest_URI()  << 2346 << END_CLR <<std::endl ;
+    std::cout << color_status << this->host.substr(0, this->host.find(":")) <<" " << this->getmethod() << " HTTP/1.1 " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase() << " " << this->getrequest_URI() << " " << 2346 << END_CLR <<std::endl ;
     delete reqmethod;
 }
 

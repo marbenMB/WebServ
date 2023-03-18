@@ -253,6 +253,8 @@ void	acceptClients(WebServ &serv)
 						{
 							//	-- check transfer encoding of the request body and save content-length if not chunked
 							serv.clientMap[serv.vecPoll[idx].fd].transferEncoding();
+							std::cout << serv.clientMap[serv.vecPoll[idx].fd]._reqBody;
+							exit(1);
 							// std::cout << "====== BYTE TO READ ===== : " << serv.clientMap[serv.vecPoll[idx].fd].byteToRead 
 							// << " ====== Content-Length ===== : " << serv.clientMap[serv.vecPoll[idx].fd]._content_lenght << std::endl;
 

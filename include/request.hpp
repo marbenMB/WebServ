@@ -14,15 +14,11 @@
 #define AUTOINDEX_OFF 549
 #define _NO_CGI_LOCATION 1337
 
-
-# define LF "\n"
-# define CR "\r"
-# define CRLF "\r\n"
-# define CRLF_2 "\r\n\r\n"
-
-
-
-
+#define SP " "
+#define LF "\n"
+#define CR "\r"
+#define CRLF "\r\n"
+#define CRLF_2 "\r\n\r\n"
 
 // Assets :
 
@@ -30,7 +26,6 @@
 #define UPLOAD_STORE "./var/upload/Default"
 #define CREATE_SUCCESS_FILE "./var/srcs/success.html"
 #define ERROR_PATH "./var/errors/40x.html"
-
 
 #include <iostream>
 #include <unistd.h>
@@ -44,7 +39,6 @@
 #include "./method.hpp"
 #include "./_Exception.hpp"
 #include <stdlib.h>
-
 
 /*
 
@@ -68,24 +62,15 @@ User-Agent: Identifies the user agent making the request.
 
 **/
 
-typedef struct allow_methods
-{
-   int index;
-   std::string method;
-}t_allow_methods;
 class method;
 class request
 {
 private:
-   
-
-
     int _ExceptionCode;
     bool requirements;
     int socketID;
     std::string root;
     std::string bufferBody;
-    
 
     // default :
     std::string default_index;
@@ -94,7 +79,7 @@ private:
     std::string default_30x;
     std::string default_40x;
     std::string default_50x;
-    int         redirect_status;
+    int redirect_status;
     std::string redirect_URL;
 
     // Requirements Fields :
@@ -119,24 +104,22 @@ private:
     std::string User_Agent;
     std::vector<std::string> requestBody;
 
-
     // post requirements
     unsigned long long Content_Length;
     unsigned long long client_max_body_size;
+
     std::string upload_store;
     std::string Content_Type;
     std::string Content_Transfer_Encoding;
     std::string Transfer_Encoding;
     int autoindex;
-    std::vector<std::pair<std::string, std::string> > req_body;
-
+    std::vector<std::pair<std::string, std::string>> req_body;
 
     // cgi
     std::string CGIbody;
     std::string fastcgi_pass;
     std::string fastcgi_index;
     bool is_cgi;
-
 
     // allowed vars
     int __post;
@@ -145,45 +128,37 @@ private:
     int __noImplimented;
     request(){};
     std::vector<std::string> message;
-    //  error 
+    //  error
 
     // for location
     std::string compare_URI;
     std::map<std::string, std::string> _typs;
     std::map<std::string, std::string> _statusCode;
 
-
     void initializationFILES(std::vector<std::string> filesVECTER);
 
-    
 public:
     // Request Exception :
-    int  getExceptionCode();
+    int getExceptionCode();
 
-
-
-
-    bool getIs_cgi( void );
+    bool getIs_cgi(void);
     void addType(std::string, std::string);
     std::string const &getType(std::string);
-
 
     //  read Files
     bool retrievingsatatuscodeFile(void);
     std::string const &getReason(std::string);
 
-    bool uploadType(void );
-
-
+    bool uploadType(void);
 
     void url_decode(std::string &url);
-    request(int , ServerConf *, std::string, std::string &);
+    request(int, ServerConf *, std::string, std::string &);
     std::vector<std::string> &execute(std::string body, Data *_confdata);
-    method *   execute_request( void );
-    void    Retrieving_requested_resource(ServerConf *server);
-    void    GETstatusOfexecution(method * req_method) const;
-    std::vector<std::string>  const & create_response();
-    int findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >);
+    method *execute_request(void);
+    void Retrieving_requested_resource(ServerConf *server);
+    void GETstatusOfexecution(method *req_method) const;
+    std::vector<std::string> const &create_response();
+    int findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string>>>>);
     void sand(int socketID, std::string body);
 
     ~request();
@@ -198,7 +173,7 @@ public:
     {
         return this->req_method;
     }
-    bool getrequirements( void ) const;
+    bool getrequirements(void) const;
     std::string const &gethost() const;
     std::string const &getroot() const;
     std::string const &getcookie() const;
@@ -216,9 +191,9 @@ public:
     std::string const &getTransfer_Encoding(void) const;
     unsigned long long const &getContent_Length(void) const;
     //  redirect
-    int const & getRedirect_status( void) const;
+    int const &getRedirect_status(void) const;
     void setRedirect_status(int redirect_status);
-    std::string const & getredirect_URL( void) const;
+    std::string const &getredirect_URL(void) const;
     void setredirect_URL(std::string redirect_URL);
     std::vector<std::string> const &getRequestBody(void) const;
     void setRequestBody(std::vector<std::string> reqBody);
@@ -227,67 +202,34 @@ public:
     int getAllowedDelete() const;
     int getAllowedGet() const;
 
-    std::vector<std::pair<std::string, std::string> > const & getReqBody( void ) const;
-
-
-
+    std::vector<std::pair<std::string, std::string>> const &getReqBody(void) const;
 
     // error pages :
-    std::string const & getDefault_40x( void );
-    std::string const & getDefault_50x( void );
-    std::string const & getDefault_30x( void );
+    std::string const &getDefault_40x(void);
+    std::string const &getDefault_50x(void);
+    std::string const &getDefault_30x(void);
     void print_vectINFO(std::vector<std::string>, std::string);
 
     // location
-    std::string const & getcompare_URI( void ) const;
+    std::string const &getcompare_URI(void) const;
     void setcompare_URI(std::string);
 
-
     // upload_store
-    std::string const & getUpload_store_PATH( void ) const;
+    std::string const &getUpload_store_PATH(void) const;
 
     //  CGI :
-    bool getCGIstatus( void ) const;
-    class BadRequest 
-    {
-        public:
-            method * createError(request req) const throw();
-    };
-    class NotImplemented 
-    {
-        public:
-            
-            method * createError(request req) const throw();
-    };
-    class NotAllowed 
-    {
-        public:
-            method * createError(request req) const throw();
-    };
+    bool getCGIstatus(void) const;
 
-    class NotFound 
+    class CGI
     {
-        public:
-            method * createError(request req) const throw();
-    };
-    class Forbiden 
-    {
-        public:
-            method * createError(request req) const throw();
-    };
-    class InternalServerError{
-         public:
-            method * createError(request req) const throw();
-    };
-    class CGI{
-         public:
-            method * runCGI(request req) const throw();
+    public:
+        method *runCGI(request req) const throw();
     };
 };
 std::vector<std::string> split(const std::string &str, const std::string &delimiter);
 std::string trimFront(const std::string &s, std::string trim);
 std::string trimBack(const std::string &s, std::string trim);
 std::string _CREATEresponse(std::map<std::string, std::string> content_type, int code_status, std::string reason_phrase, std::string body);
-bool is__subDir(const std::string , const std::string );
+bool is__subDir(const std::string, const std::string);
 bool Is_cgi(std::string);
 #endif

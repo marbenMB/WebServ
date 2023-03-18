@@ -1,6 +1,6 @@
 #include "../../include/method.hpp"
 
-Post::Post(request rhs)
+_Post::_Post(request rhs)
 {
     this->setHost(rhs.gethost());
     this->setRequest_URI(rhs.getrequest_URI());
@@ -15,10 +15,10 @@ Post::Post(request rhs)
     this->setStatuscode(201);
     this->setreason_phrase("Created");
 }
-Post::~Post()
+_Post::~_Post()
 {
 }
-int Post::execute_method(request _request)
+int _Post::execute_method(request _request)
 {
     std::string buffer;
     std::string body;
@@ -133,7 +133,7 @@ int Post::execute_method(request _request)
     return true;
 }
 
-bool Post::parseBody()
+bool _Post::parseBody()
 {
     // std::cout << "parseBody_Content_Length\n";
     std::vector<std::string> reqbody;
@@ -144,16 +144,16 @@ bool Post::parseBody()
     std::cout << "get +> <Content_Type size='" << tmp.size() << "' type='" << tmp["type"] << "'   boundary='" << tmp["boundary"] << "'>" << std::endl;
     return 1;
 }
-bool Post::parseBody_Transfer_Encoding()
+bool _Post::parseBody_Transfer_Encoding()
 {
     std::cout << "parseBody_Transfer_Encoding\n";
     return 1;
 }
-std::vector<std::string> const &Post::getRequestBody(void) const
+std::vector<std::string> const &_Post::getRequestBody(void) const
 {
     return (this->requestBody);
 }
-void Post::setRequestBody(std::vector<std::string> reqBody)
+void _Post::setRequestBody(std::vector<std::string> reqBody)
 {
     this->requestBody = reqBody;
 }
@@ -178,24 +178,24 @@ void method::setTransfer_Encoding(std::string Transfer_Encoding)
     this->Transfer_Encoding = Transfer_Encoding;
 }
 
-void Post::setFilename(std::string value)
+void _Post::setFilename(std::string value)
 {
     this->_filename = value;
 }
-void Post::setName(std::string value)
+void _Post::setName(std::string value)
 {
     this->_name = value;
 }
-void Post::setContent(std::string value)
+void _Post::setContent(std::string value)
 {
     this->_content = value;
 }
- std::string const &Post::getFilename( void ){
+ std::string const &_Post::getFilename( void ){
     return this->_filename;
  }
-std::string const &Post::getName( void ){
+std::string const &_Post::getName( void ){
     return this->_name;
 }
-std::string const &Post::getContent( void ){
+std::string const &_Post::getContent( void ){
     return this->_content;
 }

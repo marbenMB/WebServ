@@ -5,7 +5,6 @@
 int _main (int ac, char **av)
 {
     Data 	g_Data;
-    Assets  _assets;
     if (ac == 2)
         g_Data.configuration.parcing_file(av[1], g_Data);
     else if (ac == 1)
@@ -20,6 +19,7 @@ int _main (int ac, char **av)
     }
 	std::cout << GREEN << "+> Parsing Done !!" << END_CLR << std::endl << std::endl;
 
+    Assets  _assets;
     //	***	Creating WebServer :
     WebServ	myServ;
     

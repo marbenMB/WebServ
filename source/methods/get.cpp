@@ -4,18 +4,8 @@
 #include <sys/types.h>
 #include <dirent.h>
 
-/*
 
- TODO
-  * 1 - AutoIndex √
-  * 2 - allowed method
-  ! 3 - deny
-  ! 4 - allow
-  * 5 - redirect
-
-**/
-
-get::get(request rhs)
+_Get::_Get(request rhs)
 {
     
     this->execute_method(rhs);
@@ -29,14 +19,14 @@ get::get(request rhs)
      */
 }
 
-get::~get()
+_Get::~_Get()
 {
 }
 /* -------------------------------------------------------------------------- */
 /*                            execute_method                            */
 /* -------------------------------------------------------------------------- */
 
-int get::execute_method(request _request)
+int _Get::execute_method(request _request)
 {
     std::ifstream inFile;
     std::string line = "";
@@ -70,12 +60,8 @@ int get::execute_method(request _request)
     filename.append(_request.getrequest_URI());
     if (_request.getRedirect_status() != -1)
     {
-
         /*
-        
-        
         <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>301 Redirction</title></head><body><h1>301 Redirction</h1></body></html>
-        
         **/ 
         this->setStatuscode(_request.getRedirect_status());
         this->setreason_phrase(_request.getReason(std::to_string(_request.getRedirect_status())));
@@ -91,18 +77,9 @@ int get::execute_method(request _request)
         line.append(" Redirction</title></head><body><h1>");
         line.append(std::to_string(this->getStatuscode()));
         line.append(" Redirction</h1></body></html>");
-        // inFile.open(filename, std::ifstream::in);
-        // while (std::getline(inFile, buffer))
-        // {
-        //     // std::cout << buffer << std::endl;
-        //     line.append(buffer);
-        // }
-        // // std::cout << "</Line >" << std::endl;
-        // inFile.close();
     }
     else if (Is_cgi(filename)){ throw request::CGI();}
-    else if (stat(filename.c_str(), &STATInfo) != 0)
-    { // not exist
+    else if (stat(filename.c_str(), &STATInfo) != 0){ // not exist
         throw  _Exception(NOT_FOUND);
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFREG) { // is file   S_ISREG(fileStat.st_mode)
@@ -110,7 +87,7 @@ int get::execute_method(request _request)
         if (Is_cgi(_request.getredirect_URL())){ throw request::CGI();} 
         std::stringstream ssbuf;
         
-        this->setStatuscode(200);
+        this->setStatuscode(OK);
         this->setreason_phrase(_request.getReason(std::to_string(this->getStatuscode())));
         inFile.open(filename, std::ifstream::in);
         ssbuf << inFile.rdbuf();
@@ -195,11 +172,7 @@ int get::execute_method(request _request)
             // }
             // std::cout << GREEN << " AutoIndex On" << END_CLR << std::endl;
             dirp = opendir(pathdir.c_str());
-            if (dirp == NULL)
-            {
-                throw request::InternalServerError();
-                return 1;
-            }
+            if (dirp == NULL){throw _Exception(INTERNAL_SERVER_ERROR);}
             // std::cout << "Index of : " << pathdir << std::endl;
             // std::cout << "parent directory : " << pathdir << std::endl;
             // adding table fields :
@@ -319,7 +292,7 @@ int get::execute_method(request _request)
             if (closedir(dirp) == -1)
             {
                 perror("closedir");
-                throw request::InternalServerError();
+                throw _Exception(INTERNAL_SERVER_ERROR);
                 return 1;
             }
             dp = nullptr;

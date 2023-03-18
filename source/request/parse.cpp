@@ -234,15 +234,15 @@ std::vector<std::string> &request::execute(std::string body, Data *_confdata)
   
     if (__get || __post || __delete){
         if (this->req_method.compare("GET") == 0)
-            reqmethod = new get(*this);
+            reqmethod = new _Get(*this);
         else if (this->req_method.compare("DELETE") == 0 )
         {
-            reqmethod = new deleteMethod(*this);
+            reqmethod = new _Delete(*this);
         }
         else if (this->req_method.compare("POST") == 0 )
         {
             this->setRequestBody(rBody);
-            reqmethod = new Post(*this);
+            reqmethod = new _Post(*this);
         }
         __body = _CREATEresponse(reqmethod->getContent_Type(), reqmethod->getStatuscode(), reqmethod->getreason_phrase(), reqmethod->getResponseBody());
     } 

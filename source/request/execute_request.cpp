@@ -7,11 +7,11 @@ method *request::execute_request(void)
 
    if (this->__noImplimented == NOT_ALLOWED){
         if (this->req_method.compare("GET") == 0 && this->__get == ALLOWED)
-            reqmethod = new get(*this);
+            reqmethod = new _Get(*this);
         else if (this->req_method.compare("DELETE") == 0 && this->__delete == ALLOWED)
-            reqmethod = new deleteMethod(*this);
+            reqmethod = new _Delete(*this);
         else if (this->req_method.compare("POST") == 0 && this->__post == ALLOWED)
-            reqmethod = new Post(*this);
+            reqmethod = new _Post(*this);
         else
             throw  _Exception(METHOD_NO_ALLOWED);
     }
