@@ -67,10 +67,10 @@ method * request::CGI::runCGI(request req){
     resp = new Error(req);
     int status;
     status = run_cgi(envp, _body);
-    if (req.getcookie().empty())
+    if (req._findHeader("Cookie").empty())
         Cookie = generate_client_id();
     else
-        Cookie = req.getcookie();
+        Cookie = req._findHeader("Cookie");
     if (status == SUCCESS) {
         resp->setStatuscode(200);
         resp->setreason_phrase("OK");
