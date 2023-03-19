@@ -2,18 +2,8 @@
 
 _Post::_Post(request rhs)
 {
-    this->setHost(rhs.gethost());
-    this->setRequest_URI(rhs.getrequest_URI());
-    this->setHttp_version(rhs.gethttp_version());
-    this->setsocketID(rhs.getsocketID());
-    this->setRootPath("/Users/mmasstou/Desktop/webserv/data");
-    this->setRequestBody(rhs.getRequestBody());
-    this->setContent_Length(rhs.getContent_Length());
-    this->setContent_Type(rhs.getContent_Type());
-    this->setTransfer_Encoding(rhs.getTransfer_Encoding());
+    
     this->execute_method(rhs);
-    this->setStatuscode(201);
-    this->setreason_phrase("Created");
 }
 _Post::~_Post()
 {
@@ -27,7 +17,7 @@ int _Post::execute_method(request _request)
     std::ifstream inFile;
     filename.append(CREATE_SUCCESS_FILE);
     // bool _execute = false;
-    std::map<std::string, std::string> tmp = this->getContent_Type();
+    std::map<std::string, std::string> tmp = _request.getContent_Type();
     // this->parseBody();
     if (_request.getRedirect_status() != -1)
     {
@@ -44,7 +34,7 @@ int _Post::execute_method(request _request)
         filename.append(_request.getroot());
         filename.append(_request.getredirect_URL());
 
-        _request.setrequest_URI(filename);
+        _request._setHeaderReq(REQUEST_URI, filename);
         // set Header : 
         this->addHeader("Location", _request.getredirect_URL());
         body.append("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>");
@@ -129,7 +119,7 @@ int _Post::execute_method(request _request)
     this->addHeader("Cache-Control", "no-cache");
     this->addHeader("Content-Type",Assets::__getType("html"));
     this->addHeader("Content-Length", std::to_string(this->getResponseBody().length()));
-    _request.setrequest_URI(filename);
+    _request._setHeaderReq(REQUEST_URI, filename);
     return true;
 }
 

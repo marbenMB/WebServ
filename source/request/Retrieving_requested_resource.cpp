@@ -2,15 +2,8 @@
 
 void    request::Retrieving_requested_resource(ServerConf *server)
 {
-    this->message.push_back(std::to_string(this->socketID));
-    /* -------------------------------------------------------------------------- */
-    /*                             // !read config file                           */
-    /*                      // * Create instaence for server                      */
-    /* -------------------------------------------------------------------------- */
+  
     // ! SERVER DATA
-    // std::vector<ServerConf> serv = server->server_list;
-    // *> create iterator for etch srever in config file :
-    // std::vector<ServerConf>::iterator server_iterator = server->server_list.begin();
     std::map<std::string, std::vector<std::string> > it = server->server_data;
     // ? root :
     std::vector<std::string>::iterator root_vect = it["root"].begin();
@@ -53,7 +46,7 @@ void    request::Retrieving_requested_resource(ServerConf *server)
     if (locationIndex == -1)
     {
         this->setAutoIndex(AUTOINDEX_OFF);
-        if (this->req_method.compare("GET") == 0) {this->__get = ALLOWED;}
+        if (_findHeader(REQUEST_METHOD).compare("GET") == 0) {this->__get = ALLOWED;}
         return;
     }
 
@@ -72,7 +65,7 @@ void    request::Retrieving_requested_resource(ServerConf *server)
     if (location_vars["root"].size()) this->root = *iitt;
     
     // if is not CGI and requestURI is not in root dir 
-    if (!this->is_cgi && !is__subDir(this->root, this->getrequest_URI())){
+    if (!this->is_cgi && !is__subDir(this->root, this->_findHeader(REQUEST_URI))){
         throw _Exception(BAD_REQUEST);
     }
     // check for index in Location
@@ -126,18 +119,18 @@ void    request::Retrieving_requested_resource(ServerConf *server)
     iitt = location_vars["allow_methods"].begin();
     if (location_vars["allow_methods"].size()){
         while (iitt != location_vars["allow_methods"].end()){
-            if ((*iitt).compare(this->req_method) == 0)
+            if ((*iitt).compare(_findHeader(REQUEST_METHOD)) == 0)
             {
-                if (this->req_method.compare("POST") == 0) {this->__post = ALLOWED;}
-                else if (this->req_method.compare("GET") == 0) {this->__get = ALLOWED;}
-                else if (this->req_method.compare("DELETE") == 0) {this->__delete = ALLOWED;}
+                if (_findHeader(REQUEST_METHOD).compare("POST") == 0) {this->__post = ALLOWED;}
+                else if (_findHeader(REQUEST_METHOD).compare("GET") == 0) {this->__get = ALLOWED;}
+                else if (_findHeader(REQUEST_METHOD).compare("DELETE") == 0) {this->__delete = ALLOWED;}
                 // allow_methods = true;
             }
             ++iitt;
-            std::cout << "req method :" << this->req_method << std::endl;
+            // std::cout << "req method :" << _findHeader(REQUEST_METHOD) << std::endl;
 
         }
     }
-    if ((this->req_method.compare("POST") != 0 ) && (this->req_method.compare("GET") != 0) && (this->req_method.compare("DELETE")))
+    if ((_findHeader(REQUEST_METHOD).compare("POST") != 0 ) && (_findHeader(REQUEST_METHOD).compare("GET") != 0) && (_findHeader(REQUEST_METHOD).compare("DELETE")))
             this->__noImplimented = ALLOWED;
 }
