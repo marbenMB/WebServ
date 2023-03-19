@@ -35,7 +35,6 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	${CC}  ${CXXFLAGS} $(OBJS) -o $(NAME) -g
-	mkdir var/upload/Default
 	# @make clean -C ./
 
 push:fclean

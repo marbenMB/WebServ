@@ -85,6 +85,8 @@ ClientSock::ClientSock (int fd, int port, std::string ip) : SockProp(fd, port, i
 	byteToSend = 0;
 	byteSent = 0;
 	_content_lenght = 0;
+	_nFind = 0;
+	_skipedByte = 0;
 }
 
 ClientSock::~ClientSock () {};
@@ -214,26 +216,57 @@ void	ClientSock::hostResp(void)
 
 void	ClientSock::readChunkBody(void)
 {
-	std::stringstream	bodyStream;
 	std::string			hexStr;
-	long long			byte;
+	long long			byte = 0;
+	std::string			tmp;
 
-	std::cout << MAUVE << _reqBody << RED "++END BODY++" END_CLR << std::endl;
+	std::cout << MAUVE << _reqBody << RED "++END BODY++" << END_CLR << std::endl;
 
-	bodyStream << _reqBody;
+	_nFind = _reqBody.find("\r\n", _skipedByte);
+	while (_nFind != std::string::npos)
+	{
+		//?:	getting bytes to read
+		hexStr = _reqBody.substr(_skipedByte, _nFind - _skipedByte);
+		byte = std::stoi(hexStr, nullptr, 16);
 
-	std::getline(bodyStream, hexStr);
-	hexStr.append("\n");
+		// log("HexStr", hexStr);
+		// log("Byte conv", std::to_string(byte));
+
+		if (byte == 0)
+		{
+			// log("Unchunked body", _bodyChunk);
+			std::cout << _bodyChunk;
+			log("Unchunked body length", std::to_string(_bodyChunk.length()));
+			log("Content_length", std::to_string(_content_lenght));
+			_readiness = true;
+			break;
+		}
+
+		//?:	substring the body and check lenght == byte in next step.
+		tmp = _reqBody.substr(_nFind + 2, byte);
+
+
+		//?:	Saving Skipped bytes if bytes given are read well.
+		if ((long long)tmp.length() == byte)
+		{
+			_skipedByte += hexStr.length() + byte + CRF;
+			// log("Skiped", std::to_string(_skipedByte));
+
+			//?:	appending to body chunked to save body unchunked and content length.
+			_bodyChunk.append(tmp);
+			_content_lenght += byte;
+
+			//?:	finding next chunked encoding delimiter.
+			_nFind = _reqBody.find("\r\n", _skipedByte);
+
+			// std::cout << _nFind << " -- " << std::endl;
+		}
+		else
+			break;
+	}
 	
-	byte = std::stoi(hexStr, nullptr, 16);
 
-	std::cout << "- STR : " << hexStr
-			<<	"- bytes : " << byte << std::endl;
 
-	
-
-	bodyStream << "";
-	bodyStream.clear();
 
 }
 
@@ -287,6 +320,8 @@ void	ClientSock::resetClientProp(void)
 //	-- Chunked body :
 	_bodyChunk.clear();
 	_content_lenght = 0;
+	_nFind = 0;
+	_skipedByte = 0;
 
 //	--	Response :
 	_response.clear();

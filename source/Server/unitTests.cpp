@@ -57,7 +57,8 @@ void	debug()
 	std::cout << RED << "********* DEBUG **************** " << END_CLR << std::endl;
 }
 
-void	log(std::string msg)
+void	log(std::string forWhat, std::string msg)
 {
-	std::cout << GREEN << "|----| " << msg << "|----| " << END_CLR << std::endl;
+	std::cout << GREEN << "|----| " << forWhat << " :  " 
+	<< msg << "|----| " << END_CLR << std::endl;
 }

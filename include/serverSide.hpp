@@ -24,7 +24,7 @@
 //	****	 DEFINES	****	//
 //	****	*********	****	//
 
-enum defines 
+enum ServerDef 
 {
 	//	** Socket Type
 	SERVER_SOCK = 1,
@@ -42,7 +42,10 @@ enum defines
 	//	** Request stat
 	STAT = 199,
 	WELL = 200,
-	TIMEOUT
+	TIMEOUT,
+
+	//	**
+	CRF = 4
 };
 
 //	****	*********	****	//
@@ -89,6 +92,8 @@ class	ClientSock : public SockProp
 		std::string		_reqBody;			//?:	- After separation -> request body.
 		long long		byteToRead;			//?:	-1 -> request with no body
 		long long		byteRead;			//?:	bytes already read by recv().
+		size_t			_nFind;				//?:	- chunked case -> Where find stopped until next chunked body read.
+		long long		_skipedByte;
 		std::string		_bodyChunk;			//?:	- chunked case -> whole body without chunked encoding delimiter.
 		long long		_content_lenght;	//?:	- chunked case -> content_lenght of processed chunked body.
 		std::string		_request;			//?:	- request formed to be processed by request-response process.
