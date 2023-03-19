@@ -67,6 +67,9 @@ class method;
 class request
 {
 private:
+    std::map<std::string, std::string> _requestHeader;
+
+
     int _ExceptionCode;
     bool requirements;
     int socketID;
