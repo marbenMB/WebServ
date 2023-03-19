@@ -281,7 +281,7 @@ void request::initializationFILES(std::vector<std::string> filesVECTER)
             }
             content_disposition = split(file_header[0], "; ");
             std::string filename;
-            if (content_disposition.size() == 3 && content_disposition[2].length() > 11) // if post is not empty
+            if (content_disposition.size() > 2 && content_disposition[2].length() > 11) // if post is not empty
             {
 
                 int endfilename = content_disposition[2].length() - 11;
@@ -295,17 +295,13 @@ void request::initializationFILES(std::vector<std::string> filesVECTER)
 
             }
             else{throw std::invalid_argument("3iw haschi khawi");}}
-            catch(const std::exception& e)
-            {
-                std::cerr << e.what() << '\n';
-                // throw  _Exception(INTERNAL_SERVER_ERROR);
-            }
+            catch(const std::exception& e){std::cerr << e.what() << '\n';}
             it++;
         }
         if (_files.size())
             this->req_body = _files;
         else{
-            throw  _Exception(NOT_FOUND);
+            throw  _Exception(BAD_REQUEST);
         }
 }
 
