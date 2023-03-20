@@ -20,12 +20,10 @@ request_SRCS =  $(REQUEST_PATH)request.cpp $(REQUEST_PATH)split.cpp $(REQUEST_PA
 				$(REQUEST_PATH)retrievingStatusCodeFile.cpp
 
 
-SRCS =  ./source/main.cpp $(config_SRCS) $(SERVSRC) $(method_SRCS) $(request_SRCS)
+SRCS =  ./source/main.cpp ./source/Assets.cpp  ./source/_Exception.cpp $(config_SRCS) $(SERVSRC) $(method_SRCS) $(request_SRCS)
 
 OBJS	= $(SRCS:.cpp=.o)
-
-DEPS =  $(INCLUDES_PATH)request.hpp $(INCLUDES_PATH)method.hpp $(INCLUDES_PATH)WebServer.hpp $(INCLUDES_PATH)ConfigFile.hpp $(INCLUDES_PATH)classes.hpp \
-		$(INCLUDES_PATH)serverSide.hpp $(INCLUDES_PATH)header.hpp $(INCLUDES_PATH)unitTests.hpp
+DEPS =  $(INCLUDES_PATH)request.hpp $(INCLUDES_PATH)method.hpp $(INCLUDES_PATH)WebServer.hpp $(INCLUDES_PATH)ConfigFile.hpp $(INCLUDES_PATH)classes.hpp $(INCLUDES_PATH)serverSide.hpp $(INCLUDES_PATH)header.hpp $(INCLUDES_PATH)unitTests.hpp $(INCLUDES_PATH)Assets.hpp
 
 
 %.o:%.cpp $(DEPS)
@@ -48,7 +46,7 @@ clean:
 	@echo "\x1b[36m   +> Clean \033[0m\033[38;5;42m [Done] \033[0m";
 	
 fclean: clean
-	@rm -f $(NAME)
+	@rm -f $(NAME) var/upload/Default/* var/upload/*
 	@echo "\x1b[36m   +> fClean \033[0m\033[38;5;42m [Done] \033[0m";
 
 re: fclean all

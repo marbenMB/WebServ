@@ -1,24 +1,14 @@
 #include "../../include/method.hpp"
 
-Post::Post(request rhs)
+_Post::_Post(request rhs)
 {
-    this->setHost(rhs.gethost());
-    this->setRequest_URI(rhs.getrequest_URI());
-    this->setHttp_version(rhs.gethttp_version());
-    this->setsocketID(rhs.getsocketID());
-    this->setRootPath("/Users/mmasstou/Desktop/webserv/data");
-    this->setRequestBody(rhs.getRequestBody());
-    this->setContent_Length(rhs.getContent_Length());
-    this->setContent_Type(rhs.getContent_Type());
-    this->setTransfer_Encoding(rhs.getTransfer_Encoding());
+    
     this->execute_method(rhs);
-    this->setStatuscode(201);
-    this->setreason_phrase("Created");
 }
-Post::~Post()
+_Post::~_Post()
 {
 }
-int Post::execute_method(request _request)
+int _Post::execute_method(request _request)
 {
     std::string buffer;
     std::string body;
@@ -27,39 +17,20 @@ int Post::execute_method(request _request)
     std::ifstream inFile;
     filename.append(CREATE_SUCCESS_FILE);
     // bool _execute = false;
-    std::map<std::string, std::string> tmp = this->getContent_Type();
+    std::map<std::string, std::string> tmp = _request.getContent_Type();
     // this->parseBody();
     if (_request.getRedirect_status() != -1)
     {
-
-        /*
-        
-        
-        <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>301 Redirction</title></head><body><h1>301 Redirction</h1></body></html>
-        
-        **/ 
         this->setStatuscode(_request.getRedirect_status());
         this->setreason_phrase(_request.getReason(std::to_string(_request.getRedirect_status())));
         filename.clear();
         filename.append(_request.getroot());
         filename.append(_request.getredirect_URL());
 
-        _request.setrequest_URI(filename);
+        _request._setHeaderReq(REQUEST_URI, filename);
         // set Header : 
         this->addHeader("Location", _request.getredirect_URL());
-        body.append("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>");
-        body.append(std::to_string(this->getStatuscode()));
-        body.append(" Redirction</title></head><body><h1>");
-        body.append(std::to_string(this->getStatuscode()));
-        body.append(" Redirction</h1></body></html>");
-        // inFile.open(filename, std::ifstream::in);
-        // while (std::getline(inFile, buffer))
-        // {
-        //     // std::cout << buffer << std::endl;
-        //     line.append(buffer);
-        // }
-        // // std::cout << "</Line >" << std::endl;
-        // inFile.close();
+        body.append("");
     }
     else if (tmp["type"].compare("application/x-www-form-urlencoded") == 0){
         if (_request.getCGIstatus()){ throw request::CGI();}
@@ -72,28 +43,19 @@ int Post::execute_method(request _request)
         {
             filename.clear();
             filename.append(_request.getUpload_store_PATH());
+            struct stat statInfo;
+            if (stat(filename.c_str(), &statInfo) != 0){
+               filename.clear();
+               filename.append(UPLOAD_STORE);
+            }
             filename.append("/");
             filename.append((*file_It).first);
             // std::cout <<" abs path to the file created :" << filename << std::endl;
             outFile.open(filename, std::ifstream::out);
             if (!outFile.is_open()){ // cant open this file  Internal Server Error
-                this->setStatuscode(500);
-                 this->setreason_phrase(_request.getReason("500"));
-                filename.clear();
-                filename.append("./var/errors/50x.html");
-                file_It = file.begin();
-                while (file_It != file.end()){
-                    filename.clear();
-                    filename.append(_request.getUpload_store_PATH());
-                    filename.append("/");
-                    filename.append((*file_It).first);
-                    remove(filename.c_str());
-                    ++file_It;
-                }
+               throw _Exception(INTERNAL_SERVER_ERROR);
             }
-            outFile << (*file_It).second;
-            std::cout <<RED<< "filenameee =" <<END_CLR<< (*file_It).first << std::endl;
-            // std::cout <<RED<< "Body       =" <<END_CLR<< (*file_It).second << std::endl;
+            outFile << file_It[0].second;
             outFile.close();
             ++file_It;
         }
@@ -102,39 +64,25 @@ int Post::execute_method(request _request)
             this->setStatuscode(201);
             this->setreason_phrase(_request.getReason("201"));
             filename.clear();
-            filename.append("./var/srcs/success.html");
+            filename.append(CREATE_SUCCESS_FILE);
+            body.clear();
+            std::stringstream ssbuf;
+            inFile.open(filename, std::ifstream::in);
+            ssbuf << inFile.rdbuf();
+            body.append(ssbuf.str());
+            inFile.close();
         }
-
     }
-    
     this->setResponseBody(body);
     this->addHeader("Cache-Control", "no-cache");
-    this->addHeader("Content-Type", _request.getType("html"));
+    this->addHeader("Content-Type",Assets::__getType("html"));
     this->addHeader("Content-Length", std::to_string(this->getResponseBody().length()));
+    _request._setHeaderReq(REQUEST_URI, filename);
     return true;
 }
 
-bool Post::parseBody()
-{
-    // std::cout << "parseBody_Content_Length\n";
-    std::vector<std::string> reqbody;
-    std::map<std::string, std::string> tmp = this->getContent_Type();
 
-    reqbody = this->getRequestBody();
-    // std::cout << "Body size :" <<reqbody.size() << std::endl;
-    std::cout << "get +> <Content_Type size='" << tmp.size() << "' type='" << tmp["type"] << "'   boundary='" << tmp["boundary"] << "'>" << std::endl;
-    return 1;
-}
-bool Post::parseBody_Transfer_Encoding()
-{
-    std::cout << "parseBody_Transfer_Encoding\n";
-    return 1;
-}
-std::vector<std::string> const &Post::getRequestBody(void) const
-{
-    return (this->requestBody);
-}
-void Post::setRequestBody(std::vector<std::string> reqBody)
+void _Post::setRequestBody(std::vector<std::string> reqBody)
 {
     this->requestBody = reqBody;
 }
@@ -159,24 +107,24 @@ void method::setTransfer_Encoding(std::string Transfer_Encoding)
     this->Transfer_Encoding = Transfer_Encoding;
 }
 
-void Post::setFilename(std::string value)
+void _Post::setFilename(std::string value)
 {
     this->_filename = value;
 }
-void Post::setName(std::string value)
+void _Post::setName(std::string value)
 {
     this->_name = value;
 }
-void Post::setContent(std::string value)
+void _Post::setContent(std::string value)
 {
     this->_content = value;
 }
- std::string const &Post::getFilename( void ){
+ std::string const &_Post::getFilename( void ){
     return this->_filename;
  }
-std::string const &Post::getName( void ){
+std::string const &_Post::getName( void ){
     return this->_name;
 }
-std::string const &Post::getContent( void ){
+std::string const &_Post::getContent( void ){
     return this->_content;
 }

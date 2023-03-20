@@ -4,7 +4,10 @@
 bool Is_cgi(std::string str)
 {
     size_t pos = 0;
-    if (((pos = str.rfind(".py")) != std::string::npos && (pos + 3) == str.length()) || ((pos = str.rfind(".go")) != std::string::npos && (pos + 3) == str.length()))
+    if (((pos = str.rfind(".py")) != std::string::npos && (pos + 3) == str.length()) ||
+    ((pos = str.rfind(".go")) != std::string::npos && (pos + 3) == str.length()) ||
+    ((pos = str.rfind(".co")) != std::string::npos && (pos + 3) == str.length())
+    )
         return true;
     return false;
 }
@@ -22,43 +25,42 @@ void set_env(request req, std::vector<char*> &env_vec) {
     std::string line;
     std::ostringstream number_str;
 
-    if (!req.getContent_Type().empty()) {
+    if (!req._findHeader("Content-Type").empty()) {
         line = "CONTENT_TYPE=";
-        line += req.getContent_Type();
+        line += req._findHeader("Content-Type");
         env_vec.push_back(strdup(line.c_str()));
     }
-    if (req.getContent_Length() > 0) {
-        number_str << req.getContent_Length();
+    if (!req._findHeader("Content-Length").empty()) {
         line = "CONTENT_LENGTH=";
-        line += number_str.str();
+        line += req._findHeader("Content-Length");
         env_vec.push_back(strdup(line.c_str()));
     }
 
-    if (!req.getcookie().empty()) {
+    if (!req._findHeader("Cookie").empty()) {
         line = "COOKIE=";
-        line += req.getcookie();
+        line += req._findHeader("Cookie");
         env_vec.push_back(strdup(line.c_str()));
     }
 
-    if (!req.getquery_string().empty()) {
+    if (!req._findHeader(PARAMS).empty()) {
         line = "QUERY_STRING=";
-        line += req.getquery_string();
+        line += req._findHeader(PARAMS);
         env_vec.push_back(strdup(line.c_str()));
     }
 
-    if (!req.getreq_method().empty()) {
+    if (!req._findHeader(REQUEST_METHOD).empty()) {
         line = "REQUEST_METHOD=";
-        line += req.getreq_method();
+        line += req._findHeader(REQUEST_METHOD);
         env_vec.push_back(strdup(line.c_str()));
     }
 
-    if (!req.getrequest_URI().empty()) {
+    if (!req. _findHeader(REQUEST_URI).empty()) {
         line = "SCRIPT_FILENAME=";
-        line += req.getrequest_URI();
+        line += req. _findHeader(REQUEST_URI);
         env_vec.push_back(strdup(line.c_str()));
     }
-    if (!req.getrequest_URI().empty()) {
-        if (req.getrequest_URI().find(".py") != std::string::npos)
+    if (!req. _findHeader(REQUEST_URI).empty()) {
+        if (req. _findHeader(REQUEST_URI).find(".py") != std::string::npos)
             line = "SCRIPT_LANG=python";
         else
             line = "SCRIPT_LANG=go";
@@ -107,7 +109,6 @@ int run_cgi(char **envp, std::string &_body) {
     if (access(filename.c_str(), R_OK) == -1) {
         return (ERR_FILE);
     }
-
     else {
         pid = fork();
         if (pid < 0)
@@ -135,6 +136,7 @@ int run_cgi(char **envp, std::string &_body) {
             if (execve(argv[0], argv, envp) == -1){
                 exit (ERR_SERV);
             }
+            close(fd_out);
         }
         else {
             waitpid(pid, &status, 0);
@@ -144,15 +146,17 @@ int run_cgi(char **envp, std::string &_body) {
 
     }
 
-    // if (!result) {
-        body_file.open("source/cgi_files/cgi_pages/file_cgi.html");
-        if (body_file.is_open()) {
-            while(std::getline(body_file, line)) {
-                _body.append(line);
-            }
-            return (SUCCESS);
+    if (!result) {};
+    body_file.open("source/cgi_files/cgi_pages/file_cgi.html");
+    if (body_file.is_open()) {
+        while(std::getline(body_file, line)) {
+            _body.append(line);
         }
-        return (ERR_SERV);
+        body_file.close();
+        return (SUCCESS);
+    }
+    body_file.close();
+    return (ERR_SERV);
     // }
     // else
     //     return (result);

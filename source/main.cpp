@@ -1,5 +1,6 @@
 #include "../include/serverSide.hpp"
 #include "../include/unitTests.hpp"
+#include "../include/Assets.hpp"
 
 int _main (int ac, char **av)
 {
@@ -18,6 +19,7 @@ int _main (int ac, char **av)
     }
 	std::cout << GREEN << "+> Parsing Done !!" << END_CLR << std::endl << std::endl;
 
+    Assets  _assets;
     //	***	Creating WebServer :
     WebServ	myServ;
     

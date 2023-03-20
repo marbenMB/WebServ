@@ -1,4 +1,7 @@
 .DS_Store
 *.dSYM
 .vscode
-var/upload/*
+var/upload
+public/upload
+Test
+file
