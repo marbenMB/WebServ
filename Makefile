@@ -31,8 +31,8 @@ DEPS =  $(INCLUDES_PATH)request.hpp $(INCLUDES_PATH)method.hpp $(INCLUDES_PATH)W
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
-	${CC}  ${CXXFLAGS} $(OBJS) -o $(NAME) -g
+$(NAME): $(SRCS)
+	${CC}  ${CXXFLAGS} $(SRCS) -o $(NAME) -g
 	# @make clean -C ./
 
 push:fclean

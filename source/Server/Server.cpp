@@ -256,7 +256,10 @@ void	acceptClients(WebServ &serv)
 						if (serv.clientMap[serv.vecPoll[idx].fd]._connexion == KEEP_ALIVE)
 							serv.clientMap[serv.vecPoll[idx].fd].resetClientProp();
 						else if (serv.clientMap[serv.vecPoll[idx].fd]._connexion == CLOSE)
+						{
 							serv.closeClientConn(socket);
+							continue;
+						}
 					}
 				}
 

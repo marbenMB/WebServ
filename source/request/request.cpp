@@ -14,13 +14,14 @@ request::request(
     std::string _requestHeader;
     method *reqmethod;
     // std::vector<std::string> req_vector = split(request, "\r\n\r\n");
+
+	std::cout << _request << std::endl;
     try
     {
         try
         {
             /* code */
-            if (status == TIMEOUT)
-                throw _Exception(BAD_REQUEST);
+         
             size_t splitIndex = _request.find(CRLF_2);
             _requestHeader.clear();
             _requestBody.clear();
@@ -45,6 +46,8 @@ request::request(
             this->retrievingsatatuscodeFile();
 
             this->Verifying_Header(_requestHeader);
+			if (status == TIMEOUT)
+                throw _Exception(BAD_REQUEST);
             this->Retrieving_requested_resource(server);
             if (this->_findHeader(REQUEST_METHOD).compare("POST") == 0)
                 this->Verifying_Body(_requestBody);
@@ -106,7 +109,6 @@ void request::Verifying_Body(std::string req)
         _fileInfo._boundary_end.append(_fileInfo._boundary_start);
         _fileInfo._boundary_end.append("--");
     }
-
     if ((unsigned long long)req.length() !=  _fileInfo.contentLength || (unsigned long long)req.length() > this->client_max_body_size)
     {
         std::cout << "ANA HANA\n";
@@ -135,12 +137,14 @@ void request::Verifying_Body(std::string req)
         _fileInfo.tmp_vector = split(req, _fileInfo._boundary_start);
 
         //  initialization files
-        this->Content_Type = _fileInfo.ContentType;
+       
         initializationFILES( _fileInfo.tmp_vector);
     }
     else{ // theres no boundary
         std::cout << " :" << _fileInfo.contentLength << "| " << "chi7aja khra ******* * * * * \n";
     }
+	this->Content_Type = _fileInfo.ContentType;
+
 }
 
 void request::url_decode(std::string &url)

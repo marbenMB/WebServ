@@ -157,12 +157,14 @@ void	ClientSock::formRequest(void)
 	_request.append(_reqHeader);
 	if (_chunkedBody)
 	{
-		//?:	Add content_length header to request headers
-		ss << _content_lenght;
-		ss >> lenStr;
-		header.append(lenStr);
-		_request.insert(_request.find("\r\n\r\n"), header);
-
+		if (_request.find("Content-Length: ") == std::string::npos)
+		{
+			//?:	Add content_length header to request headers
+			ss << _content_lenght;
+			ss >> lenStr;
+			header.append(lenStr);
+			_request.insert(_request.find("\r\n\r\n"), header);
+		}
 		_request.append(_bodyChunk);
 	}
 	else

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   _Exception.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasstou <mmasstou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbenbajj <mbenbajj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 16:47:27 by mmasstou          #+#    #+#             */
-/*   Updated: 2023/03/19 20:50:13 by mmasstou         ###   ########.fr       */
+/*   Updated: 2023/03/20 15:52:48 by mbenbajj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,7 @@ _Exception::generateBody(std::string reason_phrase) {
  
 method * 
 _Exception::what(request req) throw(){
-    std::string reason(
-        req.getReason(
-            std::to_string(this->_ExceptionCode)
-            ));
+    std::string reason(req.getReason(std::to_string(this->_ExceptionCode)));
     method *resp;
 
     resp = new Error(req);
