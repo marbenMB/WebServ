@@ -6,14 +6,13 @@
 /*   By: mmasstou <mmasstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 16:47:27 by mmasstou          #+#    #+#             */
-/*   Updated: 2023/03/17 18:46:55 by mmasstou         ###   ########.fr       */
+/*   Updated: 2023/03/19 20:50:13 by mmasstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/_Exception.hpp"
 
 _Exception::_Exception(int code){
-    std::cout << "_Exception constarctor called !" << std::endl;
     this->_ExceptionCode = code;
 }
 

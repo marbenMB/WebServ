@@ -1,232 +1,157 @@
 #include "../../include/request.hpp"
 
-request::request(int socketID, ServerConf *server, std::string _request, std::string &response) : Content_Length(-1),
-                                                                                                        autoindex(AUTOINDEX_OFF),
-                                                                                                        __post(NOT_ALLOWED),
-                                                                                                        __delete(NOT_ALLOWED),
-                                                                                                        __get(NOT_ALLOWED),
-                                                                                                        __noImplimented(NOT_ALLOWED)
+request::request(
+    int status,
+    ServerConf *server,
+    std::string _request,
+    std::string &response) : autoindex(AUTOINDEX_OFF),
+                             __post(NOT_ALLOWED),
+                             __delete(NOT_ALLOWED),
+                             __get(NOT_ALLOWED),
+                             __noImplimented(NOT_ALLOWED)
 {
     std::string _requestBody;
     std::string _requestHeader;
-    std::string _reaponseBody;
     method *reqmethod;
     // std::vector<std::string> req_vector = split(request, "\r\n\r\n");
-
-    size_t splitIndex = _request.find("\r\n\r\n");
-     _requestHeader.clear();
-    _requestBody.clear();
-    if (splitIndex == std::string::npos){
-        _requestHeader = _request.substr(0, _request.length());
-    }
-    else
-    {
-         _requestHeader = _request.substr(0, splitIndex);
-         _requestBody = _request.substr(splitIndex + 4, _request.length());
-    }
-    // std::cout << "_request\n" << MAUVE<< _request <<  END_CLR << std::endl;
-    // _requestHeader.clear();
-    // _requestBody.clear();
-    // _requestHeader.append(req_vector[0]);
-    // int i = 0;
-
-    // while (++i < (int)req_vector.size())
-    // {
-    //     _requestBody.append(req_vector[i]);
-    //     if (i != (int)req_vector.size() - 1)
-    //         _requestBody.append("\n\r\n\r");
-    //     // std::cout << RED << "<req id=" << i << " size=" << requestheader[i].size() << ">\n"
-    //     //           << END_CLR << requestheader[i] << RED << "\n</req>" << END_CLR << std::endl;
-    // }
-    // * Init vars :
-    // this->requirements = true;
-    this->setsocketID(socketID);
-    this->setRedirect_status(-1);
-    this->setcompare_URI("");
-    this->is_cgi = false;
     try
     {
-        this->uploadType();
-        this->retrievingsatatuscodeFile();
-        this->Verifying_Header(_requestHeader);
-        this->Retrieving_requested_resource(server);
-        if (this->getmethod().compare("POST") == 0)
+        try
         {
-            // exit(1);
-            this->Verifying_Body(_requestBody);
+            /* code */
+            if (status == TIMEOUT)
+                throw _Exception(BAD_REQUEST);
+            std::cout << "_request :" << _request << std::endl;
+            size_t splitIndex = _request.find(CRLF_2);
+            _requestHeader.clear();
+            _requestBody.clear();
+            if (splitIndex == std::string::npos)
+            {
+                _requestHeader = _request.substr(0, _request.length());
+            }
+            else
+            {
+                _requestHeader = _request.substr(0, splitIndex);
+                _requestBody = _request.substr(splitIndex + 4, _request.length());
+            }
+
+            // * Init vars :
+            // this->requirements = true;
+
+            this->setRedirect_status(-1);
+            this->setcompare_URI("");
+            this->is_cgi = false;
+
+            this->uploadType();
+            this->retrievingsatatuscodeFile();
+
+            this->Verifying_Header(_requestHeader);
+            this->Retrieving_requested_resource(server);
+            if (this->_findHeader(REQUEST_METHOD).compare("POST") == 0)
+                this->Verifying_Body(_requestBody);
+            reqmethod = this->execute_request();
+
         }
-        reqmethod = this->execute_request();
-
+        catch(const std::exception& e){throw _Exception(INTERNAL_SERVER_ERROR); }
     }
-    catch(_Exception & e){ reqmethod = e.what(*this);}
-    catch(request::CGI & e){ 
+    catch (_Exception &e){reqmethod = e.what(*this);}
+    catch (request::CGI &e)
+    {
         try{reqmethod = e.runCGI(*this);}
-        catch(_Exception & e){ reqmethod = e.what(*this);}   
+        catch (_Exception &e){reqmethod = e.what(*this);}
     }
-
-    // * parse Header :
-    // 1 - cheack for Header
-    // std::cout << MAUVE << "   @VERIFYING  Header" << END_CLR << std::endl;
-    // 3 - Retrieving the requested resource [config File and Data] :
-    // std::cout << MAUVE << "   @RETRIEVING requested resource" << END_CLR << std::endl;
-    // 2 - check for body
-    // std::cout << MAUVE << "   @VERIFYING  Body" << END_CLR << std::endl;
-    // 4 - execute request ; if this->requirements = true;
-    // std::cout << MAUVE << "   @EXECUTE request" << END_CLR << std::endl;
-    // 5 - get status of execution :
-
-    // 6 - create response ;
-    // std::cout << MAUVE << "   @CREATE response" << END_CLR << std::endl;
-    // exit(1);
-    // std::cout << RED << "NOT :|" << reqmethod->getResponseBody() << std::endl;
-
     response = _CREATEresponse(
         reqmethod->getHeader(),
         reqmethod->getStatuscode(),
         reqmethod->getreason_phrase(),
         reqmethod->getResponseBody());
-    // std::ofstream _outfile;
-
-
-    // _outfile.open("file", std::ifstream::out);
-
-    // _outfile << _reaponseBody ;
-
-
-    // std::cout << MAUVE << "**>|" << _reaponseBody << END_CLR << std::endl;
-    // std::cout << MAUVE << "   @PUSH response Body" << END_CLR << std::endl;
-    // response.push_back(_reaponseBody);
-    // response = this->create_response();
-    // 7 - print server status
-    std::string color_status;
-    if (reqmethod->getStatuscode() == 200)
-        color_status = GREEN;
-    else
-        color_status = RED;
-    std::cout << color_status << this->host.substr(0, this->host.find(":")) <<" " << this->getmethod() << " HTTP/1.1 " << reqmethod->getStatuscode() << " " << reqmethod->getreason_phrase() << " " << this->getrequest_URI() << " " << 2346 << END_CLR <<std::endl ;
+    printServerLogs(*reqmethod);
     delete reqmethod;
 }
 
-void request::sand(int socketID, std::string body)
-{
-    int n;
-
-    n = write(socketID, body.c_str(),body.length());
-    if (n < 0)
-    {
-        perror("ERROR writing to socket");
-        close(socketID);
-        // exit(1);
-    }
-    else
-    {
-        close(socketID);
-    }
-}
-
-bool request::Verifying_Body(std::string req)
+void request::Verifying_Body(std::string req)
 {
     if (req.empty())
-    {
-        std::cout << "waaaaa khawiii \n";
-        return false;
-    }
-    /** 
-     * ! Body synthax 
-        HTTP/1.1 206 Partial Content
-        Date: Wed, 15 Nov 1995 06:25:24 GMT
-        Last-Modified: Wed, 15 Nov 1995 04:58:08 GMT
-        Content-Length: 1741
-        Content-Type: multipart/byteranges; boundary=THIS_STRING_SEPARATES
-
-        --THIS_STRING_SEPARATES
-        Content-Type: application/pdf
-        Content-Range: bytes 500-999/8000
-
-        ...the first range...
-        --THIS_STRING_SEPARATES
-        Content-Type: application/pdf
-        Content-Range: bytes 7000-7999/8000
-
-        ...the second range
-        --THIS_STRING_SEPARATES--
-    */
-    //  ! check redirection && CGI :
-
-    // init the boundary
-    std::map<std::string, std::string> ContentType;
-    std::map<std::string, std::string> files;
-    std::string STRINGSEPARATES;
-    std::string EndSTRINGSEPARATES;
-    std::string request;
-    std::vector<std::string> tmp = split(Content_Type, ";");
-    std::pair<std::string, std::string> tmp_fileIt;
-    ContentType["type"] = (std::string)tmp[0];
-    if (tmp.size() == 2)
-        ContentType["boundary"] = trimFront((std::string)tmp[1], "boundary=");
-
+        throw _Exception(BAD_REQUEST);
    
-    // std::cout <<"ContentType['type']    " << ContentType["type"] << std::endl;
-    // std::cout <<"ContentType['boundary']" << ContentType["boundary"] << std::endl;
-    // std::cout <<"STRINGSEPARATES        " << STRINGSEPARATES << std::endl;
-    // std::cout <<"EndSTRINGSEPARATES     " << EndSTRINGSEPARATES << std::endl;
-    // if ((int)req.length() != this->getContent_Length()){this->requirements = false;return false;}
-    // std::cout << req << std::endl;
-    if ((unsigned long long)req.length() != this->getContent_Length() || (unsigned long long)req.length() > this->client_max_body_size){
+    // init the boundary
+    t_bodyfile _fileInfo;
+
+    // get contant type :
+    _fileInfo._string = _findHeader("Content-Type");
+    if (_fileInfo._string.empty()) // check if empty !
+        throw _Exception(BAD_REQUEST);
+
+    // find boundary inside content Type : synthax +> Content-Type: multipart/form-data; boundary=[boundary string]
+    _fileInfo.tmp_vector = split(_fileInfo._string, ";");
+    _fileInfo.ContentType["type"] = (std::string)_fileInfo.tmp_vector[0];
+
+    if (_fileInfo.tmp_vector.size() >= 2)
+        _fileInfo.ContentType["boundary"] = trimFront((std::string)_fileInfo.tmp_vector[1], "boundary=");
+    
+    _fileInfo._string = _findHeader("Content-Length");
+    if (_fileInfo._string.empty())
+        throw _Exception(BAD_REQUEST);
+
+    _fileInfo.contentLength = atoll(_fileInfo._string.c_str());
+
+    // boundary
+    _fileInfo._string = _fileInfo.ContentType["boundary"];
+    if (!_fileInfo._string.empty()){
+        // start boundary :
+        _fileInfo._boundary_start.clear();
+        _fileInfo._boundary_start.append("--");
+        _fileInfo._boundary_start.append(_fileInfo._string.c_str());
+        // end boundary :
+        _fileInfo._boundary_end.clear();
+        _fileInfo._boundary_end.append(_fileInfo._boundary_start);
+        _fileInfo._boundary_end.append("--");
+    }
+
+    if ((unsigned long long)req.length() !=  _fileInfo.contentLength || (unsigned long long)req.length() > this->client_max_body_size)
+    {
         std::cout << "ANA HANA\n";
 
         std::cout << "req.length() :" << req.length() << std::endl;
-        std::cout << "this->getContent_Length() :" << this->getContent_Length() << std::endl;
+        std::cout << " _fileInfo.contentLength :" <<  _fileInfo.contentLength << std::endl;
         std::cout << "this->client_max_body_size :" << this->client_max_body_size << std::endl;
         throw _Exception(BAD_REQUEST);
     }
-    if (ContentType["type"].compare("application/x-www-form-urlencoded") == 0){
+    if ( _fileInfo.ContentType["type"].compare("application/x-www-form-urlencoded") == 0)
+    {
         url_decode(req);
         this->CGIbody.clear();
         this->CGIbody.append(req);
     }
-    else if (ContentType["type"].compare("multipart/form-data") == 0)
+    else if ( _fileInfo.ContentType["type"].compare("multipart/form-data") == 0)
     {
-        std::string  string_separates;
-        std::string  END_body;
-
-        string_separates.clear();
-        string_separates.append("--");
-        string_separates.append(ContentType["boundary"]);
-
-        END_body.clear();
-        END_body.append(string_separates);
-        END_body.append("--");
-
-        if (req.find(string_separates) == std::string::npos)
+       
+        if (req.find(_fileInfo._boundary_start) == std::string::npos)
             throw _Exception(BAD_REQUEST);
-        if (req.find(END_body) == std::string::npos)
+        if (req.find(_fileInfo._boundary_end) == std::string::npos)
             throw _Exception(BAD_REQUEST);
 
-        req = req.substr(0, req.find(END_body));
-        
-        tmp = split(req, string_separates);
+        req = req.substr(0, req.find(_fileInfo._boundary_end));
 
+        _fileInfo.tmp_vector = split(req, _fileInfo._boundary_start);
 
         //  initialization files
-        initializationFILES(tmp);
-
+        this->Content_Type = _fileInfo.ContentType;
+        initializationFILES( _fileInfo.tmp_vector);
     }
     else{ // theres no boundary
-
-        std::cout << " :" << this->Content_Type << "| "<<"chi7aja khra ******* * * * * \n";
+        std::cout << " :" << _fileInfo.contentLength << "| " << "chi7aja khra ******* * * * * \n";
     }
-
-
-
-    return true;
 }
 
-void request::url_decode(std::string &url) {
+void request::url_decode(std::string &url)
+{
     std::ostringstream unescaped;
     int i = -1;
-    while (url[++i]) {
-        if (url[i] == '%') {
+    while (url[++i])
+    {
+        if (url[i] == '%')
+        {
             std::string hex;
             char *end;
             hex += url[++i];
@@ -244,87 +169,86 @@ void request::url_decode(std::string &url) {
     url = unescaped.str();
 }
 
-bool request::Verifying_Header(std::string req)
+void request::Verifying_Header(std::string req)
 {
-//    std::cout << "Header :"<< req << std::endl;
-    std::vector<std::string> requestHeaders = split(req, "\r\n");
-    std::vector<std::string>::iterator itH = requestHeaders.begin();
-    std::vector<std::string> spl;
+    std::vector<std::string> requestHeaders = split(req, CRLF);
 
-    spl = split((std::string)itH[0], " ");
-    if (spl.size() < 2)
-        throw _Exception(BAD_REQUEST);
-    this->req_method = spl[0];
-   
-    std::string _request_URI = spl[1];
-
-    // std::cout << "request_URI : |" << _request_URI << std::endl; 
-    url_decode(_request_URI);
-    // char _ABSdir[PATH_MAX];
-    // char _SubDir[PATH_MAX];
-    // realpath("./var", _ABSdir);
-    // std::string Tmp("./var");
-    // Tmp.append(_request_URI);
-    // realpath(Tmp.c_str(), _SubDir);
-    // _ABSdir
-    size_t spliteRequestURI =  _request_URI.find("?");
-    if (spliteRequestURI != std::string::npos){
-
-        this->setquery_string(_request_URI.substr(spliteRequestURI + 1, _request_URI.length()));
-        this->setrequest_URI(_request_URI.substr(0, spliteRequestURI));
-    }
-    else{this->setrequest_URI(_request_URI); }
-
-    // std::cout << "request_URI : |" << this->getrequest_URI() << std::endl; 
-    //     throw  _Exception(METHOD_NO_ALLOWED);
-    // this->_error.setCode_status(404);
-    // this->_error.setReason_phrase("Bad Request");
-    // this->_error = Error(401, "Bad Request");
-
-    this->http_version = spl[2];
-    if (this->http_version.compare("HTTP/1.1") != 0)
-        throw _Exception(BAD_REQUEST);;
-    // std::cout << "\nsetquery_string :" << this->getquery_string() << std::endl;
-    // std::cout << "setrequest_URI :" << this->getrequest_URI() << std::endl;
-    while (++itH != requestHeaders.end())
-    {
-        spl.clear();
-        spl = split((std::string)*itH, ": ");
-        if (spl[0].compare("Host") == 0){this->host = spl[1];}
-        if (spl[0].compare("User-Agent") == 0){this->User_Agent = spl[1];}
-        if (spl[0].compare("Accept-Encoding") == 0){this->Accept_Encoding = spl[1];}
-        if (spl[0].compare("Connection") == 0){this->Connection = spl[1];}
-        if (spl[0].compare("Content-Length") == 0){this->Content_Length = atoi(spl[1].c_str());}
-        if (spl[0].compare("Content-Type") == 0){this->Content_Type = spl[1];}
-        if (spl[0].compare("Content-Transfer-Encoding") == 0){this->Content_Transfer_Encoding = spl[1];}
-        if (spl[0].compare("Transfer-Encoding") == 0){this->Transfer_Encoding = spl[1];}
-        if (spl[0].compare("Accept") == 0){this->Accept = spl[1];}
-    }
-    if (this->req_method.empty() || this->host.empty() || this->request_URI.empty() || this->http_version.empty())
-    {
-        this->requirements = false;
-        throw _Exception(BAD_REQUEST);
-    }
-
-
-    // if (this->request_URI.find(".go") != std::string::npos)
-    //     std::cout << RED << "  >Go CGI" << END_CLR << std::endl;
-    // if (this->request_URI.find(".py") != std::string::npos)
-    //     std::cout << RED << "  >PY CGI" << END_CLR << std::endl;
-    // std::cout << std::endl;
-    // std::cout << " this->method : |" << this->req_method << "|" << std::endl;
-    // std::cout << " this->host : |" << this->host << "|" << std::endl;
-    // std::cout << " this->request_URI : |" << this->request_URI << "|" << std::endl;
-    // std::cout << " this->http_version : |" << this->http_version << "|" << std::endl;
-    // std::cout << " this->Connection : |" << this->Connection << "|" << std::endl;
-    // std::cout << " this->Content_Length : |" << this->Content_Length << "|" << std::endl;
-    // std::cout << " this->Content_Type : |" << this->Content_Type << "|" << std::endl;
-    // std::cout << " this->Transfer_Encoding : |" << this->Transfer_Encoding << "|" << std::endl;
-    // std::cout << " this->Accept : |" << this->Accept << "|" << std::endl;
-    return true;
+    initializationRequestHeaders(requestHeaders);
+    if (_findHeader(HTTP_VERSION).compare("HTTP/1.1") != 0)
+            throw _Exception(BAD_REQUEST);
+    if (_findHeader(REQUEST_URI).empty() ||
+        _findHeader(REQUEST_METHOD).empty() ||
+        _findHeader(HTTP_VERSION).empty() ||
+        _findHeader("Host").empty()) throw _Exception(BAD_REQUEST);
 }
 
-request::~request()
-{
+request::~request(){}
+
+std::string request::_findHeader(std::string _header){
+        return this->_requestHeaders[_header];
+};
+void request::_setHeaderReq(std::string key, std::string value){
+    this->_requestHeaders[key] = value;
 }
 
+void request::printServerLogs(method const & vars){
+    std::string color_status;
+    if (vars.getStatuscode() == 200)
+        color_status = GREEN;
+    else
+        color_status = RED;
+    std::cout << color_status <<  _findHeader("Host").substr(0,  _findHeader("Host").find(":")) << " " <<  _findHeader(REQUEST_METHOD) << " HTTP/1.1 " << vars.getStatuscode() << " " << vars.getreason_phrase() << " " <<  _findHeader(REQUEST_URI) << "  " << 2346 << END_CLR << std::endl;
+}
+
+method *request::execute_request(void)
+{
+    method *reqmethod = nullptr;
+    std::string __body;
+   if (this->__noImplimented == NOT_ALLOWED){
+        if (_findHeader(REQUEST_METHOD).compare("GET") == 0 && this->__get == ALLOWED)
+            reqmethod = new _Get(*this);
+        else if (_findHeader(REQUEST_METHOD).compare("DELETE") == 0 && this->__delete == ALLOWED)
+            reqmethod = new _Delete(*this);
+        else if (_findHeader(REQUEST_METHOD).compare("POST") == 0 && this->__post == ALLOWED)
+            reqmethod = new _Post(*this);
+        else
+            throw  _Exception(METHOD_NO_ALLOWED);
+    }
+    else 
+        throw  _Exception(NOT_IMPLEMENTED);
+    return reqmethod;
+}
+
+ void request::initializationRequestHeaders(std::vector<std::string> req){
+        std::vector<std::string> _split;
+        std::vector<std::string>::iterator it = req.begin();
+        std::string it_value(*it);
+
+        _split = split(it_value, " ");
+        if (_split.size() < 2)
+            throw _Exception(BAD_REQUEST); 
+
+        this->_requestHeaders[REQUEST_METHOD] = _split[0];
+        this->_requestHeaders[REQUEST_URI] = _split[1];
+        this->_requestHeaders[HTTP_VERSION] = _split[2];
+
+       
+        url_decode(this->_requestHeaders[REQUEST_URI]);
+
+        size_t spliteRequestURI = this->_requestHeaders[REQUEST_URI].find("?");
+        if (spliteRequestURI != std::string::npos){
+            this->_requestHeaders[REQUEST_URI] = this->_requestHeaders[REQUEST_URI].substr(spliteRequestURI + 1, this->_requestHeaders[REQUEST_URI].length());
+            this->_requestHeaders[PARAMS] = this->_requestHeaders[REQUEST_URI].substr(0, spliteRequestURI);
+        }
+
+        while (++it != req.end())
+        {
+            _split = split((std::string)*it, ": ");
+            this->_requestHeaders[_split[0]] = _split[1];
+        }
+    }
+
+std::map<std::string, std::string> const &request::getContent_Type(void) const
+{
+    return (this->Content_Type);
+}

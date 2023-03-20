@@ -38,7 +38,18 @@
 
 #include "./method.hpp"
 #include "./_Exception.hpp"
+#include "./serverSide.hpp"
 #include <stdlib.h>
+
+
+
+
+// status Line :
+#define REQUEST_URI "request_uri"
+#define REQUEST_METHOD "request_method"
+#define HTTP_VERSION "http_version"
+#define PARAMS "params"
+// request URI :
 
 /*
 
@@ -61,18 +72,33 @@ Referer: Specifies the URI of the referring resource.
 User-Agent: Identifies the user agent making the request.
 
 **/
+typedef struct _bodyfile{
+    // request :
+    std::map<std::string, std::string> ContentType;
+    std::string _string;
+    std::vector<std::string> tmp_vector;
+    unsigned long long contentLength;
+
+    // file :
+    std::string _boundary_start;
+    std::string _boundary_end;
+    std::map<std::string, std::string> files;
+} t_bodyfile;
+
 
 class method;
 class request
 {
 private:
-    int _ExceptionCode;
-    bool requirements;
-    int socketID;
-    std::string root;
-    std::string bufferBody;
+    std::map<std::string, std::string> _requestHeaders;
+    std::map<std::string, std::string> Content_Type;
+    std::string compare_URI;
 
-    // default :
+    std::vector<std::pair<std::string, std::string> > req_body;
+    // config File atrs
+    std::string root;
+    unsigned long long client_max_body_size;
+        // default :
     std::string default_index;
     std::string default_10x;
     std::string default_20x;
@@ -81,66 +107,45 @@ private:
     std::string default_50x;
     int redirect_status;
     std::string redirect_URL;
-
-    // Requirements Fields :
-    std::string req_method;
-    std::string host;
-    std::string request_URI;
-    std::string query_string;
-    std::string http_version;
-
-    // Optional Fields :
-    std::string Accept;
-    std::string Accept_Charset;
-    std::string Accept_Encoding;
-    std::string Accept_Language;
-    std::string Authorization;
-    std::string Cache_Control;
-    std::string Connection;
-    std::string Cookie;
-    std::string If_Modified_Since;
-    std::string If_None_Match;
-    std::string Referer;
-    std::string User_Agent;
-    std::vector<std::string> requestBody;
-
-    // post requirements
-    unsigned long long Content_Length;
-    unsigned long long client_max_body_size;
-
     std::string upload_store;
-    std::string Content_Type;
-    std::string Content_Transfer_Encoding;
-    std::string Transfer_Encoding;
-    int autoindex;
-    std::vector<std::pair<std::string, std::string> > req_body;
-
-    // cgi
+        // cgi
     std::string CGIbody;
     std::string fastcgi_pass;
     std::string fastcgi_index;
     bool is_cgi;
-
-    // allowed vars
+        // allowed vars
+    int autoindex;
     int __post;
     int __delete;
     int __get;
     int __noImplimented;
+
+    // ! not checked .
+    std::vector<std::string> requestBody;
+
     request(){};
-    std::vector<std::string> message;
-    //  error
 
     // for location
-    std::string compare_URI;
     std::map<std::string, std::string> _typs;
     std::map<std::string, std::string> _statusCode;
 
+
+
+    void initializationRequestHeaders(std::vector<std::string> req);
     void initializationFILES(std::vector<std::string> filesVECTER);
+    void Verifying_Header(std::string req);
+    void Verifying_Body(std::string req);
+    void printServerLogs(method const & vars);
+    method *execute_request(void);
 
 public:
-    // Request Exception :
-    int getExceptionCode();
+    // ! cheacked :
+    std::string _findHeader(std::string header);
+    void _setHeaderReq(std::string key, std::string value);
+    void url_decode(std::string &url);
+    std::map<std::string, std::string> const &getContent_Type(void) const;
 
+    // ! end cheack ;
     bool getIs_cgi(void);
     void addType(std::string, std::string);
     std::string const &getType(std::string);
@@ -151,10 +156,8 @@ public:
 
     bool uploadType(void);
 
-    void url_decode(std::string &url);
     request(int, ServerConf *, std::string, std::string &);
     std::vector<std::string> &execute(std::string body, Data *_confdata);
-    method *execute_request(void);
     void Retrieving_requested_resource(ServerConf *server);
     void GETstatusOfexecution(method *req_method) const;
     std::vector<std::string> const &create_response();
@@ -162,34 +165,15 @@ public:
     void sand(int socketID, std::string body);
 
     ~request();
-    bool Verifying_Header(std::string req);
-    bool Verifying_Body(std::string req);
+    
     void checkForIndex(std::vector<std::string> vect);
     void checkForErrorPage(std::vector<std::string> vect);
-    bool executeAction();
     void setAutoIndex(int autoindex);
     int const &getAutoIndex() const;
-    std::string getmethod() const
-    {
-        return this->req_method;
-    }
-    bool getrequirements(void) const;
-    std::string const &gethost() const;
+  
     std::string const &getroot() const;
-    std::string const &getcookie() const;
-    std::string const &getreq_method() const;
     std::string getCGIbody() const;
     std::string const &getdefaultIndex() const;
-    std::string const &getrequest_URI() const;
-    void setrequest_URI(std::string);
-    std::string const &getquery_string() const;
-    void setquery_string(std::string);
-    std::string const &gethttp_version() const;
-    int const &getsocketID(void) const;
-    void setsocketID(int socketId);
-    std::string const &getContent_Type(void) const;
-    std::string const &getTransfer_Encoding(void) const;
-    unsigned long long const &getContent_Length(void) const;
     //  redirect
     int const &getRedirect_status(void) const;
     void setRedirect_status(int redirect_status);
