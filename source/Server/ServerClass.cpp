@@ -91,6 +91,8 @@ ClientSock::ClientSock (int fd, int port, std::string ip) : SockProp(fd, port, i
 
 	byteToSend = 0;
 	byteSent = 0;
+
+	_lastRead = 0;
 }
 
 ClientSock::~ClientSock () {};
@@ -147,6 +149,10 @@ void	ClientSock::formRequest(void)
 	std::stringstream	ss;
 	std::string			lenStr;
 	std::string			header("\r\nContent-Length: ");
+
+	//! if request is TIMEOUT will not be set to WELL.
+	if (_reqStat == STAT)
+		_reqStat = WELL;
 
 	_request.append(_reqHeader);
 	if (_chunkedBody)
@@ -265,25 +271,16 @@ void	ClientSock::readChunkBody(void)
 		else
 			break;
 	}
-	
-
-
-
 }
 
 //	--- Response part
 
 void	ClientSock::formResponse(void)
 {
-	//	**************************************************************************
-
-	//!	Request stat if is it WELL || TIMEOUT
-	_reqStat = WELL;
 	//*	generate Request
-	request *req = new request(_fd ,&_serverResponding, _request, _response);
+	request *req = new request(_reqStat ,&_serverResponding, _request, _response);
 
 	delete req;
-	//	**************************************************************************
 
 	byteToSend = _response.length();
 	byteSent = 0;
@@ -330,13 +327,24 @@ void	ClientSock::resetClientProp(void)
 	byteToSend = 0;
 	byteSent = 0;
 	_done = false;
+
+	_lastRead = 0;
 }
 
 bool	ClientSock::checkSockReady(void)
 {
+	if (_reqStat == TIMEOUT)
+		return true;
 	if (_chunkedBody && _endChunk)
 		return true;
 	else if (!_readiness && (byteToRead && byteRead >= byteToRead) && !_chunkedBody)
+		return true;
+	return false;
+}
+
+bool	ClientSock::timeOutRequest(void)
+{
+	if (_lastRead && ft_gettime() - _lastRead > TIMELIMIT)
 		return true;
 	return false;
 }

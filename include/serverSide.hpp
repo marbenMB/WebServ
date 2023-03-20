@@ -45,7 +45,8 @@ enum ServerDef
 	TIMEOUT,
 
 	//	**
-	CRF = 4
+	CRF = 4,
+	TIMELIMIT = 300
 };
 
 //	****	*********	****	//
@@ -98,6 +99,7 @@ class	ClientSock : public SockProp
 		std::string		_bodyChunk;			//?:	- chunked case -> whole body without chunked encoding delimiter.
 		long long		_content_lenght;	//?:	- chunked case -> content_lenght of processed chunked body.
 		std::string		_request;			//?:	- request formed to be processed by request-response process.
+		long long		_lastRead;			//?:	- TimeOut case -> the last time read from socket.
 
 
 		bool			_done;				//?:	true -> response send completely.
@@ -123,6 +125,8 @@ class	ClientSock : public SockProp
 		void	reFormResponse(int sent);
 		void	resetClientProp(void);
 		bool	checkSockReady(void);
+
+		bool	timeOutRequest(void);
 };
 
 class	Server

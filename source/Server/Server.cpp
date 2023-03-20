@@ -218,18 +218,27 @@ void	acceptClients(WebServ &serv)
 			else
 			{
 				socket = serv.vecPoll.begin() + idx;
-				//?:	check the POLLIN event in the client socket
+				
+				//?:	check TimeOut Request.
+				if (serv.clientMap[serv.vecPoll[idx].fd].timeOutRequest())
+				{
+					serv.vecPoll[idx].revents = POLLOUT;
+					serv.clientMap[serv.vecPoll[idx].fd]._connexion = CLOSE;
+					serv.clientMap[serv.vecPoll[idx].fd]._reqStat = TIMEOUT;
+				}
+
+				//?:	check the POLLIN event in the client socket.
 				if (serv.vecPoll[idx].revents & POLLIN)
 				{
-					//?:	Reading Client Request if prob in recv() erase client & continue
+					//?:	Reading Client Request if prob in recv() erase client & continue.
 					if (serv.readRequest(socket))
 						continue ;
 				}
 
-				//?:	checking socket Readiness to POLLOUT
+				//?:	checking socket Readiness to POLLOUT.
 				serv.socketReadiness(socket);
 
-				//?:	check the POLLOUT event in the client socket
+				//?:	check the POLLOUT event in the client socket.
 				if (serv.vecPoll[idx].revents & POLLOUT && serv.clientMap[serv.vecPoll[idx].fd]._readiness)
 				{
 					if (MAXSEND <= serv.clientMap[serv.vecPoll[idx].fd]._response.length())
@@ -240,7 +249,7 @@ void	acceptClients(WebServ &serv)
 					serv.clientMap[serv.vecPoll[idx].fd].byteSent += sent;
 					serv.clientMap[serv.vecPoll[idx].fd].reFormResponse(sent);
 
-					//?:	The end of Response send
+					//?:	The end of Response send.
 					if (serv.clientMap[serv.vecPoll[idx].fd]._done)
 					{
 						// ********* reset client data first **************
@@ -251,7 +260,7 @@ void	acceptClients(WebServ &serv)
 					}
 				}
 
-				//?:	check the POLLIN event in the client socket
+				//?:	check the POLLIN event in the client socket.
 				if (serv.vecPoll[idx].revents & POLLERR || serv.vecPoll[idx].revents & POLLHUP)
 					serv.closeClientConn(socket);
 			}

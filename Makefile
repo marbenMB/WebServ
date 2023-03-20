@@ -5,7 +5,7 @@ METHODS_PATH = ./source/methods/
 CONFIGFILE_PATH = ./source/config_file/
 SERV_PATH = ./source/Server/
 INCLUDES_PATH = ./include/
-CXXFLAGS =  -Wall -Wextra -Werror -std=c++98 #-fsanitize=address
+CXXFLAGS =  -Wall -Wextra -Werror -std=c++98 -fsanitize=address
 
 
 

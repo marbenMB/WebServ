@@ -16,6 +16,9 @@ int	WebServ::readRequest(std::vector<struct pollfd>::iterator client)
 	bzero(&buffer, MAXREAD);
 
 	byte = recv(client->fd, &buffer, MAXREAD, 0);
+
+	//?:	saving last time reading from socket.
+	clientMap[client->fd]._lastRead = ft_gettime();
 					
 	//?:	check if recv returns <= 0 (error case -> erase client socket)
 	if (byte <= 0)
