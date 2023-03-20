@@ -1,0 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Sono:wght@200&display=swap");
+
+body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+}
+
+.main-class {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+}
+
+.main-class .messge-code {
+  background-color: rgb(255, 255, 255);
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  top: 54%;
+  /* right: 4%; */
+  /* gap: .01rem; */
+  margin: 0;
+  padding: 0.4rem 2.2rem;
+  height: 3rem;
+}
+
+.main-class .messge-code h1 {
+  width: max-content;
+  padding: -2rem 2rem;
+  color: black;
+  font-family: "Sono", sans-serif;
+}
+
+.main-class .oops {
+  font-size: 12rem;
+  color: rgb(61, 57, 57);
+  font-family: "Poiret One";
+  font-weight: 200;
+}

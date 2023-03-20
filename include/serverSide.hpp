@@ -15,7 +15,7 @@
 #define	DEFAULT_PORT 80
 
 #define	MAXREAD	1024
-#define	MAXSEND	10024
+#define	MAXSEND	5000000
 ///////////////////// ***** ////////////////////
 
 //	****	*********	****	//

@@ -85,8 +85,8 @@ void	ClientSock::separateHeadBody(std::string tmp)
 	if (nFind != std::string::npos)
 	{
 		_reqHeader = tmp.substr(0, nFind + 4);
-		if (nFind + 5 < tmp.length())
-			_reqBody = tmp.substr(nFind + 5, tmp.length());
+		if (nFind + 4 < tmp.length())
+			_reqBody = tmp.substr(nFind + 4, tmp.length());
 		_tmp.clear();
 	}
 	else
@@ -212,7 +212,7 @@ void	ClientSock::formResponse(void)
 
 	_reqStat = WELL;
 		// _reponse = generateResponse(_request, _serverResponding, _reqStat);
-		request *req = new request(_fd ,&_serverResponding, _request, _response);
+		request *req = new request(_reqStat ,&_serverResponding, _request, _response);
 
 		delete req;
 
