@@ -86,6 +86,7 @@ class	ClientSock : public SockProp
 		bool			_readiness;			//?:	true -> socket is in write mode , send response.
 		int				_connexion;			//?:	CLOSE -> connexion with client will be closed.
 		int				_reqStat;			//?:	TIMEOUT -> request is on timeout.
+		bool			_endChunk;			//?:	true -> if read of chunk body is done.
 
 		std::string		_tmp;				//?:	where request is sotred until headers are separated than body.
 		std::string		_reqHeader;			//?:	- After separation -> request Headers.
@@ -93,7 +94,7 @@ class	ClientSock : public SockProp
 		long long		byteToRead;			//?:	-1 -> request with no body
 		long long		byteRead;			//?:	bytes already read by recv().
 		size_t			_nFind;				//?:	- chunked case -> Where find stopped until next chunked body read.
-		long long		_skipedByte;
+		long long		_skipedByte;		//?:	- chunked case -> Number of bytes skipped.
 		std::string		_bodyChunk;			//?:	- chunked case -> whole body without chunked encoding delimiter.
 		long long		_content_lenght;	//?:	- chunked case -> content_lenght of processed chunked body.
 		std::string		_request;			//?:	- request formed to be processed by request-response process.
@@ -121,6 +122,7 @@ class	ClientSock : public SockProp
 		void	formResponse(void);
 		void	reFormResponse(int sent);
 		void	resetClientProp(void);
+		bool	checkSockReady(void);
 };
 
 class	Server

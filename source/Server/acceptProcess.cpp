@@ -62,7 +62,7 @@ int	WebServ::readRequest(std::vector<struct pollfd>::iterator client)
 
 void	WebServ::socketReadiness(std::vector<struct pollfd>::iterator client)
 {
-	if (!clientMap[client->fd]._readiness && (clientMap[client->fd].byteToRead && clientMap[client->fd].byteRead >= clientMap[client->fd].byteToRead))
+	if (clientMap[client->fd].checkSockReady())
 	{
 		clientMap[client->fd]._readiness = true;
 
@@ -72,6 +72,4 @@ void	WebServ::socketReadiness(std::vector<struct pollfd>::iterator client)
 		//?:	Create Response 
 		clientMap[client->fd].formResponse();
 	}
-	// if (clientMap[client->fd]._chunkedBody)
-	// 	std::cout << "CHUNKED BODY" << std::endl;
 }

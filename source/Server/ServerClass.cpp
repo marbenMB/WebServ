@@ -80,13 +80,17 @@ ClientSock::ClientSock (int fd, int port, std::string ip) : SockProp(fd, port, i
 	_done = false;
 	_connexion = SET_CNX;
 	_reqStat = STAT;
+	_endChunk = false;
+
 	byteRead = 0;
 	byteToRead = 0;
-	byteToSend = 0;
-	byteSent = 0;
+
 	_content_lenght = 0;
 	_nFind = 0;
 	_skipedByte = 0;
+
+	byteToSend = 0;
+	byteSent = 0;
 }
 
 ClientSock::~ClientSock () {};
@@ -140,10 +144,19 @@ void	ClientSock::transferEncoding(void)
 
 void	ClientSock::formRequest(void)
 {
+	std::stringstream	ss;
+	std::string			lenStr;
+	std::string			header("\r\nContent-Length: ");
+
 	_request.append(_reqHeader);
 	if (_chunkedBody)
 	{
-		// add content length to request headers
+		//?:	Add content_length header to request headers
+		ss << _content_lenght;
+		ss >> lenStr;
+		header.append(lenStr);
+		_request.insert(_request.find("\r\n\r\n"), header);
+
 		_request.append(_bodyChunk);
 	}
 	else
@@ -183,10 +196,10 @@ void	ClientSock::sockConnection(void)
 
 void	ClientSock::hostResp(void)
 {
-	//	-- getting the host name form the request headers
+	//?	-- getting the host name form the request headers
 	_host = this->findHeaderValue("Host: ");
 	
-	//	--	finding server
+	//?	--	finding server
 	bool	match = false;
 	std::vector<std::string>	names;
 	std::vector<Server>::iterator servIt = vecServ.begin();
@@ -207,7 +220,7 @@ void	ClientSock::hostResp(void)
 		servIt++;
 	}
 
-	//	-- storing server config for the client
+	//?	-- storing server config for the client
 	if (match)
 		_serverResponding = servIt->getServconf();
 	else
@@ -220,8 +233,6 @@ void	ClientSock::readChunkBody(void)
 	long long			byte = 0;
 	std::string			tmp;
 
-	std::cout << MAUVE << _reqBody << RED "++END BODY++" << END_CLR << std::endl;
-
 	_nFind = _reqBody.find("\r\n", _skipedByte);
 	while (_nFind != std::string::npos)
 	{
@@ -229,16 +240,9 @@ void	ClientSock::readChunkBody(void)
 		hexStr = _reqBody.substr(_skipedByte, _nFind - _skipedByte);
 		byte = std::stoi(hexStr, nullptr, 16);
 
-		// log("HexStr", hexStr);
-		// log("Byte conv", std::to_string(byte));
-
 		if (byte == 0)
 		{
-			// log("Unchunked body", _bodyChunk);
-			std::cout << _bodyChunk;
-			log("Unchunked body length", std::to_string(_bodyChunk.length()));
-			log("Content_length", std::to_string(_content_lenght));
-			_readiness = true;
+			_endChunk = true;
 			break;
 		}
 
@@ -250,7 +254,6 @@ void	ClientSock::readChunkBody(void)
 		if ((long long)tmp.length() == byte)
 		{
 			_skipedByte += hexStr.length() + byte + CRF;
-			// log("Skiped", std::to_string(_skipedByte));
 
 			//?:	appending to body chunked to save body unchunked and content length.
 			_bodyChunk.append(tmp);
@@ -258,8 +261,6 @@ void	ClientSock::readChunkBody(void)
 
 			//?:	finding next chunked encoding delimiter.
 			_nFind = _reqBody.find("\r\n", _skipedByte);
-
-			// std::cout << _nFind << " -- " << std::endl;
 		}
 		else
 			break;
@@ -308,6 +309,7 @@ void	ClientSock::resetClientProp(void)
 	_chunkedBody = false;
 	_connexion = SET_CNX;
 	_reqStat = STAT;
+	_endChunk = false;
 
 //	-- Request
 	_tmp.clear();
@@ -328,4 +330,13 @@ void	ClientSock::resetClientProp(void)
 	byteToSend = 0;
 	byteSent = 0;
 	_done = false;
+}
+
+bool	ClientSock::checkSockReady(void)
+{
+	if (_chunkedBody && _endChunk)
+		return true;
+	else if (!_readiness && (byteToRead && byteRead >= byteToRead) && !_chunkedBody)
+		return true;
+	return false;
 }
