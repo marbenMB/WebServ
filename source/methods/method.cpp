@@ -43,19 +43,8 @@ std::string const &method::getreason_phrase(void) const
 {
     return (this->reason_phrase);
 }
-std::string const &method::getRequest_URI(void) const
-{
-    return (this->request_URI);
-}
-std::string const &method::getHttp_version(void) const
-{
-    return (this->http_version);
-}
 
-std::string const &method::getRootPath(void) const
-{
-    return (this->root_path);
-}
+
 
 void method::setRootPath(std::string root_path)
 {
@@ -97,35 +86,7 @@ void method::setsocketID(int socketId)
     this->socketID = socketId;
 }
 
-void method::createresponse(void /*  content_type, code_status, reason_phrase, body*/)
-{
-    std::string status_line;
-    std::string fields;
-    std::map<std::string, std::string> Content_Type = this->getContent_Type();
 
-    // status Line :
-    status_line = this->getHttp_version();
-    status_line.append(" ");
-    status_line.append(std::to_string(this->getStatuscode()));
-    status_line.append(" ");
-    status_line.append(this->getreason_phrase());
-    status_line.append("\r\n");
-
-    // Fields :
-    fields.append("Content-Type: ");
-    fields.append(Content_Type["type"]);
-    fields.append("\r\n");
-    fields.append("Content-Length: ");
-    fields.append(std::to_string(this->getResponseBody().size()));
-    fields.append("\r\n\r\n");
-    status_line.append(fields);
-
-    // Body :
-    status_line.append(this->getResponseBody());
-
-    // std::cout << std::endl << std::endl << status_line << std::endl;
-    this->setResponseBody(status_line);
-}
 
 std::string _CREATEresponse(
     std::map<std::string,
