@@ -27,7 +27,7 @@ request::request(int socketID, ServerConf *server, std::string _request, std::st
     // _requestHeader.clear();
     // _requestBody.clear();
     // _requestHeader.append(req_vector[0]);
-    // std::cout << _requestHeader << std::endl;
+    // std::cout << "HEADER :" << _requestHeader << std::endl;
 
     // int i = 0;
 
@@ -169,7 +169,7 @@ bool request::Verifying_Body(std::string req)
     // std::cout <<"EndSTRINGSEPARATES     " << EndSTRINGSEPARATES << std::endl;
     // if ((int)req.length() != this->getContent_Length()){this->requirements = false;return false;}
     // std::cout << req << std::endl;
-    if ((unsigned long long)req.length() != this->getContent_Length() - 1 || (unsigned long long)req.length() > this->client_max_body_size){
+    if ((unsigned long long)req.length() != this->getContent_Length() || (unsigned long long)req.length() > this->client_max_body_size){
         std::cout << "ANA HANA\n";
 
         std::cout << "req.length() :" << req.length() << std::endl;
