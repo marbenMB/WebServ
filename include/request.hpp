@@ -49,6 +49,7 @@
 #define REQUEST_METHOD "request_method"
 #define HTTP_VERSION "http_version"
 #define PARAMS "params"
+#define FAST_CGI_PASS "fastcgi_pass"
 // request URI :
 
 /*
@@ -174,6 +175,7 @@ public:
     std::string const &getroot() const;
     std::string getCGIbody() const;
     std::string const &getdefaultIndex() const;
+    std::string getFastcgiPass() const;
     //  redirect
     int const &getRedirect_status(void) const;
     void setRedirect_status(int redirect_status);

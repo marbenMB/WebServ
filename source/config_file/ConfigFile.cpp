@@ -4,7 +4,7 @@ void ConfigFile::parcing_file(std::string confilename, Data &g_Data){
     std::string sufx = ".conf";
     this->_in_file.open(confilename.c_str());
     if (this->_in_file.is_open()){
-        if(confilename.rfind(sufx) == confilename.length() - sufx.length()) {
+        if(confilename.rfind(sufx) != std::string::npos && confilename.rfind(sufx) == (confilename.length() - sufx.length())) {
             this->filename = confilename;
             getdata(g_Data);
         }

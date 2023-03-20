@@ -21,7 +21,12 @@ def get_page(params_dict):
         title = params_dict.get('title', '')
         heading = params_dict.get('heading', '')
         message = params_dict.get('message', '')
-    if (params_dict and len(params_dict) == 3):
+    print(os.environ.get('VALID_COOKIE'))
+    if (os.environ.get('VALID_COOKIE') == "NO"):
+        with open('source/cgi_files/cgi_pages/cookie_template.html', 'r') as f:
+            template = f.read()
+        html = template
+    elif (params_dict and len(params_dict) == 3):
         with open('source/cgi_files/cgi_pages/template.html', 'r') as f:
             template = f.read()
         html = template.format(title=title, heading=heading, message=message)
@@ -45,7 +50,7 @@ request_method = os.environ.get('REQUEST_METHOD')
 query_data = query_var(query_string)
 body_data = query_var(body_string)
 
-if (request_method == 'GET'):
+if (query_data):
     print(get_page(query_data))
 else:
     print(get_page(body_data))

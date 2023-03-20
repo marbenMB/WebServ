@@ -41,9 +41,12 @@ int _main (int ac, char **av)
     // system("leaks webserv");
     return (0);
 }
+void s3ediya() {
+    system("leaks webServ");
+}
 
 int main(int ac, char **av)
 {
 	_main(ac, av);
-    // system("leaks webserv");
+    atexit(s3ediya);
 }

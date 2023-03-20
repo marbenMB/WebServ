@@ -36,7 +36,7 @@ int ConfigFile::valid_error_page(Data &g_Data, std::string error) {
 
 int ConfigFile::valid_return_status(Data &g_Data, std::string status) {
     int number = std::stoi(status);
-    if (number >= 0 && number <= 999)
+    if (number >= 300 && number <= 399)
         return (1);
     g_Data.error = "WebServer: [emerg] invalid return code \"" + status + "\" in ";
     g_Data.error += this->filename;

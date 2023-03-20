@@ -21,7 +21,7 @@ request::request(
             /* code */
             if (status == TIMEOUT)
                 throw _Exception(BAD_REQUEST);
-            std::cout << "_request :" << _request << std::endl;
+            // std::cout << "_request :" << _request << std::endl;
             size_t splitIndex = _request.find(CRLF_2);
             _requestHeader.clear();
             _requestBody.clear();
@@ -79,6 +79,7 @@ void request::Verifying_Body(std::string req)
 
     // get contant type :
     _fileInfo._string = _findHeader("Content-Type");
+
     if (_fileInfo._string.empty()) // check if empty !
         throw _Exception(BAD_REQUEST);
 
@@ -107,7 +108,6 @@ void request::Verifying_Body(std::string req)
         _fileInfo._boundary_end.append(_fileInfo._boundary_start);
         _fileInfo._boundary_end.append("--");
     }
-
     if ((unsigned long long)req.length() !=  _fileInfo.contentLength || (unsigned long long)req.length() > this->client_max_body_size)
     {
         std::cout << "ANA HANA\n";
@@ -136,12 +136,12 @@ void request::Verifying_Body(std::string req)
         _fileInfo.tmp_vector = split(req, _fileInfo._boundary_start);
 
         //  initialization files
-        this->Content_Type = _fileInfo.ContentType;
         initializationFILES( _fileInfo.tmp_vector);
     }
     else{ // theres no boundary
         std::cout << " :" << _fileInfo.contentLength << "| " << "chi7aja khra ******* * * * * \n";
     }
+    this->Content_Type = _fileInfo.ContentType;
 }
 
 void request::url_decode(std::string &url)
@@ -232,13 +232,12 @@ method *request::execute_request(void)
         this->_requestHeaders[REQUEST_URI] = _split[1];
         this->_requestHeaders[HTTP_VERSION] = _split[2];
 
-       
+        std::string URI( _findHeader(REQUEST_URI));
         url_decode(this->_requestHeaders[REQUEST_URI]);
-
-        size_t spliteRequestURI = this->_requestHeaders[REQUEST_URI].find("?");
+        size_t spliteRequestURI = URI.find("?");
         if (spliteRequestURI != std::string::npos){
-            this->_requestHeaders[REQUEST_URI] = this->_requestHeaders[REQUEST_URI].substr(spliteRequestURI + 1, this->_requestHeaders[REQUEST_URI].length());
-            this->_requestHeaders[PARAMS] = this->_requestHeaders[REQUEST_URI].substr(0, spliteRequestURI);
+            this->_setHeaderReq(REQUEST_URI, URI.substr(0, spliteRequestURI));
+            this->_setHeaderReq(PARAMS, URI.substr(spliteRequestURI + 1, URI.length()));
         }
 
         while (++it != req.end())
