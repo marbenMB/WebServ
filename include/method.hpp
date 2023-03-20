@@ -6,7 +6,8 @@
 #include <fstream>
 #include <map>
 #include <vector>
-
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "./request.hpp"
 #include "./Assets.hpp"
 #include "./_Exception.hpp"
@@ -17,6 +18,7 @@ class method
 private:
     std::map<std::string, std::string> _Headers;
     std::string responseBody;
+// ! checked 
 
     // errors vars
     int statuscode;
@@ -42,11 +44,10 @@ public:
     method();
     std::string const &getHost(void) const;
     std::string const &getreason_phrase(void) const;
-    std::string const &getRootPath(void) const;
-    std::string const &getRequest_URI(void) const;
-    std::string const &getHttp_version(void) const;
     int const &getStatuscode(void) const;
     std::string const &getResponseBody(void) const;
+// ! checked 
+
     // this atributs for  Post method
     std::map<std::string, std::string> const &getContent_Type(void) const;
     std::string const &getTransfer_Encoding(void) const;
@@ -114,11 +115,7 @@ public:
     _Post(request rhs);
     ~_Post();
     int execute_method(request _request);
-    bool parseBody();
-    bool parseBody_Transfer_Encoding();
-    std::vector<std::string> const &getRequestBody(void) const;
     void setRequestBody(std::vector<std::string> reqBody);
-
     // setter :
     void setFilename(std::string value);
     void setName(std::string value);

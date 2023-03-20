@@ -248,7 +248,7 @@ int _Get::execute_method(request _request)
                 if (d_nameTmp.compare(".") != 0 || d_nameTmp.compare("..") != 0)
                 {
                     filePATH.clear();
-                    filePATH.append(this->getRootPath());
+                    filePATH.append(_request.getroot());
                     filePATH.append(request_URITmp);
                     filePATH.append("/");
                     filePATH.append(dp->d_name);

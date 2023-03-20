@@ -43,19 +43,8 @@ std::string const &method::getreason_phrase(void) const
 {
     return (this->reason_phrase);
 }
-std::string const &method::getRequest_URI(void) const
-{
-    return (this->request_URI);
-}
-std::string const &method::getHttp_version(void) const
-{
-    return (this->http_version);
-}
 
-std::string const &method::getRootPath(void) const
-{
-    return (this->root_path);
-}
+
 
 void method::setRootPath(std::string root_path)
 {

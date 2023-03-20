@@ -21,7 +21,6 @@ request::request(
             /* code */
             if (status == TIMEOUT)
                 throw _Exception(BAD_REQUEST);
-            std::cout << "_request :" << _request << std::endl;
             size_t splitIndex = _request.find(CRLF_2);
             _requestHeader.clear();
             _requestBody.clear();
@@ -197,7 +196,7 @@ void request::printServerLogs(method const & vars){
         color_status = GREEN;
     else
         color_status = RED;
-    std::cout << color_status <<  _findHeader("Host").substr(0,  _findHeader("Host").find(":")) << " " <<  _findHeader(REQUEST_METHOD) << " HTTP/1.1 " << vars.getStatuscode() << " " << vars.getreason_phrase() << " " <<  _findHeader(REQUEST_URI) << "  " << 2346 << END_CLR << std::endl;
+    std::cout << color_status <<  _findHeader("Host").substr(0,  _findHeader("Host").find(":")) << " " <<  _findHeader(REQUEST_METHOD) << " HTTP/1.1 " << vars.getStatuscode() << " " << vars.getreason_phrase() << " " <<  _findHeader(REQUEST_URI) << " " << vars.getResponseBody().length() << END_CLR << std::endl;
 }
 
 method *request::execute_request(void)

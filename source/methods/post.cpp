@@ -21,13 +21,6 @@ int _Post::execute_method(request _request)
     // this->parseBody();
     if (_request.getRedirect_status() != -1)
     {
-
-        /*
-        
-        
-        <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>301 Redirction</title></head><body><h1>301 Redirction</h1></body></html>
-        
-        **/ 
         this->setStatuscode(_request.getRedirect_status());
         this->setreason_phrase(_request.getReason(std::to_string(_request.getRedirect_status())));
         filename.clear();
@@ -37,19 +30,7 @@ int _Post::execute_method(request _request)
         _request._setHeaderReq(REQUEST_URI, filename);
         // set Header : 
         this->addHeader("Location", _request.getredirect_URL());
-        body.append("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>");
-        body.append(std::to_string(this->getStatuscode()));
-        body.append(" Redirction</title></head><body><h1>");
-        body.append(std::to_string(this->getStatuscode()));
-        body.append(" Redirction</h1></body></html>");
-        // inFile.open(filename, std::ifstream::in);
-        // while (std::getline(inFile, buffer))
-        // {
-        //     // std::cout << buffer << std::endl;
-        //     line.append(buffer);
-        // }
-        // // std::cout << "</Line >" << std::endl;
-        // inFile.close();
+        body.append("");
     }
     else if (tmp["type"].compare("application/x-www-form-urlencoded") == 0){
         if (_request.getCGIstatus()){ throw request::CGI();}
@@ -62,34 +43,19 @@ int _Post::execute_method(request _request)
         {
             filename.clear();
             filename.append(_request.getUpload_store_PATH());
+            struct stat statInfo;
+            if (stat(filename.c_str(), &statInfo) != 0){
+               filename.clear();
+               filename.append(UPLOAD_STORE);
+            }
             filename.append("/");
             filename.append((*file_It).first);
             // std::cout <<" abs path to the file created :" << filename << std::endl;
             outFile.open(filename, std::ifstream::out);
             if (!outFile.is_open()){ // cant open this file  Internal Server Error
-                this->setStatuscode(500);
-                 this->setreason_phrase(_request.getReason("500"));
-                filename.clear();
-                filename.append("./var/errors/50x.html");
-                file_It = file.begin();
-                while (file_It != file.end()){
-                    filename.clear();
-                    filename.append(_request.getUpload_store_PATH());
-                    filename.append("/");
-                    filename.append((*file_It).first);
-                    remove(filename.c_str());
-                    ++file_It;
-                }
+               throw _Exception(INTERNAL_SERVER_ERROR);
             }
-            // buffer = filename; 
-            // std::stringstream ssbuf;
-            // ssbuf << file_It[0].second;
-
-            // std::string uploadfile ;
-            // ssbuf >> uploadfile;
             outFile << file_It[0].second;
-            // std::cout <<RED<< "filenameee =" <<END_CLR<< (*file_It).first << std::endl;
-            // std::cout <<RED<< "Body       =" <<END_CLR<< (*file_It).second << std::endl;
             outFile.close();
             ++file_It;
         }
@@ -97,24 +63,16 @@ int _Post::execute_method(request _request)
             // forbiden
             this->setStatuscode(201);
             this->setreason_phrase(_request.getReason("201"));
-            buffer.clear();
-            buffer.append("./var/srcs/success.html");
+            filename.clear();
+            filename.append(CREATE_SUCCESS_FILE);
             body.clear();
             std::stringstream ssbuf;
-             inFile.open(buffer, std::ifstream::in);
+            inFile.open(filename, std::ifstream::in);
             ssbuf << inFile.rdbuf();
             body.append(ssbuf.str());
-            // while (std::getline(inFile, buffer))
-            // {
-            //     // std::cout << buffer << std::endl;
-            //     line.append(buffer);
-            // }
             inFile.close();
-
         }
-
     }
-    
     this->setResponseBody(body);
     this->addHeader("Cache-Control", "no-cache");
     this->addHeader("Content-Type",Assets::__getType("html"));
@@ -123,26 +81,7 @@ int _Post::execute_method(request _request)
     return true;
 }
 
-bool _Post::parseBody()
-{
-    // std::cout << "parseBody_Content_Length\n";
-    std::vector<std::string> reqbody;
-    std::map<std::string, std::string> tmp = this->getContent_Type();
 
-    reqbody = this->getRequestBody();
-    // std::cout << "Body size :" <<reqbody.size() << std::endl;
-    std::cout << "get +> <Content_Type size='" << tmp.size() << "' type='" << tmp["type"] << "'   boundary='" << tmp["boundary"] << "'>" << std::endl;
-    return 1;
-}
-bool _Post::parseBody_Transfer_Encoding()
-{
-    std::cout << "parseBody_Transfer_Encoding\n";
-    return 1;
-}
-std::vector<std::string> const &_Post::getRequestBody(void) const
-{
-    return (this->requestBody);
-}
 void _Post::setRequestBody(std::vector<std::string> reqBody)
 {
     this->requestBody = reqBody;

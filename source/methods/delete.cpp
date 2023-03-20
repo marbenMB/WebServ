@@ -21,7 +21,6 @@ int _Delete::execute_method(request _request)
     // check config file if the method is allowed:
     std::string filename;
     filename.clear(); // clear for delete the garbidge value 
-    // filename.append(this->getRootPath()); // append the root path that get it from the config file
     filename.append(_request._findHeader(REQUEST_URI));
     std::cout << "Filename :" << filename <<std::endl; // append the request URI that get it also from request line 
     // * stat is function that check a psth if exist and store the more Info for this path in 'STATInfo' that we passe as reference 
@@ -49,7 +48,6 @@ int _Delete::execute_method(request _request)
     inFilemessage.open(line, std::ifstream::in);  // for ech case the line string is append a path for the file that we chuld get from the html to rander it to bady response
     line.clear(); // after we open the file , clear the string to append it data of the file
     buffer.clear(); // clear the buffer also for security resen :)
-    // std::cout << "<Line URi='"<< this->_findHeader(REQUEST_URI) <<"' root='"<< this->getRootPath()<<"' filename='"<<filename <<"'>" << std::endl;
     while (std::getline(inFilemessage, buffer)){
         line.append(buffer);
     }

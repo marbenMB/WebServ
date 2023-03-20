@@ -22,10 +22,10 @@
 
 // Assets :
 
-#define AOTUINDEX_PATH "./var/assets/autoIndex.html"
-#define UPLOAD_STORE "./var/upload/Default"
-#define CREATE_SUCCESS_FILE "./var/srcs/success.html"
-#define ERROR_PATH "./var/errors/40x.html"
+#define AOTUINDEX_PATH "./public/assets/autoIndex.html"
+#define UPLOAD_STORE "./public/upload/"
+#define CREATE_SUCCESS_FILE "./public/assets/success.html"
+#define ERROR_PATH "./public/assets/error.html"
 
 #include <iostream>
 #include <unistd.h>
@@ -44,34 +44,14 @@
 
 
 
-// status Line :
+// status Line KEYS :
 #define REQUEST_URI "request_uri"
 #define REQUEST_METHOD "request_method"
 #define HTTP_VERSION "http_version"
 #define PARAMS "params"
 // request URI :
 
-/*
 
-There are many header fields that can be included in an HTTP/1.1 request, here are some of the most commonly used ones:
-
-Accept: Specifies the acceptable content types for the response.
-Accept-Charset: Specifies the acceptable character sets for the response.
-Accept-Encoding: Specifies the acceptable content encodings for the response.
-Accept-Language: Specifies the acceptable natural languages for the response.
-Authorization: Contains authentication information for the user agent.
-Cache-Control: Specifies the caching behavior of the request.
-Connection: Specifies the connection options for the request.
-Content-Length: Specifies the size of the request body.
-Content-Type: Specifies the media type of the request body.
-Cookie: Contains a list of cookies to be sent with the request.
-Host: Specifies the host and port number of the resource being requested.
-If-Modified-Since: Specifies that the requested resource should only be sent if it has been modified since the specified date.
-If-None-Match: Specifies that the requested resource should only be sent if its entity tag does not match the specified tag.
-Referer: Specifies the URI of the referring resource.
-User-Agent: Identifies the user agent making the request.
-
-**/
 typedef struct _bodyfile{
     // request :
     std::map<std::string, std::string> ContentType;
@@ -162,7 +142,6 @@ public:
     void GETstatusOfexecution(method *req_method) const;
     std::vector<std::string> const &create_response();
     int findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >);
-    void sand(int socketID, std::string body);
 
     ~request();
     
@@ -179,7 +158,6 @@ public:
     void setRedirect_status(int redirect_status);
     std::string const &getredirect_URL(void) const;
     void setredirect_URL(std::string redirect_URL);
-    std::vector<std::string> const &getRequestBody(void) const;
     void setRequestBody(std::vector<std::string> reqBody);
     // Allowed method :
     int getAllowedPost() const;
@@ -214,6 +192,6 @@ std::vector<std::string> split(const std::string &str, const std::string &delimi
 std::string trimFront(const std::string &s, std::string trim);
 std::string trimBack(const std::string &s, std::string trim);
 std::string _CREATEresponse(std::map<std::string, std::string> content_type, int code_status, std::string reason_phrase, std::string body);
-bool is__subDir(const std::string, const std::string);
+bool is__subDir(const std::string root, const std::string dir);
 bool Is_cgi(std::string);
 #endif

@@ -14,7 +14,7 @@ std::string const &request::getdefaultIndex() const
     return (this->default_index);
 }
 
-std::vector<std::string> const &request::getRequestBody(void) const{return (this->requestBody);}
+
 void request::setRequestBody(std::vector<std::string> reqBody)
 {
     this->requestBody = reqBody;
@@ -60,9 +60,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
     std::string str;
     compare_URI.clear();
     size_t pos = 0;
-    // std::cout << "request_URI : |" << this->getrequest_URI() << std::endl; 
-    // size_t pos = this->getrequest_URI().find_last_of(".py");
-    // pos = this->getrequest_URI().find_last_of(".go");
+    
     if ((pos =  _findHeader(REQUEST_URI).rfind(".py")) != std::string::npos && (pos + 3) ==  _findHeader(REQUEST_URI).length())
     {
        this->is_cgi = true; 
@@ -107,36 +105,25 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
     }
     if (!this->is_cgi) // remove the mutch string 
     {
-        // std::cout << "locationId :" << locationId << std::endl;
-        // std::cout << "----URI1 (str) :" << str << std::endl;
         if (locationId != -1)
         {
-            // std::cout << "----URI :" << this->getrequest_URI() << std::endl;
-            // std::cout << "----URI2 (str) :" << str << std::endl;
             std::string __erraseTmp( _findHeader(REQUEST_URI)) ;
             std::string __URI(this->getroot());
-            // std::cout << "__erraseTmp :" << __erraseTmp << std::endl;
             if (__erraseTmp.compare("/") != 0)
             {
                 this->setcompare_URI(str);
                 __erraseTmp.erase(0,str.length());
                 __URI.append("/");
             }
-
             __URI.append(__erraseTmp);
             realpath("./", realPATH_subdir);
-            // std::cout << "realPATH_subdir :" << realPATH_subdir << std::endl;
-            // std::cout << "*****this->getroot() :" << this->getroot() << std::endl;
             realpath(__URI.c_str(), realPATH_dir);
-            // std::cout << "realPATH_dir :" << realPATH_dir << std::endl;
             __erraseTmp.clear();
             __erraseTmp.append(realPATH_dir);
             __erraseTmp.erase(0, strlen(realPATH_subdir));
             __URI.clear();
             __URI.append(".");
             __URI.append(__erraseTmp);
-            // free(realPATH_dir);
-            // free(realPATH_subdir);
             this->_requestHeaders[REQUEST_URI] = __URI;
         }
     }
