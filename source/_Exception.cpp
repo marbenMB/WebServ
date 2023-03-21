@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   _Exception.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasstou <mmasstou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aboulhaj <aboulhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 16:47:27 by mmasstou          #+#    #+#             */
-/*   Updated: 2023/03/21 16:41:38 by mmasstou         ###   ########.fr       */
+/*   Updated: 2023/03/21 18:46:41 by aboulhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ _Exception::what(request req) throw(){
     method *resp;
 
     resp = new Error(req);
-    // std::cout << "Bad Request***" << std::endl;
     resp->setStatus(this->_ExceptionCode);
     this->generateBody(reason);
     resp->setResponseBody(this->_body);

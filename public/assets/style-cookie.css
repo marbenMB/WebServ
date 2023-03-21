@@ -43,8 +43,10 @@
     flex-wrap: wrap;
     width: 100%;
     max-width: 90%;
+    min-height: 100vh;
     margin: 40px auto;
     justify-content: center;
+    align-items: center;
   }
   
   /* COOKIE CONSENT BOX */
@@ -68,6 +70,7 @@
     transform: translateX(0px);
     background-color: #ffffff;
   }
+
   .cookie__box.hide {
     /* display: none; */
     transition: all .4s ease-out;

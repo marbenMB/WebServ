@@ -8,6 +8,8 @@
 #define SUCCESS 200
 #define ERR_FILE 404
 #define ERR_SERV 500
+#define NEED_COOKIE 15
+#define COOKIE_TIME 10
 // #define 
 
 void set_env(request req, std::vector<char*> &env_vec);

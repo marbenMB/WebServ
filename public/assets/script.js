@@ -7,14 +7,15 @@ rejectBtn.addEventListener('click' , ()=>{
     cookieBox.classList.add("hide")
 })
 
-acceptBtn.addEventListener('click' , ()=>{
-  fetch('http://localhost:8080/file.py', {
+acceptBtn.addEventListener('click' , async ()=>{
+  await fetch('http://127.0.0.1:8080/file.py', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'
   },
   body: 'login=username'
 })
+
   location.reload()
 })
 

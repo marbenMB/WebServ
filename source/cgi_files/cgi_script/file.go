@@ -6,6 +6,13 @@ import (
     "strings"
 )
 
+// import (
+// 	"fmt"
+// 	"io/ioutil"
+// 	"net/http"
+// 	"os"
+// )
+
 // -- query function --------------//
 func queryVar(queryString string) map[string]string {
     if queryString != "" {
@@ -33,7 +40,14 @@ func getPage(paramsDict map[string]string) string {
         heading = paramsDict["heading"]
         message = paramsDict["message"]
     }
-    if len(paramsDict) == 3 {
+    if os.Getenv("VALID_COOKIE") == "NO" {
+        template, err := os.ReadFile("/Users/aboulhaj/Desktop/WebServ/public/assets/no_cookie.html")
+        if err != nil {
+            fmt.Println(err)
+            return ""
+        }
+        html = string(template)
+    } else if len(paramsDict) >= 3 {
         template, err := os.ReadFile("source/cgi_files/cgi_pages/template.html")
         if err != nil {
             fmt.Println(err)
@@ -53,6 +67,7 @@ func getPage(paramsDict map[string]string) string {
     }
     return html
 }
+
 // * -- end template function ------//
 
 

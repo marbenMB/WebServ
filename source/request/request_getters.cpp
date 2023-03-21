@@ -14,6 +14,9 @@ std::string const &request::getdefaultIndex() const
     return (this->default_index);
 }
 
+std::string request::getFastcgiPass( void ) const{
+    return this->fastcgi_pass;
+}
 
 void request::setRequestBody(std::vector<std::string> reqBody)
 {
