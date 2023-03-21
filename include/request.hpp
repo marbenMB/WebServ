@@ -13,6 +13,7 @@
 #define AUTOINDEX_ON 548
 #define AUTOINDEX_OFF 549
 #define _NO_CGI_LOCATION 1337
+#define PATH_MAX 1024
 
 #define SP " "
 #define LF "\n"

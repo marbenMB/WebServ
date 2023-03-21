@@ -30,7 +30,7 @@ _Delete::_Delete(request _request)
     else if ((STATInfo.st_mode & S_IFMT) == S_IFDIR){ // 403 Forbidden => the path that passed is for Folder and we shuld not remove it
        throw  _Exception(FORBIDDEN);
     }
-    inFilemessage.open(line, std::ifstream::in);  // for ech case the line string is append a path for the file that we chuld get from the html to rander it to bady response
+    inFilemessage.open(line.c_str(), std::ifstream::in);  // for ech case the line string is append a path for the file that we chuld get from the html to rander it to bady response
     line.clear(); // after we open the file , clear the string to append it data of the file
     buffer.clear(); // clear the buffer also for security resen :)
     while (std::getline(inFilemessage, buffer)){

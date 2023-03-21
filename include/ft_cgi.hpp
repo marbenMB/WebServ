@@ -2,6 +2,7 @@
 #define FT_CGI_HPP
 
 #include <fcntl.h>
+#include <sys/wait.h>
 #include "./WebServer.hpp"
 #include "./request.hpp"
 

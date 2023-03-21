@@ -43,7 +43,7 @@ _Post::_Post(request _request)
             filename.append("/");
             filename.append((*file_It).first);
             // std::cout <<" abs path to the file created :" << filename << std::endl;
-            outFile.open(filename, std::ifstream::out);
+            outFile.open(filename.c_str(), std::ifstream::out);
             if (!outFile.is_open()){ // cant open this file  Internal Server Error
                throw _Exception(INTERNAL_SERVER_ERROR);
             }
@@ -57,7 +57,7 @@ _Post::_Post(request _request)
             filename.append(CREATE_SUCCESS_FILE);
             body.clear();
             std::stringstream ssbuf;
-            inFile.open(filename, std::ifstream::in);
+            inFile.open(filename.c_str(), std::ifstream::in);
             ssbuf << inFile.rdbuf();
             body.append(ssbuf.str());
             inFile.close();

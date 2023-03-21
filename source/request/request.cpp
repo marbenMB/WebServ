@@ -203,7 +203,7 @@ void request::printServerLogs(method const & vars){
 
 method *request::execute_request(void)
 {
-    method *reqmethod = nullptr;
+    method *reqmethod = NULL;
     std::string __body;
    if (this->__noImplimented == NOT_ALLOWED){
         if (_findHeader(REQUEST_METHOD).compare("GET") == 0 && this->__get == ALLOWED)
