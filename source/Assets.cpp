@@ -6,7 +6,7 @@
 /*   By: mmasstou <mmasstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 19:13:05 by mmasstou          #+#    #+#             */
-/*   Updated: 2023/03/18 19:53:20 by mmasstou         ###   ########.fr       */
+/*   Updated: 2023/03/21 10:08:38 by mmasstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ Assets::Assets()
     file.open(MIME_TYPE_PATH, std::ifstream::in);
     while (std::getline(file, buffer))
     {
-        _split = split(buffer, ": ");
+        _split = split(buffer, SPLIT_MEME_TYPE);
         Assets::_mimeTypes[_split[1]] = _split[0];
     }
     file.close();
@@ -35,22 +35,23 @@ Assets::Assets()
     file.open(STATUS_CODE_PATH, std::ifstream::in);
     while (std::getline(file, buffer))
     {
-        _split = split(buffer, ": ");
+        _split = split(buffer, SPLIT_CODE_ERROR);
         Assets::_errorList[_split[0]] = _split[1];
     }
     file.close();
 }
 
 std::string 
+
 Assets::getError(int code)
 {
-    return Assets::_errorList[std::to_string(code)];
+    return Assets::_errorList[ft_to_string(code)];
 }
 
 std::string 
 Assets::__getType(std::string extension)
 {
     if (Assets::_mimeTypes[extension].empty())
-        return ("text/html");
+        return (DEFAULT_TYPE);
     return Assets::_mimeTypes[extension];
 }

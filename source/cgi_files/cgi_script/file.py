@@ -7,8 +7,9 @@ def query_var(query_string):
         query_params = query_string.split('&')
         params_dict = {}
         for param in query_params:
-            name, value = param.split('=')
-            params_dict[name] = value
+            if "=" in param:
+                name, value = param.split('=')
+                params_dict[name] = value
         return params_dict
     return None
 #* -- end query function  --------#
@@ -18,11 +19,11 @@ def query_var(query_string):
 #  -- template function ----------#
 def get_page(params_dict):
     if (params_dict):
-        title = params_dict.get('title', '')
-        heading = params_dict.get('heading', '')
-        message = params_dict.get('message', '')
+        title = params_dict.get('title', 'ff')
+        heading = params_dict.get('heading', 'ff')
+        message = params_dict.get('message', 'ff')
     if (os.environ.get('VALID_COOKIE') == "NO"):
-        with open('source/cgi_files/cgi_pages/cookie_template.html', 'r') as f:
+        with open('/Users/aboulhaj/Desktop/WebServ/public/assets/no_cookie.html', 'r') as f:
             template = f.read()
         html = template
     elif (params_dict and len(params_dict) >= 3):
@@ -53,3 +54,5 @@ if (query_data):
     print(get_page(query_data))
 else:
     print(get_page(body_data))
+
+

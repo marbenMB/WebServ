@@ -5,10 +5,46 @@
 #include <dirent.h>
 
 
-_Get::_Get(request rhs)
+_Get::_Get(request _request)
 {
-    
-    this->execute_method(rhs);
+    // std::ifstream inFile;
+    // std::string line = "";
+    // std::string buffer;
+    // struct stat STATInfo;
+    // DIR *dirp;
+    // struct dirent *dp;
+
+    // std::string item_name;
+    // std::string item_URL;
+    // std::string item_absPATH;
+    // std::string item_size;
+    // std::string item_createDATE;
+
+    // std::string filename;
+
+
+    // // redirection : 
+    // filename.clear();
+    // filename.append(_request._findHeader(REQUEST_URI));
+    // if (_request.getRedirect_status() != -1)
+    // {
+    //     this->setStatuscode(_request.getRedirect_status());
+    //     this->setreason_phrase(_request.getReason(std::to_string(_request.getRedirect_status())));
+    //     filename.clear();
+    //     filename.append(_request.getroot());
+    //     filename.append(_request.getredirect_URL());
+
+    //     _request._setHeaderReq(REQUEST_URI, filename);
+    //     // set Header : 
+    //     this->addHeader("Location", _request.getredirect_URL());
+    //     line.append("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>");
+    //     line.append(std::to_string(this->getStatuscode()));
+    //     line.append(" Redirction</title></head><body><h1>");
+    //     line.append(std::to_string(this->getStatuscode()));
+    //     line.append(" Redirction</h1></body></html>");
+    // }
+
+    this->execute_method(_request);
     
 }
 
@@ -41,23 +77,12 @@ int _Get::execute_method(request _request)
     std::string item_size;
     std::string item_createDATE;
 
-
-    // size_t pos = 0;
-    // std::string responseBody;
-    // check config file if the method is allowed:
-    // if (this->_findHeader(REQUEST_URI).compare("/") == 0){
-    //     this->setRequest_URI("/index.html");
-    // }
     std::string filename;
     filename.clear();
     filename.append(_request._findHeader(REQUEST_URI));
     if (_request.getRedirect_status() != -1)
     {
-        /*
-        <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>301 Redirction</title></head><body><h1>301 Redirction</h1></body></html>
-        **/ 
-        this->setStatuscode(_request.getRedirect_status());
-        this->setreason_phrase(_request.getReason(std::to_string(_request.getRedirect_status())));
+        this->setStatus(_request.getRedirect_status());
         filename.clear();
         filename.append(_request.getroot());
         filename.append(_request.getredirect_URL());
@@ -65,14 +90,11 @@ int _Get::execute_method(request _request)
         _request._setHeaderReq(REQUEST_URI, filename);
         // set Header : 
         this->addHeader("Location", _request.getredirect_URL());
-        line.append("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>");
-        line.append(std::to_string(this->getStatuscode()));
-        line.append(" Redirction</title></head><body><h1>");
-        line.append(std::to_string(this->getStatuscode()));
-        line.append(" Redirction</h1></body></html>");
+        line.clear();
     }
     else if (Is_cgi(filename)){ throw request::CGI();}
     else if (stat(filename.c_str(), &STATInfo) != 0){ // not exist
+        
         throw  _Exception(NOT_FOUND);
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFREG) { // is file   S_ISREG(fileStat.st_mode)
@@ -248,7 +270,7 @@ int _Get::execute_method(request _request)
                 if (d_nameTmp.compare(".") != 0 || d_nameTmp.compare("..") != 0)
                 {
                     filePATH.clear();
-                    filePATH.append(this->getRootPath());
+                    filePATH.append(_request.getroot());
                     filePATH.append(request_URITmp);
                     filePATH.append("/");
                     filePATH.append(dp->d_name);
