@@ -14,6 +14,7 @@ request::request(
     std::string _requestHeader;
     method *reqmethod;
     // std::vector<std::string> req_vector = split(request, "\r\n\r\n");
+    std::cout << _request << std::endl;
     try
     {
         try
