@@ -1,28 +1,20 @@
 #include "../../include/method.hpp"
 
-_Post::_Post(request rhs)
+_Post::_Post(request _request)
 {
     
-    this->execute_method(rhs);
-}
-_Post::~_Post()
-{
-}
-int _Post::execute_method(request _request)
-{
     std::string buffer;
     std::string body;
     std::string filename;
     std::ofstream outFile;
     std::ifstream inFile;
     filename.append(CREATE_SUCCESS_FILE);
-    // bool _execute = false;
+   
     std::map<std::string, std::string> tmp = _request.getContent_Type();
-    // this->parseBody();
     if (_request.getRedirect_status() != -1)
     {
-        this->setStatuscode(_request.getRedirect_status());
-        this->setreason_phrase(_request.getReason(ft_to_string(_request.getRedirect_status())));
+
+        this->setStatus(_request.getRedirect_status());
         filename.clear();
         filename.append(_request.getroot());
         filename.append(_request.getredirect_URL());
@@ -60,9 +52,7 @@ int _Post::execute_method(request _request)
             ++file_It;
         }
         if (file_It == file.end()){
-            // forbiden
-            this->setStatuscode(201);
-            this->setreason_phrase(_request.getReason("201"));
+            this->setStatus(CREATED);
             filename.clear();
             filename.append(CREATE_SUCCESS_FILE);
             body.clear();
@@ -73,38 +63,14 @@ int _Post::execute_method(request _request)
             inFile.close();
         }
     }
-    this->setResponseBody(body);
+   this->setResponseBody(body);
+}
+_Post::~_Post(){}
+int _Post::execute_method(request _request)
+{
+    (void)_request;
     this->addHeader("Cache-Control", "no-cache");
     this->addHeader("Content-Type",Assets::__getType("html"));
     this->addHeader("Content-Length", ft_to_string(this->getResponseBody().length()));
-    _request._setHeaderReq(REQUEST_URI, filename);
     return true;
-}
-
-
-void _Post::setRequestBody(std::vector<std::string> reqBody)
-{
-    this->requestBody = reqBody;
-}
-
-void _Post::setFilename(std::string value)
-{
-    this->_filename = value;
-}
-void _Post::setName(std::string value)
-{
-    this->_name = value;
-}
-void _Post::setContent(std::string value)
-{
-    this->_content = value;
-}
- std::string const &_Post::getFilename( void ){
-    return this->_filename;
- }
-std::string const &_Post::getName( void ){
-    return this->_name;
-}
-std::string const &_Post::getContent( void ){
-    return this->_content;
 }

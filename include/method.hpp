@@ -69,26 +69,13 @@ public:
 
 class _Post : public method
 {
-private:
-    std::vector<std::string> requestBody;
-    std::string _filename;
-    std::string _name;
-    std::string _content;
-
 public:
     _Post(request rhs);
     ~_Post();
     int execute_method(request _request);
-    void setRequestBody(std::vector<std::string> reqBody);
-    // setter :
-    void setFilename(std::string value);
-    void setName(std::string value);
-    void setContent(std::string value);
-    // getter :
-    std::string const &getFilename(void);
-    std::string const &getName(void);
-    std::string const &getContent(void);
 };
+
+
 
 class Error : public method
 {
