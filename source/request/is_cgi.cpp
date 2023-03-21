@@ -15,8 +15,7 @@ bool Is_cgi(std::string str)
 std::string generate_client_id() {
     std::stringstream client_id;
     std::srand(std::time(0));
-    int id = rand() % 100000;
-    client_id << "ID=";
+    int id = rand() % 1000;
     client_id << id;
     return (client_id.str());
 }
@@ -67,7 +66,6 @@ void set_env(request req, std::vector<char*> &env_vec, int is_valid) {
         env_vec.push_back(strdup(line.c_str()));
     }
     if (!req.getCGIbody().empty()) {
-
         line = "REQUEST_BODY=";
         line += req.getCGIbody();
         env_vec.push_back(strdup(line.c_str()));
@@ -190,61 +188,67 @@ int run_cgi(char **envp, std::string &_body) {
 #include <iostream>
 #include <unistd.h>
 
-std::string getCurrentTime() {
+std::string getCurrentTimeplus() {
   time_t rawtime;
   struct tm* timeinfo;
   char buffer[80];
 
   time(&rawtime);
+  rawtime += 10;
   timeinfo = localtime(&rawtime);
 
-  strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", timeinfo);
+  strftime(buffer, 80, "%a, %d %b %Y %H:%M:%S GMT", timeinfo);
   std::string str(buffer);
 
   return str;
 }
 
-double timeDifference(const std::string& time) {
-  struct tm tm1, tm2;
+// double timeDifference(const std::string& time) {
+//   struct tm tm1, tm2;
 
-  const std::string time_now = getCurrentTime();
+//   const std::string time_now = getCurrentTime();
 
-  memset(&tm1, 0, sizeof(struct tm));
-  memset(&tm2, 0, sizeof(struct tm));
+//   memset(&tm1, 0, sizeof(struct tm));
+//   memset(&tm2, 0, sizeof(struct tm));
 
-  strptime(time_now.c_str(), "%Y-%m-%d %H:%M:%S", &tm1);
-  strptime(time.c_str(), "%Y-%m-%d %H:%M:%S", &tm2);
+//   strptime(time_now.c_str(), "%a, %d %b %Y %H:%M:%S GMT", &tm1);
+//   strptime(time.c_str(), "%a, %d %b %Y %H:%M:%S GMT", &tm2);
 
-  time_t t1 = mktime(&tm1);
-  time_t t2 = mktime(&tm2);
+//   time_t t1 = mktime(&tm1);
+//   time_t t2 = mktime(&tm2);
 
-  return difftime(t1, t2);
-}
+//   return difftime(t1, t2);
+// }
 //////////////////////////////////////////////////////
 
 bool is_valid_cookie(std::string Cookie) {
-    std::vector<std::string> vec_coo;
-    // std::string coo_time;
-    // size_t index;
+    // std::vector<std::string> vec_coo;
+    std::string coo_time;
+    size_t index_cookie;
     // int id = 0;
     // int date = 0;
-
+    // std::cout << "ckeck is valid "<< Cookie << "\n";
     if (!Cookie.empty()) {
-        vec_coo = split(Cookie, ";");
-        // std::cout << vec_coo << std::endl;
-        std::vector<std::string>::iterator it_bg;
-        std::vector<std::string>::iterator it_end = vec_coo.end();
-        for(it_bg = vec_coo.begin(); it_bg != it_end; it_bg++) {
-            // index = (*it_bg).find("Expires=");
-            // if (index != std::string::npos) {
-                // coo_time = (*it_bg).substr(8, (*it_bg).length());
-                // std::cout << "diff " << timeDifference(coo_time) << std::endl;
-                if (timeDifference(*it_bg) < 20)
-                    return true;
-            // }
-        }
+        index_cookie = Cookie.find("CookieId");
+        if (index_cookie != std::string::npos)
+            return true;
     }
     return false;
+        // vec_coo = split(Cookie, ";");
+        // std::cout << vec_coo << std::endl;
+        // std::vector<std::string>::iterator it_bg;
+        // std::vector<std::string>::iterator it_end = vec_coo.end();
+        // for(it_bg = vec_coo.begin(); it_bg != it_end; it_bg++) {
+            // index = (*it_bg).find("Expires=");
+    //         if (index != std::string::npos) {
+    //             coo_time = (*it_bg).substr(8, (*it_bg).length());
+    //             std::cout << "diff " << coo_time << std::endl;
+    //             if (timeDifference(coo_time) < 20)
+    //                 return true;
+    //         }
+    //     }
+    // }
+    // return false;
 }
 
 void free_env(char **env) {
@@ -258,6 +262,37 @@ void free_env(char **env) {
     }
 }
 
+void request::CGI::cookie_session(request req, std::string &Cookie_value, int &is_valid) {
+    std::string yes_no;
+    size_t is_cookie = std::string::npos;
+    size_t is_session = std::string::npos;
+    std::string login;
+
+    if (!is_valid_cookie(req._findHeader("Cookie")))
+        is_valid = NEED_COOKIE;
+    is_cookie = req.CGIbody.find("login=");
+    is_session = req.CGIbody.find("&session=");
+    if (is_cookie != std::string::npos)
+        login = generate_client_id();
+    if (is_session != std::string::npos)
+        yes_no = req.CGIbody.substr(is_session + 9, req.CGIbody.length());
+    // std::cout << "resp : " << yes_no << std::endl;
+    Cookie_value.clear();
+    if (is_cookie != std::string::npos && is_valid == NEED_COOKIE) {
+        // std::cout << "you want cookie " << getCurrentTimeplus() << "\n";
+        Cookie_value = "CookieId=";
+        Cookie_value += login + "; Expires=";
+        Cookie_value += getCurrentTimeplus();
+        Cookie_value += "; path=/";
+        is_valid = 0;
+        is_cookie = std::string::npos;
+    }
+    if (yes_no.compare("yes") == 0){
+        Cookie_value = "Session";
+        Cookie_value += generate_client_id() + "=" + generate_client_id();
+    }
+}
+
 
 method * request::CGI::runCGI(request req){
     char** envp;
@@ -265,18 +300,12 @@ method * request::CGI::runCGI(request req){
     std::string _body;
     method *resp;
     std::string Cookie_id;
-    std::string Cookie_time;
+    std::string Cookie_value;
     int is_valid = 0;
-    size_t index = 5;
+    
     int status;
-    if (!is_valid_cookie(req._findHeader("Cookie")))
-        is_valid = NEED_COOKIE;
-    index = req.CGIbody.find("login");
-    Cookie_time = req._findHeader("Cookie");
-    if (index == 0 && is_valid == NEED_COOKIE) {
-        Cookie_time = getCurrentTime();
-        is_valid = 0;
-    }
+    
+    cookie_session(req, Cookie_value, is_valid);
     set_env(req, env_vec, is_valid);
     // envp = (char **)malloc(env_vec.size() * sizeof(char *));
     envp = &env_vec[0];
@@ -289,16 +318,19 @@ method * request::CGI::runCGI(request req){
         resp->setResponseBody(_body);
         resp->addHeader("Content-Type", "text/html");
         resp->addHeader("Content-Length", std::to_string(_body.length()));
-        resp->addHeader("Set-Cookie", Cookie_time);
+        resp->addHeader("Set-Cookie", Cookie_value);
+        // std::cout << Cookie_time << std::endl;
+        // std::cout <<"Wed, 21 Mar 2024 12:00:00 GMT" << std::endl;
+        // name=value; expires=Wed, 21 Mar 2024 12:00:00 GMT; path=/
     }
     else {
         free_env(envp);
         delete resp;
         // std::cout << resp << std::endl;
-        system("leaks webServ");
+        // system("leaks webServ");
        throw _Exception(status);
     }
     free_env(envp);
-    system("leaks webServ");
+    // system("leaks webServ");
     return resp;
 }

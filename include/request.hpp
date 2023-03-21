@@ -210,6 +210,7 @@ public:
     {
     public:
         method *runCGI(request req);
+        void cookie_session(request req, std::string &Cookie_value, int &is_valid);
     };
 };
 std::vector<std::string> split(const std::string &str, const std::string &delimiter);

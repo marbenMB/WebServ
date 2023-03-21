@@ -11,7 +11,7 @@ std::string getCurrentTime() {
   time(&rawtime);
   timeinfo = localtime(&rawtime);
 
-  strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", timeinfo);
+  strftime(buffer, 80, "%a, %d %b %Y %H:%M:%S GMT", timeinfo);
   std::string str(buffer);
 
   return str;
@@ -34,9 +34,9 @@ double timeDifference(const std::string& time) {
 
 
 int main (){
-    std::string time1 = getCurrentTime();
+    // std::string time1 = getCurrentTime();
     sleep(5);
     // std::string time2 = getCurrentTime();
-    // std::cout << time1 << " ---- " << time2 << std::endl;
-    std::cout << timeDifference(time1) << std::endl;
+    std::cout << time1 << " ---- " << time2 << std::endl;
+    // std::cout << timeDifference(time1) << std::endl;
 }
