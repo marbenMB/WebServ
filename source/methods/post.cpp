@@ -22,7 +22,7 @@ int _Post::execute_method(request _request)
     if (_request.getRedirect_status() != -1)
     {
         this->setStatuscode(_request.getRedirect_status());
-        this->setreason_phrase(_request.getReason(std::to_string(_request.getRedirect_status())));
+        this->setreason_phrase(_request.getReason(ft_to_string(_request.getRedirect_status())));
         filename.clear();
         filename.append(_request.getroot());
         filename.append(_request.getredirect_URL());
@@ -76,7 +76,7 @@ int _Post::execute_method(request _request)
     this->setResponseBody(body);
     this->addHeader("Cache-Control", "no-cache");
     this->addHeader("Content-Type",Assets::__getType("html"));
-    this->addHeader("Content-Length", std::to_string(this->getResponseBody().length()));
+    this->addHeader("Content-Length", ft_to_string(this->getResponseBody().length()));
     _request._setHeaderReq(REQUEST_URI, filename);
     return true;
 }
