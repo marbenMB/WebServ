@@ -39,7 +39,8 @@ private:
     std::map<std::string, std::string> Content_Type;
     std::string Content_Transfer_Encoding;
     std::string Transfer_Encoding;
-
+protected:
+    void setStatus(int);
 public:
     method();
     std::string const &getHost(void) const;

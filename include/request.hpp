@@ -194,4 +194,5 @@ std::string trimBack(const std::string &s, std::string trim);
 std::string _CREATEresponse(std::map<std::string, std::string> content_type, int code_status, std::string reason_phrase, std::string body);
 bool is__subDir(const std::string root, const std::string dir);
 bool Is_cgi(std::string);
+std::string ft_to_string(int entier);
 #endif

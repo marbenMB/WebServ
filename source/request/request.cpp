@@ -251,3 +251,10 @@ std::map<std::string, std::string> const &request::getContent_Type(void) const
 {
     return (this->Content_Type);
 }
+
+
+std::string ft_to_string(int entier){
+    std::stringstream buf;
+    buf << entier;
+    return buf.str();
+}

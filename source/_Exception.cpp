@@ -6,7 +6,7 @@
 /*   By: mmasstou <mmasstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 16:47:27 by mmasstou          #+#    #+#             */
-/*   Updated: 2023/03/19 20:50:13 by mmasstou         ###   ########.fr       */
+/*   Updated: 2023/03/21 11:14:14 by mmasstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,7 @@ _Exception::generateBody(std::string reason_phrase) {
  
 method * 
 _Exception::what(request req) throw(){
-    std::string reason(
-        req.getReason(
-            std::to_string(this->_ExceptionCode)
-            ));
+    std::string reason(req.getReason(std::to_string(this->_ExceptionCode)));
     method *resp;
 
     resp = new Error(req);
@@ -74,5 +71,6 @@ _Exception::what(request req) throw(){
     resp->setResponseBody(this->_body);
     resp->addHeader("Content-Type", "text/html");
     resp->addHeader("Content-Length", std::to_string(resp->getResponseBody().length()));
+    // system("leaks webServ");
     return resp; 
 }

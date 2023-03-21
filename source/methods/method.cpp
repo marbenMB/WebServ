@@ -1,12 +1,22 @@
 #include "../../include/method.hpp"
 
-method::method(/* args */)
-{
+method::method(){}
+
+
+void method::setStatus(int code){
+
+    this->reason_phrase = Assets::getError(code);
+    this->statuscode = code;
 }
 
-method::~method()
-{
-}
+
+
+
+method::~method(){}
+
+
+
+// ! checked 
 void method::setStatuscode(int sCode)
 {
     this->statuscode = sCode;
