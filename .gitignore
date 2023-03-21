@@ -4,3 +4,8 @@
 var/upload
 Test
 file
+
+*/*.o
+*/*/*.o
+*.o
+webServ

@@ -6,7 +6,7 @@
 /*   By: mmasstou <mmasstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 16:47:27 by mmasstou          #+#    #+#             */
-/*   Updated: 2023/03/19 20:50:13 by mmasstou         ###   ########.fr       */
+/*   Updated: 2023/03/21 16:41:38 by mmasstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ _Exception::generateBody(std::string reason_phrase) {
         if (buffer.find("<title>") != std::string::npos){
             buffer.clear();
             buffer.append("<title> ");
-            buffer.append(std::to_string(this->_ExceptionCode));
+            buffer.append(ft_to_string(this->_ExceptionCode));
             buffer.append(" ");
             buffer.append(reason_phrase);
             buffer.append("</title>\r\n");
@@ -43,7 +43,7 @@ _Exception::generateBody(std::string reason_phrase) {
         if (buffer.find("id=\"error_title\"") != std::string::npos){
             buffer.clear();
             buffer.append("<h1 id=\"error_title\">");
-            buffer.append(std::to_string(this->_ExceptionCode));
+            buffer.append(ft_to_string(this->_ExceptionCode));
             buffer.append(" ");
             buffer.append(reason_phrase);
             buffer.append("</h1>\r\n");
@@ -59,20 +59,16 @@ _Exception::generateBody(std::string reason_phrase) {
  
 method * 
 _Exception::what(request req) throw(){
-    std::string reason(
-        req.getReason(
-            std::to_string(this->_ExceptionCode)
-            ));
+    std::string reason(req.getReason(ft_to_string(this->_ExceptionCode)));
     method *resp;
 
     resp = new Error(req);
     // std::cout << "Bad Request***" << std::endl;
-    resp->setStatuscode(this->_ExceptionCode);
-    resp->setreason_phrase(reason);
-    resp->setContent_Type("text/html");
+    resp->setStatus(this->_ExceptionCode);
     this->generateBody(reason);
     resp->setResponseBody(this->_body);
     resp->addHeader("Content-Type", "text/html");
-    resp->addHeader("Content-Length", std::to_string(resp->getResponseBody().length()));
+    resp->addHeader("Content-Length", ft_to_string(resp->getResponseBody().length()));
+    // system("leaks webServ");
     return resp; 
 }

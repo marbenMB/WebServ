@@ -26,6 +26,7 @@
 #define UPLOAD_STORE "./public/upload/"
 #define CREATE_SUCCESS_FILE "./public/assets/success.html"
 #define ERROR_PATH "./public/assets/error.html"
+#define NO_CONTENT_PATH "./public/assets/NoContent.html"
 
 #include <iostream>
 #include <unistd.h>
@@ -137,7 +138,6 @@ public:
     bool uploadType(void);
 
     request(int, ServerConf *, std::string, std::string &);
-    std::vector<std::string> &execute(std::string body, Data *_confdata);
     void Retrieving_requested_resource(ServerConf *server);
     void GETstatusOfexecution(method *req_method) const;
     std::vector<std::string> const &create_response();
@@ -194,4 +194,5 @@ std::string trimBack(const std::string &s, std::string trim);
 std::string _CREATEresponse(std::map<std::string, std::string> content_type, int code_status, std::string reason_phrase, std::string body);
 bool is__subDir(const std::string root, const std::string dir);
 bool Is_cgi(std::string);
+std::string ft_to_string(int entier);
 #endif

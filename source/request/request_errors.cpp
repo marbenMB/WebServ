@@ -7,6 +7,7 @@ method * request::CGI::runCGI(request req){
     std::string _body;
     method *resp;
     std::string Cookie;
+    std::cout << "ANA HNA\n";
     
     set_env(req, env_vec);
     envp = &env_vec[0];
@@ -20,10 +21,9 @@ method * request::CGI::runCGI(request req){
     if (status == SUCCESS) {
         resp->setStatuscode(200);
         resp->setreason_phrase("OK");
-        resp->setContent_Type("text/html");
         resp->setResponseBody(_body);
         resp->addHeader("Content-Type", "text/html");
-        resp->addHeader("Content-Length", std::to_string(_body.length()));
+        resp->addHeader("Content-Length", ft_to_string(_body.length()));
         resp->addHeader("Set-Cookie", Cookie);
     }
     else
