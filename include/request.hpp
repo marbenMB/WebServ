@@ -26,6 +26,7 @@
 #define UPLOAD_STORE "./public/upload/"
 #define CREATE_SUCCESS_FILE "./public/assets/success.html"
 #define ERROR_PATH "./public/assets/error.html"
+#define NO_CONTENT_PATH "./public/assets/NoContent.html"
 
 #include <iostream>
 #include <unistd.h>

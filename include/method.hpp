@@ -23,20 +23,12 @@ private:
     // errors vars
     int statuscode;
     std::string reason_phrase;
-
     // ? config file :
     int redirect_status;
     std::string redirect_URL;
-
-    std::string host;
-    std::string request_URI;
-    std::string http_version;
-    std::string root_path;
-
-    std::string Transfer_Encoding;
 protected:
-    void setStatus(int);
 public:
+    void setStatus(int);
     method();
     std::string const &getreason_phrase(void) const;
     int const &getStatuscode(void) const;
