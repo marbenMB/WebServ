@@ -39,10 +39,14 @@ _Delete::_Delete(request _request)
 
     inFilemessage.close();
     this->setResponseBody(line); // set the data that previce read from the file to the body response 
-    this->addHeader("Cache-Control", "no-cache");
-    this->addHeader("Content-Type",Assets::__getType("html"));
-    this->addHeader("Content-Length", ft_to_string(this->getResponseBody().length()));
+    
 }
 
 _Delete::~_Delete(){}
-int _Delete::execute_method(request _request){ (void)_request;return 0;}
+int _Delete::execute_method(request _request){
+    (void)_request;
+    this->addHeader("Cache-Control", "no-cache");
+    this->addHeader("Content-Type",Assets::__getType("html"));
+    this->addHeader("Content-Length", ft_to_string(this->getResponseBody().length()));
+    return 0;
+}

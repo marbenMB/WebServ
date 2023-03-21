@@ -138,7 +138,6 @@ public:
     bool uploadType(void);
 
     request(int, ServerConf *, std::string, std::string &);
-    std::vector<std::string> &execute(std::string body, Data *_confdata);
     void Retrieving_requested_resource(ServerConf *server);
     void GETstatusOfexecution(method *req_method) const;
     std::vector<std::string> const &create_response();

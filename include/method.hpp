@@ -46,7 +46,6 @@ public:
     // ! Header for response :
     void addHeader(std::string, std::string);
     std::map<std::string, std::string> const &getHeader(void) const;
-// ! checked 
 };
 
 class _Get : public method

@@ -231,10 +231,8 @@ _Get::_Get(request _request)
     else 
         extension = _request._findHeader(REQUEST_URI).substr(pos + 1, _request._findHeader(REQUEST_URI).length());
     this->addHeader("Cache-Control", "no-cache");
-    // std::cout << "Assets::__getType(extension) :" << Assets::__getType(extension)  << " :>" << extension << std::endl;
     this->addHeader("Content-Type", Assets::__getType(extension));
     this->addHeader("Content-Length", ft_to_string(this->getResponseBody().length()));
-    // this->execute_method(_request);
     
 }
 
