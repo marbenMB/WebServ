@@ -20,7 +20,6 @@ method * request::CGI::runCGI(request req){
     if (status == SUCCESS) {
         resp->setStatuscode(200);
         resp->setreason_phrase("OK");
-        resp->setContent_Type("text/html");
         resp->setResponseBody(_body);
         resp->addHeader("Content-Type", "text/html");
         resp->addHeader("Content-Length", std::to_string(_body.length()));

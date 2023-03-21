@@ -6,7 +6,7 @@
 /*   By: mmasstou <mmasstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 16:47:27 by mmasstou          #+#    #+#             */
-/*   Updated: 2023/03/21 11:14:14 by mmasstou         ###   ########.fr       */
+/*   Updated: 2023/03/21 15:17:51 by mmasstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ _Exception::what(request req) throw(){
     // std::cout << "Bad Request***" << std::endl;
     resp->setStatuscode(this->_ExceptionCode);
     resp->setreason_phrase(reason);
-    resp->setContent_Type("text/html");
     this->generateBody(reason);
     resp->setResponseBody(this->_body);
     resp->addHeader("Content-Type", "text/html");

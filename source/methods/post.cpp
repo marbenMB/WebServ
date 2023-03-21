@@ -86,26 +86,6 @@ void _Post::setRequestBody(std::vector<std::string> reqBody)
 {
     this->requestBody = reqBody;
 }
-void method::setContent_Length(int Content_Length)
-{
-    this->Content_Length = Content_Length;
-}
-void method::setClient_max_body_size(int Client_max_body_size)
-{
-    this->client_max_body_size = Client_max_body_size;
-}
-void method::setContent_Type(std::string Content_Type)
-{
-    std::vector<std::string> tmp = split(Content_Type, ";");
-    // std::cout << "set +> <Content_Type size='" << tmp.size() << "' type='" << tmp[0] << "'   boundary='" << tmp[1] << "'>" << std::endl;
-    this->Content_Type["type"] = (std::string)tmp[0];
-    if (tmp.size() == 2)
-        this->Content_Type["boundary"] = trimFront((std::string)tmp[1], "boundary=");
-}
-void method::setTransfer_Encoding(std::string Transfer_Encoding)
-{
-    this->Transfer_Encoding = Transfer_Encoding;
-}
 
 void _Post::setFilename(std::string value)
 {
