@@ -26,7 +26,7 @@ DEPS =  $(INCLUDES_PATH)request.hpp $(INCLUDES_PATH)method.hpp $(INCLUDES_PATH)W
 _OBJ = $(OBJS) $(config_OBJS) $(request_OBJS) $(method_OBJS)
 FILES_OBJ = $(OBJS) $(config_OBJS) $(request_OBJS) $(method_OBJS)
 ifeq ($(DEBUG),true)
-            FILES_OBJ = $(config_SRCS) $(SRCS)  $(request_SRCS) $(method_SRCS)
+    FILES_OBJ = $(config_SRCS) $(SRCS)  $(request_SRCS) $(method_SRCS)
 endif
 
 %.o:%.cpp $(DEPS)

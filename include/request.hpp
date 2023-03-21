@@ -26,6 +26,7 @@
 #define UPLOAD_STORE "./public/upload/"
 #define CREATE_SUCCESS_FILE "./public/assets/success.html"
 #define ERROR_PATH "./public/assets/error.html"
+#define NO_CONTENT_PATH "./public/assets/NoContent.html"
 
 #include <iostream>
 #include <unistd.h>
@@ -138,7 +139,6 @@ public:
     bool uploadType(void);
 
     request(int, ServerConf *, std::string, std::string &);
-    std::vector<std::string> &execute(std::string body, Data *_confdata);
     void Retrieving_requested_resource(ServerConf *server);
     void GETstatusOfexecution(method *req_method) const;
     std::vector<std::string> const &create_response();

@@ -5,10 +5,8 @@ bool Is_cgi(std::string str)
 {
     size_t pos = 0;
     if (((pos = str.rfind(".py")) != std::string::npos && (pos + 3) == str.length()) ||
-    ((pos = str.rfind(".go")) != std::string::npos && (pos + 3) == str.length()) ||
-    ((pos = str.rfind(".co")) != std::string::npos && (pos + 3) == str.length()) 
-    )
-        return true;
+    ((pos = str.rfind(".go")) != std::string::npos && (pos + 3) == str.length()) 
+    ) return true;
     return false;
 }
 
@@ -181,7 +179,7 @@ std::string getCurrentTimeplus() {
   char buffer[80];
 
   time(&rawtime);
-  rawtime += 10;
+  rawtime +=  COOKIE_TIME;
   timeinfo = localtime(&rawtime);
 
   strftime(buffer, 80, "%a, %d %b %Y %H:%M:%S GMT", timeinfo);
@@ -259,7 +257,6 @@ method * request::CGI::runCGI(request req){
     if (status == SUCCESS) {
         resp->setStatuscode(200);
         resp->setreason_phrase("OK");
-        resp->setContent_Type("text/html");
         resp->setResponseBody(_body);
         resp->addHeader("Content-Type", "text/html");
         resp->addHeader("Content-Length", std::to_string(_body.length()));

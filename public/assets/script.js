@@ -3,11 +3,11 @@ acceptBtn = cookieBox.querySelector(".btn__group .accept__btn");
 rejectBtn = cookieBox.querySelector(".btn__group .reject__btn");
 
 
-rejectBtn.addEventListener('click' , (e)=>{
+rejectBtn.addEventListener('click' , ()=>{
     cookieBox.classList.add("hide")
 })
 
-acceptBtn.addEventListener('click' ,  async (e)=>{
+acceptBtn.addEventListener('click' , async ()=>{
   await fetch('http://127.0.0.1:8080/file.py', {
   method: 'POST',
   headers: {
@@ -15,8 +15,6 @@ acceptBtn.addEventListener('click' ,  async (e)=>{
   },
   body: 'login=username'
 })
-  .then(response => response.json())
-  .catch(error => console.error(error));
 
   location.reload()
 })
