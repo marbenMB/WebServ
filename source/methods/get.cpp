@@ -5,10 +5,23 @@
 #include <dirent.h>
 
 
-_Get::_Get(request rhs)
+_Get::_Get(request _request)
 {
-    
-    this->execute_method(rhs);
+    std::ifstream inFile;
+    std::string line = "";
+    std::string buffer;
+    struct stat STATInfo;
+    DIR *dirp;
+    struct dirent *dp;
+
+    std::string item_name;
+    std::string item_URL;
+    std::string item_absPATH;
+    std::string item_size;
+    std::string item_createDATE;
+
+    std::string filename;
+    this->execute_method(_request);
     
 }
 
@@ -41,13 +54,6 @@ int _Get::execute_method(request _request)
     std::string item_size;
     std::string item_createDATE;
 
-
-    // size_t pos = 0;
-    // std::string responseBody;
-    // check config file if the method is allowed:
-    // if (this->_findHeader(REQUEST_URI).compare("/") == 0){
-    //     this->setRequest_URI("/index.html");
-    // }
     std::string filename;
     filename.clear();
     filename.append(_request._findHeader(REQUEST_URI));

@@ -58,7 +58,6 @@ public:
     void setRootPath(std::string root_path);
     void setHost(std::string host);
     void setreason_phrase(std::string host);
-    void setRequest_URI(std::string request_URI);
     void setHttp_version(std::string http_version);
     void setStatuscode(int sCode);
 

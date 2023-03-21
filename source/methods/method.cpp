@@ -20,10 +20,7 @@ void method::setreason_phrase(std::string reason_phrase)
 {
     this->reason_phrase = reason_phrase;
 }
-void method::setRequest_URI(std::string request_URI)
-{
-    this->request_URI = request_URI;
-}
+
 void method::setHttp_version(std::string http_version)
 {
     this->http_version = http_version;
