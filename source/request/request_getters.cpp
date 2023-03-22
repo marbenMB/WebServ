@@ -59,9 +59,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
     std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator locations_iterator = location.begin();
     int locationId = -1;
     int index = 0;
-    std::string compare_URI;
-    std::string str;
-    compare_URI.clear();
+    std::string router;
     size_t pos = 0;
     
     if ((pos =  _findHeader(REQUEST_URI).rfind(".py")) != std::string::npos && (pos + 3) ==  _findHeader(REQUEST_URI).length())
@@ -89,10 +87,10 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
         // ***> Create iterator for location Data
         std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator location_iterator = locations_iterator->begin();
         // std::cout << "  +>" << location_iterator->first << "<| >this->compare_URI :" << this->compare_URI<<"<|" << std::endl;
-        str.clear();
-        str.append(location_iterator->first);
-        // std::cout << "str : |" << str << "| this->compare_URI : |" << this->compare_URI <<"| " <<  std::endl;
-        if (str.compare(this->compare_URI) == 0){locationId = index;break;}
+        router.clear();
+        router.append(location_iterator->first);
+        // std::cout << "router : |" << router << "| this->compare_URI : |" << this->compare_URI <<"| " <<  std::endl;
+        if (router.compare(this->compare_URI) == 0){locationId = index;break;}
         ++locations_iterator;
         index++;
         if (locations_iterator == location.end() && locationId == -1){  // if '/srcs/dir001/dir0011/test.txt' not found ;
@@ -114,8 +112,8 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
             std::string __URI(this->getroot());
             if (__erraseTmp.compare("/") != 0)
             {
-                this->setcompare_URI(str);
-                __erraseTmp.erase(0,str.length());
+                this->setcompare_URI(router);
+                __erraseTmp.erase(0,router.length());
                 __URI.append("/");
             }
             __URI.append(__erraseTmp);
@@ -141,15 +139,12 @@ std::vector<std::pair<std::string, std::string> > const & request::getReqBody( v
 {
     return this->req_body;
 }
-
 std::string const & request::getcompare_URI( void ) const{
     return this->compare_URI;
 }
 void request::setcompare_URI(std::string compare_URI){
     this->compare_URI = compare_URI;
 }
-
-
 void request::addType(std::string key, std::string value){
     this->_typs[key] = value;
 }
@@ -157,44 +152,18 @@ std::string const &request::getType(std::string key){
     return this->_typs[key];
 }
 
-bool request::uploadType(void ){
-    std::ifstream file;
-    std::string buffer;
-    std::vector<std::string> _split;
-
-
-    file.open(MIME_TYPE_PATH, std::ifstream::in);
-    if (!file.is_open())
-        throw  _Exception(INTERNAL_SERVER_ERROR);
-    while (std::getline(file, buffer))
-    {
-        _split = split(buffer, ": ");
-        // std::cout << " KEY :" << _split[1] << std::endl;
-        // std::cout << " VALUE :" << _split[0] << std::endl;
-        this->addType(_split[1], _split[0]);
-    }
-    file.close();
-    return true;
-}
-
 bool request::getIs_cgi( void ){
     return this->is_cgi;
 }
-
-
 std::string const & request::getUpload_store_PATH( void ) const{
     return this->upload_store;
 }
-
-
 bool request::getCGIstatus( void ) const{
     return this->is_cgi;
 }
-
 std::string const &request::getReason(std::string key){
     return this->_statusCode[key];
 }
-
 void request::initializationFILES(std::vector<std::string> filesVECTER)
 {
     std::vector<std::pair<std::string, std::string> > _files;
@@ -204,41 +173,33 @@ void request::initializationFILES(std::vector<std::string> filesVECTER)
     std::vector<std::string> content_disposition;
     std::vector<std::string>::iterator it = filesVECTER.begin();
 
-    // try
-    // {
-        /* code */
-        while (it != filesVECTER.end()){
-            try{
-            tmp = split((std::string)it[0], CRLF_2);
-            if (tmp.size() != 2){
-                throw std::invalid_argument("makayench Bady ...");
-            }
-            file_header = split((std::string)tmp[0], CRLF);
-            if (file_header.size() != 2){
-                throw std::invalid_argument("chi7aja wa93a ...");
-            }
-            content_disposition = split(file_header[0], "; ");
-            std::string filename;
-            if (content_disposition.size() > 2 && content_disposition[2].length() > 11) // if post is not empty
-            {
-
-                int endfilename = content_disposition[2].length() - 11;
-
-                filename.append(content_disposition[2].substr(10, endfilename));
-                _filesContent.first = filename;
-                _filesContent.second = tmp[1];
-                _files.push_back(_filesContent);
-                // std::cout << "_filesContent.first :" << _filesContent.first << std::endl;
-                // std::cout << "_filesContent.second :" << _filesContent.second << std::endl;
-            }
-            else{throw std::invalid_argument("3iw haschi khawi");}}
-            catch(const std::exception& e){std::cerr << e.what() << '\n';}
-            it++;
+    while (it != filesVECTER.end()){
+        try{
+        tmp = split((std::string)it[0], CRLF_2);
+        if (tmp.size() != 2){
+            throw std::invalid_argument("makayench Bady ...");
         }
-        if (_files.size())
-            this->req_body = _files;
-        else{
-            throw  _Exception(BAD_REQUEST);
+        file_header = split((std::string)tmp[0], CRLF);
+        if (file_header.size() != 2){
+            throw std::invalid_argument("makaynach smiya dyal file ...");
         }
+        content_disposition = split(file_header[0], "; ");
+        std::string filename;
+        if (content_disposition.size() > 2 && content_disposition[2].length() > 11) // if post is not empty
+        {
+
+            int endfilename = content_disposition[2].length() - 11;
+
+            filename.append(content_disposition[2].substr(10, endfilename));
+            _filesContent.first = filename;
+            _filesContent.second = tmp[1];
+            _files.push_back(_filesContent);
+        }
+        else{throw std::invalid_argument("3iw haschi khawi");}}
+        catch(const std::exception& e){std::cerr << e.what() << '\n';}
+        it++;
+    }
+    if (_files.size())this->req_body = _files;
+    else{throw  _Exception(BAD_REQUEST);}
 }
 

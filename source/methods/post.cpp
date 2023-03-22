@@ -13,12 +13,10 @@ _Post::_Post(request _request)
     std::map<std::string, std::string> tmp = _request.getContent_Type();
     if (_request.getRedirect_status() != -1)
     {
-
         this->setStatus(_request.getRedirect_status());
         filename.clear();
         filename.append(_request.getroot());
         filename.append(_request.getredirect_URL());
-
         _request._setHeaderReq(REQUEST_URI, filename);
         // set Header : 
         this->addHeader("Location", _request.getredirect_URL());
@@ -64,6 +62,7 @@ _Post::_Post(request _request)
         }
     }
    this->setResponseBody(body);
+   execute_method(_request);
 }
 _Post::~_Post(){}
 int _Post::execute_method(request _request)

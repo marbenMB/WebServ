@@ -6,7 +6,7 @@
 /*   By: mmasstou <mmasstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 16:33:08 by mmasstou          #+#    #+#             */
-/*   Updated: 2023/03/17 18:42:32 by mmasstou         ###   ########.fr       */
+/*   Updated: 2023/03/22 15:32:12 by mmasstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,9 @@ class _Exception
 {
 private:
     int _ExceptionCode;
+    std::string reason_phrase;
     std::string _body;
-    void generateBody(std::string reason_phrase);
+    void generateBody();
     void set_Body(std::string);
 
 public:

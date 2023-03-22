@@ -1,57 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" href="./assets/favicon.svg" type="image/x-icon">
-  <link rel="stylesheet" href="../assets/assets/style-cookie.css">
-  <title>homa Page</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="favicon.svg" type="image/x-icon">
+    <title>Post Page</title>
+    <style>
+		form {
+			margin: 200px auto;
+			width: 500px;
+			padding: 20px;
+			background-color: #646363;
+			border-radius: 10px;
+			box-shadow: 0px 0px 10px #131212;
+		}
+
+		input[type=text], textarea {
+			width: 100%;
+			padding: 12px 20px;
+			margin: 20px 0;
+			display: inline-block;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+		}
+
+		button[type=submit] {
+			background-color: #4CAF50;
+			color: white;
+			padding: 12px 20px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			float: right;
+		}
+
+		button[type=submit]:hover {
+			background-color: #45a049;
+		}
+	</style>
+    
 </head>
-
-<body>
-
-  <div class="cookie">
-    <!-- <div class="form">
-      <div class="row">
-        <div class="col-md-12">
-          <form action="" method="post">
-
-            <fieldset>
-
-              <label for="name">Name:</label>
-              <input type="text" id="name" name="user_name" placeholder="name">
-              <label for="subject">Subject:</label>
-              <input type="text" id="subject" name="subject" placeholder="subject">
-              <label for="bio">Bio:</label>
-              <textarea id="bio" name="_bio" placeholder="bio"></textarea>
-
-            </fieldset>
-
-            <button type="submit">Submit</button>
-
-          </form>
-        </div>
-      </div>
-    </div> -->
-    <div class="cookie-message">
-      <img src="../assets/assets/cookie.png" alt="cookie">
-      <h1>ma3andex cookisa</h1>
-    </div>
-    <div class="cookie__box">
-      <img src="../assets/assets/cookie.png" alt="cookie">
-      <div class="content">
-        <h2>Cookie</h2>
-        <p>Accept uses cookies .</p>
-        <div class="btn__group">
-          <button class="accept__btn" type="submit">Accept</button>
-          <button class="reject__btn">Reject</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script src="../assets/assets/script.js"></script>
-</body>
-
+<body >
+	<form action="" method="post" enctype="application/x-www-form-urlencoded">
+		<input type="text" name="title" placeholder="Title" required/>
+        <input type="text" name="heading" placeholder="Heading" required/>
+        <input type="text" name="message" placeholder="Message" required/>
+		<label for="session">session</label>
+		<select name="session" id="session">
+			<option value="no">No</option>
+			<option value="yes">Yes</option>
+		</select>
+        <button type="submit">Submit</button>
+		<!-- <input type="radio" id="session" name="option" value="session"> -->
+    </form>
+  </body>
 </html>
+

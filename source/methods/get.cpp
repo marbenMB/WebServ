@@ -100,11 +100,9 @@ _Get::_Get(request _request)
                 {
                     // *  <tbody id="tbody">
                     line.append(buffer);
-                    line.append("\n\r");
                     break;
                 }
                 line.append(buffer);
-                line.append("\n\r");
             }
 
             inFile.close();
@@ -116,6 +114,7 @@ _Get::_Get(request _request)
             (request_URITmp[request_URITmp.length() - 1] == '/')
                 ? request_URITmp.erase(request_URITmp.length() - 1, request_URITmp.length())
                 : request_URITmp;
+
             while ((dp = readdir(dirp)) != NULL)
             {
                 /*
@@ -161,7 +160,6 @@ _Get::_Get(request _request)
                 if (d_nameTmp.compare(".") != 0 || d_nameTmp.compare("..") != 0)
                 {
                     filePATH.clear();
-                    filePATH.append(_request.getroot());
                     filePATH.append(request_URITmp);
                     filePATH.append("/");
                     filePATH.append(dp->d_name);
