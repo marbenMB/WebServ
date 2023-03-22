@@ -3,13 +3,36 @@
 	--global-color : #888282;
 	--global-fontWeight : 200;
 	--grid-margin : 50px;
+	--icon-height : 15px;
+	--icon-width : 15px;
+	--barre-textSize : 14px;
 }
 
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	width: 100vw;
+	height: 100vh;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr); /* repeating 2 fraction rows in the grid */
+	grid-template-rows: 100px 1fr 1fr 100px; /* fixing sizes of head and buttum row */
+	gap: 10px;
+
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+.container div {
+	padding: 10px;
+	border: solid 1px #000;
+}
 
 #Logo {
-	width: 100%;
-	height: 20%;
-	margin: var(--grid-margin);
+	grid-column-start: 1;
+	grid-column-end: 4;
 }
 
 #Logo img {
@@ -19,10 +42,26 @@
 }
 
 #Side {
-	width: 30%;
-	height: 60%;
-	margin: var(--grid-margin);
-	margin-top: 100px;
+	grid-row-start: 2;
+	grid-row-end: 3;
+}
+
+#Main {
+	grid-row-start: 2;
+	grid-row-end: 3;
+	grid-column-start: 2;
+	grid-column-end: 4;
+	height: 75vh;
+	width: 75vw;
+}
+
+#Footer	{
+	grid-column-start: 1;
+	grid-column-end: span 3;
+}
+/*
+#Path a {
+	font-family: var(--global-font);
 }
 
 h1 {
@@ -31,3 +70,13 @@ h1 {
 	font-weight: var(--global-fontWeight);
 	color: var(--global-color);
 }
+
+#List li::before {
+	content: "\f03a";
+}
+
+#Barre-Icon {
+	height: var(--icon-height);
+	width: var(--icon-width);
+	font-weight: 200px;
+} */
