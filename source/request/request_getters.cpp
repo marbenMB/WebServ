@@ -172,13 +172,21 @@ void request::initializationFILES(std::vector<std::string> filesVECTER)
     std::vector<std::string> file_header;
     std::vector<std::string> content_disposition;
     std::vector<std::string>::iterator it = filesVECTER.begin();
+    size_t pos;
 
     while (it != filesVECTER.end()){
         try{
-        tmp = split((std::string)it[0], CRLF_2);
-        if (tmp.size() != 2){
+        // tmp = split((std::string)it[0], CRLF_2);
+        pos = it[0].find(CRLF_2);
+        if (pos != std::string::npos){
+            tmp.push_back(it[0].substr(0, pos));
+            tmp.push_back(it[0].substr(pos + 4, it[0].length()));
+        }
+        else {
             throw std::invalid_argument("makayench Bady ...");
         }
+
+        // std::cout << "it[0] :" <<  "------" << tmp.size() << "*****" << it[0] << std::endl;
         file_header = split((std::string)tmp[0], CRLF);
         if (file_header.size() != 2){
             throw std::invalid_argument("makaynach smiya dyal file ...");
