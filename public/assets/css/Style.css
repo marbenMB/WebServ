@@ -1,16 +1,25 @@
 :root {
 	--global-font : 'Outfit', sans-serif;
+	--S-font: 'Poppins', sans-serif;
 	--global-color : #888282;
+	--S-color: #000;
 	--global-fontWeight : 200;
+	--P-size : 20px;
+	--S-size : 15px;
+	--Ps-size : 12px;
 	--grid-margin : 50px;
-	--icon-height : 15px;
-	--icon-width : 15px;
+	--icon-height : 14px;
+	--icon-width : 14px;
 	--barre-textSize : 14px;
 }
 
 body {
 	margin: 0;
 	padding: 0;
+}
+
+a {
+	text-decoration: none;
 }
 
 .container {
@@ -44,6 +53,50 @@ body {
 #Side {
 	grid-row-start: 2;
 	grid-row-end: 3;
+	padding: 50px;
+}
+
+.P-txt {
+	font-family: var(--global-font);
+	color: var(--global-color);
+	font-weight: var(--global-fontWeight);
+	font-size: var(--P-size);
+}
+
+#Path {
+	text-align: center;
+	display: flex;
+}
+
+#Path a {
+	position: relative;
+	display: table;
+}
+
+#Path span {
+	position: relative;
+}
+
+#Barre-Icon {
+	height: var(--icon-height);
+	width: var(--icon-width);
+	font-weight: 200px;
+	margin: 5px;
+	display: inline;
+  	
+}
+
+.Ps-txt {
+	font-family: var(--global-font);
+	color: var(--global-color);
+	font-weight: var(--global-fontWeight);
+	font-size: var(--Ps-size);
+}
+
+.S-txt {
+	font-family: var(--S-font);
+	color: var(--S-color);
+	font-size: var(--S-size);
 }
 
 #Main {
