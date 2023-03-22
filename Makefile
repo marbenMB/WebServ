@@ -6,7 +6,7 @@ CONFIGFILE_PATH = ./source/config_file/
 INCLUDES_PATH = ./include/
 FLAGS =  -Wall -Wextra -Werror -std=c++98  #-fsanitize=address
 
-DEBUG = false
+DEBUG = true
 
 
 SERVSRC = ./source/Server/Server.cpp ./source/Server/ServerClass.cpp ./source/Server/utils.cpp ./source/Server/Check.cpp ./source/Server/unitTests.cpp
