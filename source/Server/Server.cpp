@@ -18,13 +18,7 @@ std::multimap<std::string, int>	extractionIpPort(std::vector<std::string> combIp
 		if (nFind != std::string::npos)
 		{
 			ip = it->substr(0, nFind);
-			try
-			{
-				port = std::stoi(it->substr((nFind + 1), it->length()));
-			}	catch (std::exception &e)
-			{
-				std::cout << e.what() << std::endl;
-			}
+			port = std::atoi(it->substr((nFind + 1), it->length()).c_str());
 		}
 		else
 		{
@@ -36,13 +30,7 @@ std::multimap<std::string, int>	extractionIpPort(std::vector<std::string> combIp
 			}
 			else
 			{
-				try
-				{
-					port = std::stoi(it->substr((nFind + 1), it->length()));
-				}	catch (std::exception &e)
-				{
-					std::cout << e.what() << std::endl;
-				}
+				port = std::atoi(it->substr((nFind + 1), it->length()).c_str());
 				ip = std::string(DEFAULT_IP);
 			}
 		}
