@@ -26,7 +26,7 @@ a {
 	width: 100vw;
 	height: 100vh;
 	display: grid;
-	grid-template-columns: repeat(3, 1fr); /* repeating 2 fraction rows in the grid */
+	grid-template-columns: 0.5fr repeat(2, 1fr); /* repeating 2 fraction rows in the grid */
 	grid-template-rows: 100px 1fr 1fr 100px; /* fixing sizes of head and buttum row */
 	gap: 10px;
 
@@ -63,19 +63,6 @@ a {
 	font-size: var(--P-size);
 }
 
-#Path {
-	text-align: center;
-	display: flex;
-}
-
-#Path a {
-	position: relative;
-	display: table;
-}
-
-#Path span {
-	position: relative;
-}
 
 #Barre-Icon {
 	height: var(--icon-height);
@@ -84,6 +71,20 @@ a {
 	margin: 5px;
 	display: inline;
   	
+}
+
+#Path a {
+	margin-left: 10px;
+	display: table;
+}
+
+#Path span {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+#Path img {
+	margin: auto 10px;
 }
 
 .Ps-txt {
@@ -105,12 +106,14 @@ a {
 	grid-column-start: 2;
 	grid-column-end: 4;
 	height: 75vh;
-	width: 75vw;
 }
 
 #Footer	{
 	grid-column-start: 1;
 	grid-column-end: span 3;
+	display: inline;
+	justify-content: center;
+	text-align: center;
 }
 /*
 #Path a {
