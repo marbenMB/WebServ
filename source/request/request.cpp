@@ -108,14 +108,7 @@ void request::Verifying_Body(std::string req)
         _fileInfo._boundary_end.append("--");
     }
     if ((unsigned long long)req.length() !=  _fileInfo.contentLength || (unsigned long long)req.length() > this->client_max_body_size)
-    {
-        std::cout << "ANA HANA\n";
-
-        std::cout << "req.length() :" << req.length() << std::endl;
-        std::cout << " _fileInfo.contentLength :" <<  _fileInfo.contentLength << std::endl;
-        std::cout << "this->client_max_body_size :" << this->client_max_body_size << std::endl;
         throw _Exception(BAD_REQUEST);
-    }
     if ( _fileInfo.ContentType["type"].compare("application/x-www-form-urlencoded") == 0)
     {
         url_decode(req);

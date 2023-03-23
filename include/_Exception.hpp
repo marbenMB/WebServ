@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   _Exception.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasstou <mmasstou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aboulhaj <aboulhaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 16:33:08 by mmasstou          #+#    #+#             */
-/*   Updated: 2023/03/22 15:32:12 by mmasstou         ###   ########.fr       */
+/*   Updated: 2023/03/23 14:04:52 by aboulhaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ class _Exception
 {
 private:
     int _ExceptionCode;
+    std::string _filename;
     std::string reason_phrase;
     std::string _body;
     void generateBody();

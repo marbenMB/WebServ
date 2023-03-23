@@ -1,11 +1,8 @@
 .DS_Store
 *.dSYM
 .vscode
-var/upload
-Test
-file
-
 */*.o
 */*/*.o
 *.o
 webServ
+public/upload

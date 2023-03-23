@@ -99,6 +99,7 @@ void ConfigFile::location(Data &g_Data, ServerConf &server, KeyValue v)
                 trim(v.line, " \t:'[]");
                 v.value = v.line;
                 check_semicolon(g_Data, v);
+                trim(v.value, " \t:'[] ;");
                 v.line = v.value;
                 while ((v.index = v.line.find(" ")) != -1) {
                     v.value = v.line.substr(0, v.index);
@@ -107,6 +108,7 @@ void ConfigFile::location(Data &g_Data, ServerConf &server, KeyValue v)
                     v.line.erase(0, v.index + 1);
                     trim(v.line, " \t:',[]");
                 }
+                trim(v.line, " \t:',[]");
                 v.value = v.line;
                 location_var[v.key].push_back(v.value);
             }
