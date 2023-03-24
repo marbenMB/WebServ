@@ -6,7 +6,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Outfit&family=Poppins&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Outfit&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"/>
 	<link rel="stylesheet" href="../css/Style.css">
 	<link rel="icon" type="image/png" href="../img/Logo.png">
 	<title>Introduction</title>
@@ -23,20 +24,22 @@
 
 		<!-- Side barre -->
 		<div id="Side">
-			<h1>GETTING STARTED</h1>
+			<h1 class="P-txt">GETTING STARTED</h1>
 			<ul id="List">
 				<li>
-					<a href="./Home.html">Start Page</a>
+					<a href="./Home.html" class="S-txt">Start Page</a>
 				</li>
 				<li>
-					<a href="./Intro.html">Introduction</a>
+					<a href="./Intro.html" class="S-txt">Introduction</a>
 				</li>
 				<li>
-					<a href="./Server.html">Server</a>
+					<a href="./Server.html" class="S-txt">Server</a>
 				</li>
 			</ul>
-			<h1>ABOUT US</h1>
-			<a href="./About.html">Team</a>
+			<h1 class="P-txt">ABOUT US</h1>
+			<ul>
+				<li><a href="./About.html" class="S-txt">Team</a></li>
+			</ul>
 		</div>
 
 		
@@ -45,10 +48,16 @@
 
 			<!-- Path Barre -->
 			<div id="Path">
-				<img id="Barre-Icon" src="../icon/home.png" alt="Home">
-				<a href="./Home.html">WebServ</a>
-				<img id="Barre-Icon" src="../icon/greater-than.png" alt="Greater Than">
-				<a href="./Intro.html">Getting Started</a>
+				<a href="./Home.html" class="Ps-txt">
+					<img id="Barre-Icon" src="../icon/Princple/fi-rs-home.png" alt="Home">
+					<span>WebServ</span>
+				</a>
+				<a href="./Intro.html" class="Ps-txt">
+					<span class="material-symbols-outlined">
+						chevron_right
+						</span>
+					<span class="Selected">Getting Started</span>
+				</a>
 			</div>
 			<!-- Social Media Barre -->
 			<section id="Media">
