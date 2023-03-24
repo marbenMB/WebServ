@@ -225,6 +225,13 @@ _Get::_Get(request & _request)
     
     
     this->setResponseBody(line);
+    this->execute_method(_request);
+    
+}
+
+_Get::~_Get(){}
+int _Get::execute_method(request _request)
+{
     std::string extension;
     size_t pos = _request._findHeader(REQUEST_URI).rfind(".");
     if (pos == 0)
@@ -234,12 +241,5 @@ _Get::_Get(request & _request)
     this->addHeader("Cache-Control", "no-cache");
     this->addHeader("Content-Type", Assets::__getType(extension));
     this->addHeader("Content-Length", ft_to_string(this->getResponseBody().length()));
-    
-}
-
-_Get::~_Get(){}
-int _Get::execute_method(request _request)
-{
-    (void)_request;
     return 1;
 }
