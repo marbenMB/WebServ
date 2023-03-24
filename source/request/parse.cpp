@@ -60,7 +60,7 @@ void request::checkForErrorPage(std::vector<std::string> vect){
                 }
             }
             if (fore){
-                 this->default_40x = this->root + "/" + *errorspage_iterator;
+                this->default_40x = this->root + "/" + *errorspage_iterator;
                 if (stat(this->default_40x.c_str(), &STATFile) != 0){
                    this->default_40x = ERROR_PATH;
                 }

@@ -38,11 +38,15 @@ request::request(
             }
 
             // * Init vars :
-            // this->requirements = true;
-
             this->setRedirect_status(-1);
             this->setcompare_URI("");
             this->is_cgi = false;
+            this->default_10x = ERROR_PATH;
+            this->default_20x = ERROR_PATH;
+            this->default_30x = ERROR_PATH;
+            this->default_40x = ERROR_PATH;
+            this->default_50x = ERROR_PATH;
+
 
             this->Verifying_Header(_requestHeader);
             this->Retrieving_requested_resource(server);
