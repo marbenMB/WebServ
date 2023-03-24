@@ -156,9 +156,16 @@ a {
 	border-radius: 8px;
 	align-items: center;
 }
+
 .Content a img{
 	display: block;
 	width: 21px;
+}
+
+.Content h2 {
+	margin-top: 40px;
+	margin-bottom: 10px;
+	font-size: 60px;
 }
 
 .title p {
