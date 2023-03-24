@@ -87,6 +87,11 @@ a {
 	margin: auto 10px;
 }
 
+.Selected {
+	font-weight: var(--global-fontWeight);
+	color: rgb(64, 133, 245);
+}
+
 .Ps-txt {
 	font-family: var(--global-font);
 	color: var(--global-color);
@@ -106,6 +111,23 @@ a {
 	grid-column-start: 2;
 	grid-column-end: 4;
 	height: 75vh;
+}
+
+.Content {
+	margin: 20px;
+	height: 85%;
+}
+
+.icon {
+	height: 50px;
+}
+
+.Content a {
+	display: inline;
+	padding: 20px;
+	color: #fff;
+	background-color: #2978FF;
+	border-radius: 8px;
 }
 
 #Footer	{
