@@ -6,3 +6,4 @@
 *.o
 webServ
 public/upload
+public/test

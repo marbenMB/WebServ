@@ -187,7 +187,7 @@ public:
     class CGI
     {
     public:
-        method *runCGI(request req);
+        method *runCGI(request & req);
         void cookie_session(request req, std::string &Cookie_value, int &is_valid);
     };
 };

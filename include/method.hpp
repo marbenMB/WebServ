@@ -52,7 +52,7 @@ class _Get : public method
 {
 
 public:
-    _Get(request rhs);
+    _Get(request & rhs);
     ~_Get();
     int execute_method(request _request);
 };

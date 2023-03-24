@@ -107,8 +107,10 @@ void request::Verifying_Body(std::string req)
         _fileInfo._boundary_end.append(_fileInfo._boundary_start);
         _fileInfo._boundary_end.append("--");
     }
-    if ((unsigned long long)req.length() !=  _fileInfo.contentLength || (unsigned long long)req.length() > this->client_max_body_size)
+    if ((unsigned long long)req.length() !=  _fileInfo.contentLength )
         throw _Exception(BAD_REQUEST);
+    if ((unsigned long long)req.length() > this->client_max_body_size)
+        throw _Exception(REQUEST_ENTITY_TOO_LARGE);
     if ( _fileInfo.ContentType["type"].compare("application/x-www-form-urlencoded") == 0)
     {
         url_decode(req);
@@ -198,8 +200,6 @@ void request::printServerLogs(method const & vars){
     strftime(buffer, 80, "%H:%M:%S ", timeinfo);
     std::string _Time(buffer);
 
-
-
     color_status.clear();
     if (vars.getStatuscode() >= 200 && vars.getStatuscode() < 300)
         color_status.append(GREEN);
@@ -209,6 +209,7 @@ void request::printServerLogs(method const & vars){
         color_status.append(RED);
     else if (vars.getStatuscode() >= 500 && vars.getStatuscode() < 600)
         color_status.append(MAUVE);
+        
     std::string _host(_findHeader("Host").substr(0,  _findHeader("Host").find(":")));
     std::string _meth( _findHeader(REQUEST_METHOD));
     std::string _req_uri( _findHeader(REQUEST_URI));

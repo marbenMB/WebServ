@@ -5,7 +5,7 @@
 #include <dirent.h>
 
 
-_Get::_Get(request _request)
+_Get::_Get(request & _request)
 {
     std::ifstream inFile;
     std::string line = "";
@@ -51,7 +51,10 @@ _Get::_Get(request _request)
     else if ((STATInfo.st_mode & S_IFMT) == S_IFDIR) { // is dir
         filename.append(_request.getdefaultIndex());
         inFile.open(filename.c_str(), std::ifstream::in);
-        if (Is_cgi(filename)){ throw request::CGI();}
+        if (Is_cgi(filename)){ 
+            _request._setHeaderReq(REQUEST_URI, _request.getdefaultIndex());
+            throw request::CGI();
+        }
         else if (!inFile.is_open() && _request.getAutoIndex() == AUTOINDEX_ON) // run AutoIndex 
         {
             std::string pathdir(_request._findHeader(REQUEST_URI));
