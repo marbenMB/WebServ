@@ -1,32 +1,30 @@
 #include "../../include/method.hpp"
 
-method::method(/* args */)
-{
+method::method(){}
+
+
+void method::setStatus(int code){
+
+    this->reason_phrase = Assets::getError(code);
+    this->statuscode = code;
 }
 
-method::~method()
-{
-}
+
+
+
+method::~method(){}
+
+
+
+// ! checked 
 void method::setStatuscode(int sCode)
 {
     this->statuscode = sCode;
 }
 
-void method::setHost(std::string host)
-{
-    this->host = host;
-}
 void method::setreason_phrase(std::string reason_phrase)
 {
     this->reason_phrase = reason_phrase;
-}
-void method::setRequest_URI(std::string request_URI)
-{
-    this->request_URI = request_URI;
-}
-void method::setHttp_version(std::string http_version)
-{
-    this->http_version = http_version;
 }
 
 int const &method::getStatuscode(void) const
@@ -34,10 +32,7 @@ int const &method::getStatuscode(void) const
     return (this->statuscode);
 }
 
-std::string const &method::getHost(void) const
-{
-    return (this->host);
-}
+
 
 std::string const &method::getreason_phrase(void) const
 {
@@ -46,10 +41,7 @@ std::string const &method::getreason_phrase(void) const
 
 
 
-void method::setRootPath(std::string root_path)
-{
-    this->root_path = root_path;
-}
+
 
 std::string const &method::getResponseBody(void) const
 {
@@ -59,34 +51,6 @@ void method::setResponseBody(std::string reqBody)
 {
     this->responseBody = reqBody;
 }
-std::map<std::string, std::string> const &method::getContent_Type(void) const
-{
-    return (this->Content_Type);
-}
-std::string const &method::getTransfer_Encoding(void) const
-{
-    return (this->Transfer_Encoding); //
-}
-int const &method::getClient_max_body_size(void) const
-{
-    return (this->client_max_body_size);
-}
-
-int const &method::getContent_Length(void) const
-{
-    return (this->Content_Length);
-}
-
-int const &method::getsocketID(void) const
-{
-    return (this->socketID);
-}
-void method::setsocketID(int socketId)
-{
-    this->socketID = socketId;
-}
-
-
 
 std::string _CREATEresponse(
     std::map<std::string,
@@ -100,7 +64,7 @@ std::string _CREATEresponse(
     // status Line :
     std::string status_line = "HTTP/1.1";
     status_line.append(" ");
-    status_line.append(std::to_string(code_status)); // c++11
+    status_line.append(ft_to_string(code_status)); // c++11
     status_line.append(" ");
     status_line.append(reason_phrase);
     status_line.append(CRLF);

@@ -6,7 +6,7 @@
 /*   By: mmasstou <mmasstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 19:13:05 by mmasstou          #+#    #+#             */
-/*   Updated: 2023/03/20 10:04:01 by mmasstou         ###   ########.fr       */
+/*   Updated: 2023/03/21 10:08:38 by mmasstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ Assets::Assets()
 }
 
 std::string 
+
 Assets::getError(int code)
 {
-    return Assets::_errorList[std::to_string(code)];
+    return Assets::_errorList[ft_to_string(code)];
 }
 
 std::string 

@@ -31,18 +31,18 @@ void ConfigFile::key_value_error_page(ServerConf &server,Data &g_Data, KeyValue 
             server.server_data[v.key].push_back(variable);
         else if (!g_Data.error.length()){
             g_Data.error = "WebServer: [emerg] invalid value \"" + variable + "\" in ";
-            g_Data.error += this->filename + ':' + std::to_string(this->line_index);
+            g_Data.error += this->filename + ':' + ft_to_string(this->line_index);
         }
         v.value.erase(0, v.index + 1);
     }
     trim(v.value, " \t;");
     if (!v.value.length() || !find_error) {
         g_Data.error = "WebServer: [emerg] invalid number of arguments in \"";
-        g_Data.error += v.key + "\" directive in " + this->filename + ':' + std::to_string(this->line_index);
+        g_Data.error += v.key + "\" directive in " + this->filename + ':' + ft_to_string(this->line_index);
     }
     else if (v.value.find(".html") == std::string::npos) {
         g_Data.error = "WebServer: [emerg] " + v.value + " is not a error file ('file.html') in \"";
-        g_Data.error += this->filename + ':' + std::to_string(this->line_index);
+        g_Data.error += this->filename + ':' + ft_to_string(this->line_index);
     }
     else
         server.server_data[v.key].push_back(v.value);
@@ -99,6 +99,7 @@ void ConfigFile::location(Data &g_Data, ServerConf &server, KeyValue v)
                 trim(v.line, " \t:'[]");
                 v.value = v.line;
                 check_semicolon(g_Data, v);
+                trim(v.value, " \t:'[] ;");
                 v.line = v.value;
                 while ((v.index = v.line.find(" ")) != -1) {
                     v.value = v.line.substr(0, v.index);
@@ -107,6 +108,7 @@ void ConfigFile::location(Data &g_Data, ServerConf &server, KeyValue v)
                     v.line.erase(0, v.index + 1);
                     trim(v.line, " \t:',[]");
                 }
+                trim(v.line, " \t:',[]");
                 v.value = v.line;
                 location_var[v.key].push_back(v.value);
             }
@@ -139,10 +141,10 @@ void ConfigFile::fill_vector_variable(Data &g_Data, ServerConf &server, KeyValue
     else if (v.key == "server")
     {
         g_Data.error = "WebServer: [emerg] unexpected end of file, expecting\"}\" in ";
-        g_Data.error += this->filename + ':' + std::to_string(this->line_index);
+        g_Data.error += this->filename + ':' + ft_to_string(this->line_index);
     }
     else {
         g_Data.error = "WebServer: [emerg] unknown directive \"";
-        g_Data.error += v.key + "\" in " + this->filename + ':' + std::to_string(this->line_index);
+        g_Data.error += v.key + "\" in " + this->filename + ':' + ft_to_string(this->line_index);
     }
 }

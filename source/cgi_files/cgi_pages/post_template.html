@@ -42,12 +42,18 @@
 	</style>
     
 </head>
-<body>
-    <form action="" method="post" enctype="application/x-www-form-urlencoded">
-        <input type="text" name="title" placeholder="Title" />
-        <input type="text" name="heading" placeholder="Heading" />
-        <input type="text" name="message" placeholder="Message" />
+<body >
+	<form action="" method="post" enctype="application/x-www-form-urlencoded">
+		<input type="text" name="title" placeholder="Title" required/>
+        <input type="text" name="heading" placeholder="Heading" required/>
+        <input type="text" name="message" placeholder="Message" required/>
+		<label for="session">session</label>
+		<select name="session" id="session">
+			<option value="no">No</option>
+			<option value="yes">Yes</option>
+		</select>
         <button type="submit">Submit</button>
+		<!-- <input type="radio" id="session" name="option" value="session"> -->
     </form>
   </body>
 </html>
