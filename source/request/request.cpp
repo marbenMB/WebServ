@@ -49,6 +49,8 @@ request::request(
 
 
             this->Verifying_Header(_requestHeader);
+			if (status == TIMEOUT)
+                throw _Exception(BAD_REQUEST);
             this->Retrieving_requested_resource(server);
             if (this->_findHeader(REQUEST_METHOD).compare("POST") == 0)
                 this->Verifying_Body(_requestBody);
