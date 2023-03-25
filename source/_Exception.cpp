@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   _Exception.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbenbajj <mbenbajj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmasstou <mmasstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 16:47:27 by mmasstou          #+#    #+#             */
-/*   Updated: 2023/03/25 17:12:01 by mbenbajj         ###   ########.fr       */
+/*   Updated: 2023/03/25 21:57:08 by mmasstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ _Exception::what(request req) throw(){
     method *resp;
 
     resp = new Error(req);
-     if (this->_ExceptionCode >= 300 && this->_ExceptionCode < 400){
+    if (this->_ExceptionCode >= 300 && this->_ExceptionCode < 400){
         _filename.clear();
         _filename.append(req.getDefault_30x());
     }

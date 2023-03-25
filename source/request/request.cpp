@@ -14,6 +14,9 @@ request::request(
     std::string _requestBody;
     std::string _requestHeader;
     method *reqmethod;
+    time_t rawtime;
+    struct tm* timeinfo;
+    char buffer[80];
     
     // std::vector<std::string> req_vector = split(request, "\r\n\r\n");
     // std::cout << _request << std::endl;
@@ -65,6 +68,16 @@ request::request(
         try{reqmethod = e.runCGI(*this);}
         catch (_Exception &e){reqmethod = e.what(*this);}
     }
+    // Date: <day-name>, <day> <month> <year> <hour>:<minute>:<second> GMT
+     time(&rawtime);
+    timeinfo = localtime(&rawtime);
+    std::strftime(buffer, 80, "%A, %d %B %Y %H:%M:%S GMT", timeinfo);
+    std::string _Time(buffer);
+    reqmethod->addHeader("Date", _Time);
+    reqmethod->addHeader("Cache-Control", "no-cache");
+    if (!this->_findHeader("User-Agent").empty())
+        reqmethod->addHeader("User-Agent", this->_findHeader("User-Agent"));
+    reqmethod->addHeader("Server", "SA3DIYA");
     response = _CREATEresponse(
         reqmethod->getHeader(),
         reqmethod->getStatuscode(),
