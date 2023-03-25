@@ -31,7 +31,7 @@ _Exception::generateBody() {
     std::string buffer;
     std::string _body;
     
-    inFile.open(_filename, std::ifstream::in);
+    inFile.open(_filename.c_str(), std::ifstream::in);
     while (std::getline(inFile, buffer))
     {
         if (buffer.find("<title>") != std::string::npos){
