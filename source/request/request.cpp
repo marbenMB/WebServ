@@ -142,6 +142,54 @@ void request::Verifying_Body(std::string req)
     this->Content_Type = _fileInfo.ContentType;
 }
 
+void request::initializationFILES(std::vector<std::string> filesVECTER)
+{
+    std::vector<std::pair<std::string, std::string> > _files;
+    std::pair<std::string, std::string>  _filesContent;
+    std::vector<std::string> tmp;
+    std::vector<std::string> file_header;
+    std::vector<std::string> content_disposition;
+    std::vector<std::string>::iterator it = filesVECTER.begin();
+    size_t pos;
+
+    while (it != filesVECTER.end()){
+        try{
+        // tmp = split((std::string)it[0], CRLF_2);
+        pos = it[0].find(CRLF_2);
+        if (pos != std::string::npos){
+            tmp.push_back(it[0].substr(0, pos));
+            tmp.push_back(it[0].substr(pos + 4, it[0].length()));
+        }
+        else {
+            throw std::invalid_argument("makayench Bady ...");
+        }
+
+        // std::cout << "it[0] :" <<  "------" << tmp.size() << "*****" << it[0] << std::endl;
+        file_header = split((std::string)tmp[0], CRLF);
+        if (file_header.size() != 2){
+            throw std::invalid_argument("makaynach smiya dyal file ...");
+        }
+        content_disposition = split(file_header[0], "; ");
+        std::string filename;
+        if (content_disposition.size() > 2 && content_disposition[2].length() > 11) // if post is not empty
+        {
+
+            int endfilename = content_disposition[2].length() - 11;
+
+            filename.append(content_disposition[2].substr(10, endfilename));
+            _filesContent.first = filename;
+            _filesContent.second = tmp[1];
+            _files.push_back(_filesContent);
+        }
+        else{throw std::invalid_argument("3iw haschi khawi");}}
+        catch(const std::exception& e){std::cerr << e.what() << '\n';}
+        it++;
+    }
+    if (_files.size())this->req_body = _files;
+    else{throw  _Exception(BAD_REQUEST);}
+}
+
+
 void request::url_decode(std::string &url)
 {
     std::ostringstream unescaped;

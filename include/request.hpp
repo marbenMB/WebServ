@@ -140,7 +140,6 @@ public:
 
     request(int, ServerConf *, std::string, std::string &);
     void Retrieving_requested_resource(ServerConf *server);
-    void GETstatusOfexecution(method *req_method) const;
     std::vector<std::string> const &create_response();
     int findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >);
 
