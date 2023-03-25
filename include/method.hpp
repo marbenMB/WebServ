@@ -69,7 +69,7 @@ public:
 class _Post : public method
 {
 public:
-    _Post(request rhs);
+    _Post(request & rhs);
     ~_Post();
     int execute_method(request _request);
 };

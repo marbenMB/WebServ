@@ -37,6 +37,7 @@
 #include <sys/socket.h>
 #include <fstream>
 #include "./WebServer.hpp"
+#include "./ft_cgi.hpp"
 
 #include "./method.hpp"
 #include "./_Exception.hpp"
@@ -131,6 +132,7 @@ public:
 
     // ! end cheack ;
     bool getIs_cgi(void);
+    void setIs_cgi(int);
     void addType(std::string, std::string);
     std::string const &getType(std::string);
 

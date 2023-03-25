@@ -66,6 +66,8 @@ void    request::Retrieving_requested_resource(ServerConf *server)
     if (location_vars["fastcgi_pass"].size()){
         this->fastcgi_pass = location_vars["fastcgi_pass"][0];
     }
+    else
+        this->fastcgi_pass = FAST_CGI_PASS;
 
     // fastcgi_index
     if (location_vars["fastcgi_index"].size()){

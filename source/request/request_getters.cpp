@@ -71,6 +71,10 @@ std::string const &request::getType(std::string key){
 bool request::getIs_cgi( void ){
     return this->is_cgi;
 }
+
+void request::setIs_cgi( int index ){
+    this->is_cgi = index;
+}
 std::string const & request::getUpload_store_PATH( void ) const{
     return this->upload_store;
 }
