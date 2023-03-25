@@ -32,7 +32,7 @@ endif
 %.o:%.cpp $(DEPS)
 	${CC} ${FLAGS}  -o $@ -c $<
 
-all: $(NAME)
+all: $(NAME) Env
 
 $(NAME): $(FILES_OBJ)
 	${CC}  ${FLAGS}  $(FILES_OBJ) -o $(NAME)
