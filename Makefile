@@ -36,7 +36,7 @@ all: $(NAME)
 
 $(NAME): $(FILES_OBJ)
 	${CC}  ${FLAGS}  $(FILES_OBJ) -o $(NAME)
-	@ mkdir -p public/upload/
+	
 
 clean:
 	@rm -f $(OBJS)  $(request_OBJS) $(method_OBJS) $(config_OBJS)
@@ -48,5 +48,9 @@ fclean: clean
 
 re: fclean all
 
+Env : 
+	@ mkdir -p public/upload/
+	@ bash conf/scriptEnv.sh
+	# @ source ~/.zshrc
 
 .PHONY : all  push clean fclean re

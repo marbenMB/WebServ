@@ -41,7 +41,7 @@ func getPage(paramsDict map[string]string) string {
         message = paramsDict["message"]
     }
     if os.Getenv("VALID_COOKIE") == "NO" {
-        template, err := os.ReadFile("/Users/aboulhaj/Desktop/WebServ/public/assets/no_cookie.html")
+        template, err := os.ReadFile("public/assets/no_cookie.html")
         if err != nil {
             fmt.Println(err)
             return ""

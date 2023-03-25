@@ -52,7 +52,6 @@
 #define REQUEST_METHOD "request_method"
 #define HTTP_VERSION "http_version"
 #define PARAMS "params"
-#define FAST_CGI_PASS "fastcgi_pass"
 // request URI :
 
 
