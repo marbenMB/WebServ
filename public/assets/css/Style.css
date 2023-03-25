@@ -218,6 +218,15 @@ a {
 	text-transform: uppercase;
 	text-align: center;
 }
+
+.choices {
+	display: flex;
+}
+
+.choices a {
+	margin: 20px;
+}
+
 #Footer	{
 	grid-column-start: 1;
 	grid-column-end: span 3;
