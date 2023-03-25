@@ -8,7 +8,7 @@ rejectBtn.addEventListener('click' , ()=>{
 })
 
 acceptBtn.addEventListener('click' , async ()=>{
-  await fetch('http://127.0.0.1:80/file.py', {
+  await fetch('', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'

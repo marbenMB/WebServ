@@ -121,6 +121,7 @@ private:
     void printServerLogs(method const & vars);
     method *execute_request(void);
 
+    int request_status;
 public:
     // ! cheacked :
     std::string _findHeader(std::string header);
@@ -134,10 +135,8 @@ public:
     std::string const &getType(std::string);
 
     //  read Files
-    bool retrievingsatatuscodeFile(void);
     std::string const &getReason(std::string);
 
-    bool uploadType(void);
 
     request(int, ServerConf *, std::string, std::string &);
     void Retrieving_requested_resource(ServerConf *server);

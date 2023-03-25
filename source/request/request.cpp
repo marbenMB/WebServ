@@ -8,11 +8,13 @@ request::request(
                              __post(NOT_ALLOWED),
                              __delete(NOT_ALLOWED),
                              __get(NOT_ALLOWED),
-                             __noImplimented(NOT_ALLOWED)
+                             __noImplimented(NOT_ALLOWED),
+                             request_status(status) 
 {
     std::string _requestBody;
     std::string _requestHeader;
     method *reqmethod;
+    
     // std::vector<std::string> req_vector = split(request, "\r\n\r\n");
     // std::cout << _request << std::endl;
     try
@@ -20,8 +22,7 @@ request::request(
         try
         {
             /* code */
-            if (status == TIMEOUT)
-                throw _Exception(BAD_REQUEST);
+           
             // std::cout << "_request :" << _request << std::endl;
             size_t splitIndex = _request.find(CRLF_2);
             _requestHeader.clear();
@@ -42,9 +43,6 @@ request::request(
             this->setRedirect_status(-1);
             this->setcompare_URI("");
             this->is_cgi = false;
-
-            this->uploadType();
-            this->retrievingsatatuscodeFile();
 
             this->Verifying_Header(_requestHeader);
             this->Retrieving_requested_resource(server);
@@ -175,12 +173,16 @@ void request::Verifying_Header(std::string req)
     std::vector<std::string> requestHeaders = split(req, CRLF);
 
     initializationRequestHeaders(requestHeaders);
-    if (_findHeader(HTTP_VERSION).compare("HTTP/1.1") != 0)
+    if (_findHeader(HTTP_VERSION).compare("HTTP/1.1") != 0 && request_status == WELL)
             throw _Exception(BAD_REQUEST);
-    if (_findHeader(REQUEST_URI).empty() ||
+    if ((_findHeader(REQUEST_URI).empty() ||
         _findHeader(REQUEST_METHOD).empty() ||
         _findHeader(HTTP_VERSION).empty() ||
-        _findHeader("Host").empty()) throw _Exception(BAD_REQUEST);
+        _findHeader("Host").empty()) && request_status == WELL) throw _Exception(BAD_REQUEST);
+     if (request_status == TIMEOUT)
+        throw _Exception(REQUEST_TIME_OUT);
+
+    
 }
 
 request::~request(){}
@@ -194,11 +196,35 @@ void request::_setHeaderReq(std::string key, std::string value){
 
 void request::printServerLogs(method const & vars){
     std::string color_status;
-    if (vars.getStatuscode() == 200)
-        color_status = GREEN;
-    else
-        color_status = RED;
-    std::cout << color_status <<  _findHeader("Host").substr(0,  _findHeader("Host").find(":")) << " " <<  _findHeader(REQUEST_METHOD) << " HTTP/1.1 " << vars.getStatuscode() << " " << vars.getreason_phrase() << " " <<  _findHeader(REQUEST_URI) << " " << vars.getResponseBody().length() << END_CLR << std::endl;
+    time_t rawtime;
+    struct tm* timeinfo;
+    char buffer[80];
+
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+    strftime(buffer, 80, "%H:%M:%S ", timeinfo);
+    std::string _Time(buffer);
+
+
+
+    color_status.clear();
+    if (vars.getStatuscode() >= 200 && vars.getStatuscode() < 300)
+        color_status.append(GREEN);
+    else if (vars.getStatuscode() >= 300 && vars.getStatuscode() < 400)
+        color_status.append(BLUE);
+    else if (vars.getStatuscode() >= 400 && vars.getStatuscode() < 500)
+        color_status.append(RED);
+    else if (vars.getStatuscode() >= 500 && vars.getStatuscode() < 600)
+        color_status.append(MAUVE);
+    std::string _host(_findHeader("Host").substr(0,  _findHeader("Host").find(":")));
+    std::string _meth( _findHeader(REQUEST_METHOD));
+    std::string _req_uri( _findHeader(REQUEST_URI));
+
+    _req_uri = _req_uri.empty() ? "URIND" : _req_uri;
+    _meth = _meth.empty() ? "MND" : _meth;
+    _host = _host.empty() ? "HND": _host;
+    
+    std::cout << color_status << _Time << ": " <<  _host << " " <<  _meth << " HTTP/1.1 " << vars.getStatuscode() << " " << vars.getreason_phrase() << " " << _req_uri << " " << vars.getResponseBody().length() << END_CLR << std::endl;
 }
 
 method *request::execute_request(void)
@@ -224,6 +250,7 @@ method *request::execute_request(void)
         std::vector<std::string> _split;
         std::vector<std::string>::iterator it = req.begin();
         std::string it_value(*it);
+
 
         _split = split(it_value, " ");
         if (_split.size() < 2)

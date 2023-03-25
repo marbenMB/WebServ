@@ -16,29 +16,12 @@ void    request::Retrieving_requested_resource(ServerConf *server)
     std::vector<std::string>::iterator client_max_body_size_vect = it["client_max_body_size"].begin();
     if (!client_max_body_size_vect[0].empty() && it["client_max_body_size"].size() == 1){
        this->client_max_body_size = atoll(it["client_max_body_size"][0].c_str());
-        // std::cout << "client_max_body_size :" << this->client_max_body_size << std::endl;
     }
-
-     /* -------------------------------------------------------------------------- */
-     /*                              // ? error pages                              */
-     /* -------------------------------------------------------------------------- */
     this->checkForErrorPage(it["error_page"]);
-
-
     // ! LOCATION
-
     std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > > location = server->locations;
-    // **> Create iterator for etch loation :
     std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator locations_iterator = location.begin();
-   
-    //*                                    vars                                    
-    /* -------------------------------------------------------------------------- */
-    // bool allow = false;
-    // bool deny = false;
-    int j = 0;
-    // int i = 0;
-    // bool allow_methods = false;
-    // create compare URI
+
     int locationIndex;
     //  *|> /srcs/dir001/dir0011/test.txt
     locationIndex = this->findLocation(location);
@@ -52,7 +35,6 @@ void    request::Retrieving_requested_resource(ServerConf *server)
 
     // get the location
     locations_iterator += locationIndex;
-    j++;
     // ***> Create iterator for location Data
     std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator location_iterator = locations_iterator->begin();
     std::string str = location_iterator->first;
@@ -60,9 +42,9 @@ void    request::Retrieving_requested_resource(ServerConf *server)
     // get location Data from ConfigFile
     // create map instance 'location_vars'
     std::map<std::string, std::vector<std::string> > location_vars = location_iterator->second;
-    std::vector<std::string>::iterator iitt = location_vars["root"].begin();
+    std::vector<std::string>::iterator __iterator = location_vars["root"].begin();
     // root
-    if (location_vars["root"].size()) this->root = *iitt;
+    if (location_vars["root"].size()) this->root = *__iterator;
     
     // if is not CGI and requestURI is not in root dir 
     if (!this->is_cgi && !is__subDir(this->root, this->_findHeader(REQUEST_URI))){
@@ -75,7 +57,6 @@ void    request::Retrieving_requested_resource(ServerConf *server)
         this->upload_store.clear();
         this->upload_store.append(this->root);
         this->upload_store.append(location_vars["upload_store"][0]);
-        // std::cout << "upload_store :" << this->upload_store << std::endl;
     }
     else{
         this->upload_store.clear();
@@ -91,46 +72,31 @@ void    request::Retrieving_requested_resource(ServerConf *server)
         this->fastcgi_index = location_vars["fastcgi_index"][0];
     }
     // autoindex
-    iitt = location_vars["autoindex"].begin();
     if (location_vars["autoindex"].size() > 0 &&  location_vars["autoindex"][0].compare("on") == 0) {
-        // std::cout << "autoindex :"  << location_vars["autoindex"][0] <<"|"<< std::endl;
         this->autoindex = AUTOINDEX_ON;
-        }
-    // std::cout << RED << "   +>redirection" << END_CLR << std::endl;
-
+    }
     // redirection :
-    iitt = location_vars["return"].begin();
     int vect_size = location_vars["return"].size();
     if (vect_size == 2){
-       
-        // std::cout << "  +>redirect :" << location_vars["return"][0] << std::endl;
-        // std::cout << "  +>redirect :" << location_vars["return"][1] << std::endl;
         this->setRedirect_status(atoi(location_vars["return"][0].c_str()));
         this->setredirect_URL(location_vars["return"][1]);
     }
-    else
-    {
-        this->setRedirect_status(-1);
-        this->setredirect_URL("");
-    }
-    // std::cout << RED << "   +>allow_methods" << END_CLR << std::endl;
-
     // Allow_methods
-    iitt = location_vars["allow_methods"].begin();
+    __iterator = location_vars["allow_methods"].begin();
     if (location_vars["allow_methods"].size()){
-        while (iitt != location_vars["allow_methods"].end()){
-            if ((*iitt).compare(_findHeader(REQUEST_METHOD)) == 0)
+        while (__iterator != location_vars["allow_methods"].end()){
+            if ((*__iterator).compare(_findHeader(REQUEST_METHOD)) == 0)
             {
                 if (_findHeader(REQUEST_METHOD).compare("POST") == 0) {this->__post = ALLOWED;}
                 else if (_findHeader(REQUEST_METHOD).compare("GET") == 0) {this->__get = ALLOWED;}
                 else if (_findHeader(REQUEST_METHOD).compare("DELETE") == 0) {this->__delete = ALLOWED;}
                 // allow_methods = true;
             }
-            ++iitt;
-            // std::cout << "req method :" << _findHeader(REQUEST_METHOD) << std::endl;
-
+            ++__iterator;
         }
     }
-    if ((_findHeader(REQUEST_METHOD).compare("POST") != 0 ) && (_findHeader(REQUEST_METHOD).compare("GET") != 0) && (_findHeader(REQUEST_METHOD).compare("DELETE")))
+    if ((_findHeader(REQUEST_METHOD).compare("POST") != 0 ) &&
+        (_findHeader(REQUEST_METHOD).compare("GET") != 0) &&
+        (_findHeader(REQUEST_METHOD).compare("DELETE")))
             this->__noImplimented = ALLOWED;
 }

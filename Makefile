@@ -4,7 +4,7 @@ REQUEST_PATH = ./source/request/
 METHODS_PATH = ./source/methods/
 CONFIGFILE_PATH = ./source/config_file/
 INCLUDES_PATH = ./include/
-FLAGS =  -Wall -Wextra -Werror -std=c++98  #-fsanitize=address
+FLAGS =  -Wall -Wextra -Werror -std=c++98  -fsanitize=address
 
 DEBUG = false
 
@@ -15,7 +15,7 @@ config_SRCS = $(CONFIGFILE_PATH)ConfigFile.cpp $(CONFIGFILE_PATH)CheckValidity.c
 
 method_SRCS =  $(METHODS_PATH)get.cpp  $(METHODS_PATH)method.cpp $(METHODS_PATH)delete.cpp  $(METHODS_PATH)post.cpp  $(METHODS_PATH)error.cpp
 request_SRCS =  $(REQUEST_PATH)request.cpp $(REQUEST_PATH)split.cpp $(REQUEST_PATH)trimFront.cpp $(REQUEST_PATH)parse.cpp $(REQUEST_PATH)request_getters.cpp $(REQUEST_PATH)redirection.cpp $(REQUEST_PATH)Retrieving_requested_resource.cpp $(REQUEST_PATH)GETstatusOfexecution.cpp
-SRCS =  ./source/main.cpp  ./source/Assets.cpp  ./source/_Exception.cpp $(REQUEST_PATH)is__subdir.cpp $(REQUEST_PATH)is_cgi.cpp $(REQUEST_PATH)retrievingStatusCodeFile.cpp $(SERVSRC)
+SRCS =  ./source/main.cpp  ./source/Assets.cpp  ./source/_Exception.cpp $(REQUEST_PATH)is__subdir.cpp $(REQUEST_PATH)is_cgi.cpp $(SERVSRC)
 
 method_OBJS	= $(method_SRCS:.cpp=.o)
 request_OBJS = $(request_SRCS:.cpp=.o)
@@ -36,6 +36,7 @@ all: $(NAME)
 
 $(NAME): $(FILES_OBJ) 
 	${CC}  ${FLAGS}  $(FILES_OBJ) -o $(NAME) -g
+	@mkdir -p public/upload
 	# @make clean -C ./
 
 push:fclean
