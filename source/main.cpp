@@ -48,5 +48,5 @@ void s3ediya() {
 int main(int ac, char **av)
 {
 	_main(ac, av);
-    atexit(s3ediya);
+    // atexit(s3ediya);
 }

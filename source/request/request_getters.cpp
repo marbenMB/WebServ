@@ -51,105 +51,16 @@ int request::getAllowedGet() const{
     return this->__get;
 }
 
-
-int request::findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > > location){
-    char realPATH_dir[PATH_MAX];
-    char realPATH_subdir[PATH_MAX];
-    // char* _subdir;
-    std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator locations_iterator = location.begin();
-    int locationId = -1;
-    int index = 0;
-    std::string compare_URI;
-    std::string str;
-    compare_URI.clear();
-    size_t pos = 0;
-    
-    if ((pos =  _findHeader(REQUEST_URI).rfind(".py")) != std::string::npos && (pos + 3) ==  _findHeader(REQUEST_URI).length())
-    {
-       this->is_cgi = true; 
-        this->compare_URI.append("\%.py$");
-    }
-    else if ((pos =  _findHeader(REQUEST_URI).rfind(".go")) != std::string::npos && (pos + 3) ==  _findHeader(REQUEST_URI).length())
-    {
-        this->is_cgi = true;
-        this->compare_URI.append("\%.go$");
-    }
-    else  
-    {
-        // this->compare_URI.append("/");
-        // if (!this->request_URI.empty())
-        this->compare_URI.append(this->_findHeader(REQUEST_URI));
-    }
-    // this->compare_URI.append(this->request_URI);
-     //  * init string |> /srcs/dir001/dir0011/test.txt
-    // std::cout << "++> URI :" << this->compare_URI << std::endl;
-
-    while (locations_iterator != location.end())
-    {
-        // ***> Create iterator for location Data
-        std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator location_iterator = locations_iterator->begin();
-        // std::cout << "  +>" << location_iterator->first << "<| >this->compare_URI :" << this->compare_URI<<"<|" << std::endl;
-        str.clear();
-        str.append(location_iterator->first);
-        // std::cout << "str : |" << str << "| this->compare_URI : |" << this->compare_URI <<"| " <<  std::endl;
-        if (str.compare(this->compare_URI) == 0){locationId = index;break;}
-        ++locations_iterator;
-        index++;
-        if (locations_iterator == location.end() && locationId == -1){  // if '/srcs/dir001/dir0011/test.txt' not found ;
-            size_t start = this->compare_URI.find_last_of("/"); // find the last '/'
-            // std::cout << "  #|>" << start <<std::endl;
-            if (start != std::string::npos && this->compare_URI.compare("/") != 0){ // if the's  '/'
-                locations_iterator = location.begin(); // init iterator to the begin
-                index = 0; // init index count to the 0 for anther tour
-                if (!start){start += 1;}// for the last one means request URI is  '/' ;becuse we should remove the last '/'
-                this->compare_URI.erase(start, this->compare_URI.length() - 1); // now remove after ''/
-            }
-        }
-    }
-    if (!this->is_cgi) // remove the mutch string 
-    {
-        if (locationId != -1)
-        {
-            std::string __erraseTmp( _findHeader(REQUEST_URI)) ;
-            std::string __URI(this->getroot());
-            if (__erraseTmp.compare("/") != 0)
-            {
-                this->setcompare_URI(str);
-                __erraseTmp.erase(0,str.length());
-                __URI.append("/");
-            }
-            __URI.append(__erraseTmp);
-            realpath("./", realPATH_subdir);
-            realpath(__URI.c_str(), realPATH_dir);
-            __erraseTmp.clear();
-            __erraseTmp.append(realPATH_dir);
-            __erraseTmp.erase(0, strlen(realPATH_subdir));
-            __URI.clear();
-            __URI.append(".");
-            __URI.append(__erraseTmp);
-            this->_requestHeaders[REQUEST_URI] = __URI;
-        }
-    }
-    if (this->is_cgi && locationId == -1)
-        throw  _Exception(NOT_IMPLEMENTED);
-    return locationId;
-}
-
-
-
 std::vector<std::pair<std::string, std::string> > const & request::getReqBody( void ) const
 {
     return this->req_body;
 }
-
 std::string const & request::getcompare_URI( void ) const{
     return this->compare_URI;
 }
 void request::setcompare_URI(std::string compare_URI){
     this->compare_URI = compare_URI;
 }
-
-
 void request::addType(std::string key, std::string value){
     this->_typs[key] = value;
 }
@@ -157,88 +68,36 @@ std::string const &request::getType(std::string key){
     return this->_typs[key];
 }
 
-bool request::uploadType(void ){
-    std::ifstream file;
-    std::string buffer;
-    std::vector<std::string> _split;
-
-
-    file.open(MIME_TYPE_PATH, std::ifstream::in);
-    if (!file.is_open())
-        throw  _Exception(INTERNAL_SERVER_ERROR);
-    while (std::getline(file, buffer))
-    {
-        _split = split(buffer, ": ");
-        // std::cout << " KEY :" << _split[1] << std::endl;
-        // std::cout << " VALUE :" << _split[0] << std::endl;
-        this->addType(_split[1], _split[0]);
-    }
-    file.close();
-    return true;
-}
-
 bool request::getIs_cgi( void ){
     return this->is_cgi;
 }
 
-
+void request::setIs_cgi( int index ){
+    this->is_cgi = index;
+}
 std::string const & request::getUpload_store_PATH( void ) const{
     return this->upload_store;
 }
-
-
 bool request::getCGIstatus( void ) const{
     return this->is_cgi;
 }
-
 std::string const &request::getReason(std::string key){
     return this->_statusCode[key];
 }
 
-void request::initializationFILES(std::vector<std::string> filesVECTER)
+int const &request::getRedirect_status(void) const
 {
-    std::vector<std::pair<std::string, std::string> > _files;
-    std::pair<std::string, std::string>  _filesContent;
-    std::vector<std::string> tmp;
-    std::vector<std::string> file_header;
-    std::vector<std::string> content_disposition;
-    std::vector<std::string>::iterator it = filesVECTER.begin();
-
-    // try
-    // {
-        /* code */
-        while (it != filesVECTER.end()){
-            try{
-            tmp = split((std::string)it[0], CRLF_2);
-            if (tmp.size() != 2){
-                throw std::invalid_argument("makayench Bady ...");
-            }
-            file_header = split((std::string)tmp[0], CRLF);
-            if (file_header.size() != 2){
-                throw std::invalid_argument("chi7aja wa93a ...");
-            }
-            content_disposition = split(file_header[0], "; ");
-            std::string filename;
-            if (content_disposition.size() > 2 && content_disposition[2].length() > 11) // if post is not empty
-            {
-
-                int endfilename = content_disposition[2].length() - 11;
-
-                filename.append(content_disposition[2].substr(10, endfilename));
-                _filesContent.first = filename;
-                _filesContent.second = tmp[1];
-                _files.push_back(_filesContent);
-                // std::cout << "_filesContent.first :" << _filesContent.first << std::endl;
-                // std::cout << "_filesContent.second :" << _filesContent.second << std::endl;
-            }
-            else{throw std::invalid_argument("3iw haschi khawi");}}
-            catch(const std::exception& e){std::cerr << e.what() << '\n';}
-            it++;
-        }
-        if (_files.size())
-            this->req_body = _files;
-        else{
-            throw  _Exception(BAD_REQUEST);
-        }
+    return this->redirect_status;
 }
-
+void request::setRedirect_status(int redirect_status)
+{
+    this->redirect_status = redirect_status;
+}
+std::string const &request::getredirect_URL(void) const
+{
+    return (this->redirect_URL);
+}
+void request::setredirect_URL(std::string redirect_URL)
+{
+    this->redirect_URL = redirect_URL;
+}

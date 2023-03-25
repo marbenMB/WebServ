@@ -2,6 +2,7 @@
 #define FT_CGI_HPP
 
 #include <fcntl.h>
+#include <sys/wait.h>
 #include "./WebServer.hpp"
 #include "./request.hpp"
 
@@ -10,6 +11,9 @@
 #define ERR_SERV 500
 #define NEED_COOKIE 15
 #define COOKIE_TIME 10
+#define FAST_CGIPASS "./source/cgi_files/cgi_script"
+
+class request;
 // #define 
 
 void set_env(request req, std::vector<char*> &env_vec);

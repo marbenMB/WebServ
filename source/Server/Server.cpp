@@ -18,13 +18,7 @@ std::multimap<std::string, int>	extractionIpPort(std::vector<std::string> combIp
 		if (nFind != std::string::npos)
 		{
 			ip = it->substr(0, nFind);
-			try
-			{
-				port = std::stoi(it->substr((nFind + 1), it->length()));
-			}	catch (std::exception &e)
-			{
-				std::cout << e.what() << std::endl;
-			}
+			port = std::atoi(it->substr((nFind + 1), it->length()).c_str());
 		}
 		else
 		{
@@ -36,13 +30,7 @@ std::multimap<std::string, int>	extractionIpPort(std::vector<std::string> combIp
 			}
 			else
 			{
-				try
-				{
-					port = std::stoi(it->substr((nFind + 1), it->length()));
-				}	catch (std::exception &e)
-				{
-					std::cout << e.what() << std::endl;
-				}
+				port = std::atoi(it->substr((nFind + 1), it->length()).c_str());
 				ip = std::string(DEFAULT_IP);
 			}
 		}
@@ -85,7 +73,7 @@ void	createSockets(WebServ &serv)
 	int		sockFd;
 	int		optval = 1;
 
-	struct addrinfo	hints, *res;
+	struct addrinfo	hints;
 	std::stringstream		ss;
 	std::string				strPort;
 
@@ -119,12 +107,12 @@ void	createSockets(WebServ &serv)
 			ss >> strPort;
 			ss << "";
 			ss.clear();
-			if (getaddrinfo(it->first.c_str(), strPort.c_str(), &hints, &res))
-			{
-				std::cerr << it->first << " : " << strPort << std::endl;
-				throw	std::runtime_error("Address Not Available !!");
-			}
-			freeaddrinfo(res);
+			// if (getaddrinfo(it->first.c_str(), strPort.c_str(), &hints, &res))
+			// {
+			// 	std::cerr << it->first << " : " << strPort << std::endl;
+			// 	throw	std::runtime_error("Address Not Available !!");
+			// }
+			// freeaddrinfo(res);
 
 			//	-- Binding the socket with Ip and Port
 			bzero(&addr, sizeof(addr));

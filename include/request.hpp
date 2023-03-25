@@ -13,6 +13,7 @@
 #define AUTOINDEX_ON 548
 #define AUTOINDEX_OFF 549
 #define _NO_CGI_LOCATION 1337
+#define PATH_MAX 1024
 
 #define SP " "
 #define LF "\n"
@@ -36,6 +37,7 @@
 #include <sys/socket.h>
 #include <fstream>
 #include "./WebServer.hpp"
+#include "./ft_cgi.hpp"
 
 #include "./method.hpp"
 #include "./_Exception.hpp"
@@ -120,6 +122,7 @@ private:
     void printServerLogs(method const & vars);
     method *execute_request(void);
 
+    int request_status;
 public:
     // ! cheacked :
     std::string _findHeader(std::string header);
@@ -129,18 +132,16 @@ public:
 
     // ! end cheack ;
     bool getIs_cgi(void);
+    void setIs_cgi(int);
     void addType(std::string, std::string);
     std::string const &getType(std::string);
 
     //  read Files
-    bool retrievingsatatuscodeFile(void);
     std::string const &getReason(std::string);
 
-    bool uploadType(void);
 
     request(int, ServerConf *, std::string, std::string &);
     void Retrieving_requested_resource(ServerConf *server);
-    void GETstatusOfexecution(method *req_method) const;
     std::vector<std::string> const &create_response();
     int findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >);
 
@@ -187,7 +188,7 @@ public:
     class CGI
     {
     public:
-        method *runCGI(request req);
+        method *runCGI(request & req);
         void cookie_session(request req, std::string &Cookie_value, int &is_valid);
     };
 };

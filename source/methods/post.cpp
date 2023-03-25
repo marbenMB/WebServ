@@ -1,6 +1,6 @@
 #include "../../include/method.hpp"
 
-_Post::_Post(request _request)
+_Post::_Post(request &_request)
 {
     
     std::string buffer;
@@ -13,18 +13,19 @@ _Post::_Post(request _request)
     std::map<std::string, std::string> tmp = _request.getContent_Type();
     if (_request.getRedirect_status() != -1)
     {
-
         this->setStatus(_request.getRedirect_status());
         filename.clear();
         filename.append(_request.getroot());
         filename.append(_request.getredirect_URL());
-
         _request._setHeaderReq(REQUEST_URI, filename);
         // set Header : 
         this->addHeader("Location", _request.getredirect_URL());
         body.append("");
     }
     else if (tmp["type"].compare("application/x-www-form-urlencoded") == 0){
+        _request._setHeaderReq(REQUEST_URI, _request.getdefaultIndex());
+        if (Is_cgi(_request.getdefaultIndex()))
+            _request.setIs_cgi(true);
         if (_request.getCGIstatus()){ throw request::CGI();}
     }
     else if (tmp["type"].compare("multipart/form-data") == 0)
@@ -43,8 +44,9 @@ _Post::_Post(request _request)
             filename.append("/");
             filename.append((*file_It).first);
             // std::cout <<" abs path to the file created :" << filename << std::endl;
-            outFile.open(filename, std::ifstream::out);
+            outFile.open(filename.c_str(), std::ifstream::out);
             if (!outFile.is_open()){ // cant open this file  Internal Server Error
+                std::cout << "file : " << filename << std::endl;
                throw _Exception(INTERNAL_SERVER_ERROR);
             }
             outFile << file_It[0].second;
@@ -57,13 +59,14 @@ _Post::_Post(request _request)
             filename.append(CREATE_SUCCESS_FILE);
             body.clear();
             std::stringstream ssbuf;
-            inFile.open(filename, std::ifstream::in);
+            inFile.open(filename.c_str(), std::ifstream::in);
             ssbuf << inFile.rdbuf();
             body.append(ssbuf.str());
             inFile.close();
         }
     }
    this->setResponseBody(body);
+   this->execute_method(_request);
 }
 _Post::~_Post(){}
 int _Post::execute_method(request _request)

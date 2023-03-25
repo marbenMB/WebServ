@@ -5,7 +5,7 @@
 #include <dirent.h>
 
 
-_Get::_Get(request _request)
+_Get::_Get(request & _request)
 {
     std::ifstream inFile;
     std::string line = "";
@@ -43,15 +43,18 @@ _Get::_Get(request _request)
         // if (Is_cgi(_request.getredirect_URL())){ throw request::CGI();} 
         std::stringstream ssbuf;
         this->setStatus(OK);
-        inFile.open(filename, std::ifstream::in);
+        inFile.open(filename.c_str(), std::ifstream::in);
         ssbuf << inFile.rdbuf();
         line.append(ssbuf.str());
         inFile.close();
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFDIR) { // is dir
         filename.append(_request.getdefaultIndex());
-        inFile.open(filename, std::ifstream::in);
-        if (Is_cgi(filename)){ throw request::CGI();}
+        inFile.open(filename.c_str(), std::ifstream::in);
+        if (Is_cgi(filename)){ 
+            _request._setHeaderReq(REQUEST_URI, _request.getdefaultIndex());
+            throw request::CGI();
+        }
         else if (!inFile.is_open() && _request.getAutoIndex() == AUTOINDEX_ON) // run AutoIndex 
         {
             std::string pathdir(_request._findHeader(REQUEST_URI));
@@ -100,11 +103,9 @@ _Get::_Get(request _request)
                 {
                     // *  <tbody id="tbody">
                     line.append(buffer);
-                    line.append("\n\r");
                     break;
                 }
                 line.append(buffer);
-                line.append("\n\r");
             }
 
             inFile.close();
@@ -113,9 +114,10 @@ _Get::_Get(request _request)
             std::string request_URITmp;
 
             request_URITmp.append(_request._findHeader(REQUEST_URI));
-            (request_URITmp.back() == '/')
+            (request_URITmp[request_URITmp.length() - 1] == '/')
                 ? request_URITmp.erase(request_URITmp.length() - 1, request_URITmp.length())
                 : request_URITmp;
+
             while ((dp = readdir(dirp)) != NULL)
             {
                 /*
@@ -161,7 +163,6 @@ _Get::_Get(request _request)
                 if (d_nameTmp.compare(".") != 0 || d_nameTmp.compare("..") != 0)
                 {
                     filePATH.clear();
-                    filePATH.append(_request.getroot());
                     filePATH.append(request_URITmp);
                     filePATH.append("/");
                     filePATH.append(dp->d_name);
@@ -195,7 +196,7 @@ _Get::_Get(request _request)
                 perror("closedir");
                 throw _Exception(INTERNAL_SERVER_ERROR);
             }
-            dp = nullptr;
+            dp = NULL;
             line.append("</tbody></table></body></html>");
             this->setStatus(OK);
            
@@ -224,6 +225,13 @@ _Get::_Get(request _request)
     
     
     this->setResponseBody(line);
+    this->execute_method(_request);
+    
+}
+
+_Get::~_Get(){}
+int _Get::execute_method(request _request)
+{
     std::string extension;
     size_t pos = _request._findHeader(REQUEST_URI).rfind(".");
     if (pos == 0)
@@ -233,12 +241,5 @@ _Get::_Get(request _request)
     this->addHeader("Cache-Control", "no-cache");
     this->addHeader("Content-Type", Assets::__getType(extension));
     this->addHeader("Content-Length", ft_to_string(this->getResponseBody().length()));
-    
-}
-
-_Get::~_Get(){}
-int _Get::execute_method(request _request)
-{
-    (void)_request;
     return 1;
 }
