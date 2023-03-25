@@ -65,6 +65,24 @@ a {
 	font-size: var(--P-size);
 }
 
+.Ps-txt {
+	font-family: var(--global-font);
+	color: var(--global-color);
+	font-weight: var(--global-fontWeight);
+	font-size: var(--Ps-size);
+}
+
+.S-txt {
+	font-family: var(--S-font);
+	color: var(--S-color);
+	font-size: var(--S-size);
+	
+}
+
+.Selected {
+	font-weight: var(--global-fontWeight);
+	color: rgb(64, 133, 245);
+}
 
 #Barre-Icon {
 	height: var(--icon-height);
@@ -94,25 +112,6 @@ a {
 
 #Path img {
 	margin: auto 10px;
-}
-
-.Selected {
-	font-weight: var(--global-fontWeight);
-	color: rgb(64, 133, 245);
-}
-
-.Ps-txt {
-	font-family: var(--global-font);
-	color: var(--global-color);
-	font-weight: var(--global-fontWeight);
-	font-size: var(--Ps-size);
-}
-
-.S-txt {
-	font-family: var(--S-font);
-	color: var(--S-color);
-	font-size: var(--S-size);
-	
 }
 
 #Main {
@@ -166,6 +165,34 @@ a {
 	margin-top: 40px;
 	margin-bottom: 10px;
 	font-size: 60px;
+}
+
+.Description {
+	margin-top: 50px;
+	padding: 20px;
+}
+
+.Description ul {
+	list-style-type: none;
+	margin: 20px;
+}
+
+
+.Description p {
+	display: inline;
+	margin-left: 10px;
+}
+
+.Description a {
+	justify-content: center;
+	text-align: center;
+	max-width: max-content;
+}
+
+.btn {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 .title p {
