@@ -89,7 +89,8 @@ void request::Verifying_Body(std::string req)
     // find boundary inside content Type : synthax +> Content-Type: multipart/form-data; boundary=[boundary string]
     _fileInfo.tmp_vector = split(_fileInfo._string, ";");
     _fileInfo.ContentType["type"] = (std::string)_fileInfo.tmp_vector[0];
-
+    if (_fileInfo.ContentType["type"].compare("application/x-www-form-urlencoded") != 0 && _fileInfo.ContentType["type"].compare("multipart/form-data") != 0)
+        throw _Exception(NOT_IMPLEMENTED);
     if (_fileInfo.tmp_vector.size() >= 2)
         _fileInfo.ContentType["boundary"] = trimFront((std::string)_fileInfo.tmp_vector[1], "boundary=");
     
@@ -137,7 +138,7 @@ void request::Verifying_Body(std::string req)
         initializationFILES( _fileInfo.tmp_vector);
     }
     else{ // theres no boundary
-        std::cout << " :" << _fileInfo.contentLength << "| " << "chi7aja khra ******* * * * * \n";
+        std::cout << "3iw hmmmmm\n" ;
     }
     this->Content_Type = _fileInfo.ContentType;
 }
