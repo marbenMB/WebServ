@@ -12,6 +12,8 @@
 #define NEED_COOKIE 15
 #define COOKIE_TIME 10
 #define FAST_CGIPASS "./source/cgi_files/cgi_script"
+
+class request;
 // #define 
 
 void set_env(request req, std::vector<char*> &env_vec);
