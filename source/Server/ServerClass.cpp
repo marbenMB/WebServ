@@ -346,7 +346,7 @@ bool	ClientSock::checkSockReady(void)
 
 bool	ClientSock::timeOutRequest(void)
 {
-	if (_lastRead && ft_gettime() - _lastRead > TIMELIMIT)
+	if (!_readiness && (_lastRead && ft_gettime() - _lastRead > TIMELIMIT))
 		return true;
 	return false;
 }

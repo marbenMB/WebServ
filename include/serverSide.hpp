@@ -20,7 +20,7 @@
 #define	MAXREAD	500000
 #define	MAXSEND	500000
 
-#define	OUTTIME	300
+#define	OUTTIME	600
 ///////////////////// ***** ////////////////////
 
 //	****	*********	****	//
