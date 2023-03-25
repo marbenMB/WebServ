@@ -63,7 +63,7 @@ _Post::_Post(request _request)
         }
     }
    this->setResponseBody(body);
-   execute_method(_request);
+   this->execute_method(_request);
 }
 _Post::~_Post(){}
 int _Post::execute_method(request _request)

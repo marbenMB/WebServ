@@ -5,7 +5,7 @@
 #include <dirent.h>
 
 
-_Get::_Get(request _request)
+_Get::_Get(request & _request)
 {
     std::ifstream inFile;
     std::string line = "";
@@ -51,7 +51,10 @@ _Get::_Get(request _request)
     else if ((STATInfo.st_mode & S_IFMT) == S_IFDIR) { // is dir
         filename.append(_request.getdefaultIndex());
         inFile.open(filename.c_str(), std::ifstream::in);
-        if (Is_cgi(filename)){ throw request::CGI();}
+        if (Is_cgi(filename)){ 
+            _request._setHeaderReq(REQUEST_URI, _request.getdefaultIndex());
+            throw request::CGI();
+        }
         else if (!inFile.is_open() && _request.getAutoIndex() == AUTOINDEX_ON) // run AutoIndex 
         {
             std::string pathdir(_request._findHeader(REQUEST_URI));
@@ -222,6 +225,13 @@ _Get::_Get(request _request)
     
     
     this->setResponseBody(line);
+    this->execute_method(_request);
+    
+}
+
+_Get::~_Get(){}
+int _Get::execute_method(request _request)
+{
     std::string extension;
     size_t pos = _request._findHeader(REQUEST_URI).rfind(".");
     if (pos == 0)
@@ -231,12 +241,5 @@ _Get::_Get(request _request)
     this->addHeader("Cache-Control", "no-cache");
     this->addHeader("Content-Type", Assets::__getType(extension));
     this->addHeader("Content-Length", ft_to_string(this->getResponseBody().length()));
-    
-}
-
-_Get::~_Get(){}
-int _Get::execute_method(request _request)
-{
-    (void)_request;
     return 1;
 }

@@ -39,7 +39,7 @@ _Delete::_Delete(request _request)
 
     inFilemessage.close();
     this->setResponseBody(line); // set the data that previce read from the file to the body response 
-    
+    this->execute_method(_request);
 }
 
 _Delete::~_Delete(){}

@@ -239,7 +239,7 @@ void request::CGI::cookie_session(request req, std::string &Cookie_value, int &i
 }
 
 
-method * request::CGI::runCGI(request req){
+method * request::CGI::runCGI(request & req){
     char**              envp;
     std::vector<char*>  env_vec;
     std::string         _body;

@@ -42,31 +42,31 @@ void request::checkForErrorPage(std::vector<std::string> vect){
         if ((*errorspage_iterator).find(".html") != std::string::npos){
             if (one) {
 
-                this->default_10x = this->root + *errorspage_iterator;
+                this->default_10x = this->root + "/" + *errorspage_iterator;
                 if (stat(this->default_10x.c_str(), &STATFile) != 0){
                    this->default_10x = ERROR_PATH;
                 }
             }
             if (two){
-                 this->default_20x = this->root + *errorspage_iterator;
+                 this->default_20x = this->root+ "/" + *errorspage_iterator;
                 if (stat(this->default_20x.c_str(), &STATFile) != 0){
                    this->default_20x = ERROR_PATH;
                 }
             }
             if (three){
-                 this->default_30x = this->root + *errorspage_iterator;
+                 this->default_30x = this->root + "/" + *errorspage_iterator;
                 if (stat(this->default_30x.c_str(), &STATFile) != 0){
                    this->default_30x = ERROR_PATH;
                 }
             }
             if (fore){
-                 this->default_40x = this->root + *errorspage_iterator;
+                this->default_40x = this->root + "/" + *errorspage_iterator;
                 if (stat(this->default_40x.c_str(), &STATFile) != 0){
                    this->default_40x = ERROR_PATH;
                 }
             }
             if (five){
-                this->default_50x = this->root + *errorspage_iterator;
+                this->default_50x = this->root + "/" + *errorspage_iterator;
                 if (stat(this->default_50x.c_str(), &STATFile) != 0){
                    this->default_50x = ERROR_PATH;
                 }

@@ -8,7 +8,7 @@ rejectBtn.addEventListener('click' , ()=>{
 })
 
 acceptBtn.addEventListener('click' , async ()=>{
-  await fetch('', {
+  await fetch('file.go', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'

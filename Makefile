@@ -21,10 +21,10 @@ method_OBJS	= $(method_SRCS:.cpp=.o)
 request_OBJS = $(request_SRCS:.cpp=.o)
 config_OBJS = $(config_SRCS:.cpp=.o)
 OBJS	= $(SRCS:.cpp=.o)
-DEPS =  $(INCLUDES_PATH)request.hpp $(INCLUDES_PATH)method.hpp $(INCLUDES_PATH)WebServer.hpp $(INCLUDES_PATH)ConfigFile.hpp $(INCLUDES_PATH)classes.hpp $(INCLUDES_PATH)serverSide.hpp $(INCLUDES_PATH)header.hpp $(INCLUDES_PATH)unitTests.hpp $(INCLUDES_PATH)Assets.hpp
+DEPS =  $(INCLUDES_PATH)request.hpp $(INCLUDES_PATH)method.hpp $(INCLUDES_PATH)WebServer.hpp $(INCLUDES_PATH)ConfigFile.hpp $(INCLUDES_PATH)classes.hpp $(INCLUDES_PATH)serverSide.hpp $(INCLUDES_PATH)unitTests.hpp $(INCLUDES_PATH)Assets.hpp
 
-_OBJ = $(OBJS) $(config_OBJS) $(request_OBJS) $(method_OBJS)
 FILES_OBJ = $(OBJS) $(config_OBJS) $(request_OBJS) $(method_OBJS)
+
 ifeq ($(DEBUG),true)
     FILES_OBJ = $(config_SRCS) $(SRCS)  $(request_SRCS) $(method_SRCS)
 endif
@@ -34,28 +34,19 @@ endif
 
 all: $(NAME)
 
-$(NAME): $(FILES_OBJ) 
-	${CC}  ${FLAGS}  $(FILES_OBJ) -o $(NAME) -g
-	@mkdir -p public/upload
-	# @make clean -C ./
-
-push:fclean
-	@git status
-	@read -p "Files To Add:" files; git add "$$files"
-	@read -p "Message:" message; git commit -m "$$message"
-	@read -p "Branch:" branch; git push origin $$branch
+$(NAME): $(FILES_OBJ)
+	${CC}  ${FLAGS}  $(FILES_OBJ) -o $(NAME)
+	@ mkdir -p public/upload/
 
 clean:
 	@rm -f $(OBJS)  $(request_OBJS) $(method_OBJS) $(config_OBJS)
 	@echo "\x1b[36m   +> Clean \033[0m\033[38;5;42m [Done] \033[0m";
 	
 fclean: clean
-	@rm -f $(NAME) var/upload/Default/* var/upload/*
+	@rm -rf $(NAME) public/upload webServ.dSYM
 	@echo "\x1b[36m   +> fClean \033[0m\033[38;5;42m [Done] \033[0m";
 
 re: fclean all
 
 
 .PHONY : all  push clean fclean re
-
-# 
