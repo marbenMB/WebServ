@@ -243,6 +243,44 @@ a {
 	margin: 20px;
 }
 
+.Content .profiles {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	gap: 5%;
+}
+
+.card {
+	width: 30%;
+	height: 50%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	background-color: #2978FF;
+	border-radius: 8px;
+}
+
+.pic {
+	height: 150px;
+	border-radius: 50%;
+	border: solid 5px #fff;
+	margin: 20px;
+}
+
+.social {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	background-color: #fff;
+	border-radius: 8px;
+	margin: 20px;
+}
+
+.icon {
+	height: 15px;
+}
 
 #Footer	{
 	grid-column-start: 1;
