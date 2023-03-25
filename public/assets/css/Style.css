@@ -94,7 +94,6 @@ a {
 }
 
 #Path {
-	/* flex: 12%; */
 	min-height: 45px;
 	display: flex;
 	align-items: center;
@@ -128,8 +127,6 @@ a {
 .Content {
 	flex: 78%;
 	margin: 20px;
-	/* height: 85%; */
-	/* min-height: 100%; */
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -243,30 +240,67 @@ a {
 	margin: 20px;
 }
 
-.Content .profiles {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	gap: 5%;
-}
-
-.card {
-	width: 30%;
-	height: 50%;
+.body {
+	flex: 78%;
+	margin: 20px;
+	/* height: 85%; */
+	/* min-height: 100%; */
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
+	gap: 20px;
+}
+
+.body h2 {
+	margin-top: 40px;
+	margin-bottom: 10px;
+	font-size: 60px;
+}
+
+.body .profiles {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	/* align-items: center; */
+	gap: 5%;
+}
+
+.card {
+	max-width: 30%;
+	min-width: 200px;
+	height: 60%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 	background-color: #2978FF;
 	border-radius: 8px;
+	margin: 40px;
+}
+
+.present {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.present h3 {
+	color : #fff;
+	font-size: 20px;
+}
+
+.present p {
+	color: #fff;
+	font-size: 15px;
 }
 
 .pic {
 	height: 150px;
 	border-radius: 50%;
 	border: solid 5px #fff;
-	margin: 20px;
 }
 
 .social {
