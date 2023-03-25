@@ -221,11 +221,28 @@ a {
 
 .choices {
 	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	justify-content: center;
+	align-items: center;
 }
 
-.choices a {
+.choices form {
+	margin: 20px;
+	background-color: #2978FF;
+	max-width: max-content;
+	padding: 20px;
+	border-radius: 8px;
+}
+
+.cgi {
+	display: flex;
+}
+
+.cgi a {
 	margin: 20px;
 }
+
 
 #Footer	{
 	grid-column-start: 1;
