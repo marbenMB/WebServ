@@ -4,7 +4,7 @@ void ConfigFile::parcing_file(std::string confilename, Data &g_Data){
     std::string sufx = ".conf";
     this->_in_file.open(confilename.c_str());
     if (this->_in_file.is_open()){
-        if(confilename.rfind(sufx) == confilename.length() - sufx.length()) {
+        if(confilename.rfind(sufx) != std::string::npos && confilename.rfind(sufx) == (confilename.length() - sufx.length())) {
             this->filename = confilename;
             getdata(g_Data);
         }
@@ -45,7 +45,7 @@ bool ConfigFile::check_braces(Data &g_Data) {
     this->_in_file.seekg(0, std::ios::beg);
     if (!brace_stack.empty()) {
         g_Data.error = "WebServer: [emerg] unexpected end of file, expecting\"}\" in ";
-        g_Data.error += this->filename + ':' + std::to_string(line_index);
+        g_Data.error += this->filename + ':' + ft_to_string(line_index);
     }
     return brace_stack.empty();
 }
@@ -66,7 +66,7 @@ void ConfigFile::server_block(Data &g_Data, KeyValue v) {
             v.index = v.line.find(SPACE);
             if (v.index == -1) {
                 g_Data.error = "WebServer: [emerg] invalid number of arguments in \"";
-                g_Data.error += v.line + "\" directive in " + this->filename + ':' + std::to_string(this->line_index);
+                g_Data.error += v.line + "\" directive in " + this->filename + ':' + ft_to_string(this->line_index);
                 break;
             }
             v.key = v.line.substr(0, v.index);

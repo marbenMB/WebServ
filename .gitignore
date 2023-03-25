@@ -1,7 +1,21 @@
 .DS_Store
 *.dSYM
 .vscode
+<<<<<<< HEAD
 var/upload
 public/upload
 Test
 file
+=======
+*/*.o
+*/*/*.o
+*.o
+webServ
+<<<<<<< HEAD
+/source/cgi_files/cgi_pages/file_cgi.html
+=======
+public/upload
+public/test
+source/cgi_files/cgi_pages/file_cgi.html
+>>>>>>> 7fe82a468e16e0df07185807a849b783d76f1e4b
+>>>>>>> af86a85dd02816493bb795d9110e896e6c3d99a2

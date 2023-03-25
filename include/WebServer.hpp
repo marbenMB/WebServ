@@ -12,7 +12,7 @@
 #include <map>
 #include <vector>
 #include <stack>
-#include <libc.h>
+// #include <libc.h>
 #include <netdb.h>
 #include <cstring>
 #include <sys/stat.h>
@@ -20,6 +20,7 @@
 #include "classes.hpp"
 #include "ConfigFile.hpp"
 #include "ft_tools.hpp"
+#include "request.hpp"
 
 
 ///////////////// config macros ////////
@@ -30,6 +31,8 @@
 #define IP_NUM "0123456789:."
 #define NUM "0123456789"
 #define SIZE_TYPE "MKGBmkgb"
+#define GO_PATH "/Users/mbenbajj/.brew/bin/go"
+#define HOME_PATH "/Users/mbenbajj"
 
 ///////////////////////////////////////
 

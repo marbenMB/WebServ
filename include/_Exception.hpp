@@ -6,7 +6,7 @@
 /*   By: mmasstou <mmasstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 16:33:08 by mmasstou          #+#    #+#             */
-/*   Updated: 2023/03/17 18:42:32 by mmasstou         ###   ########.fr       */
+/*   Updated: 2023/03/23 16:53:45 by mmasstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ enum _ErrorsCode
     METHOD_NO_ALLOWED,
     REQUEST_TIME_OUT = 408,
     LENGHT_REQUIRED = 411,
+    REQUEST_ENTITY_TOO_LARGE = 413,
     INTERNAL_SERVER_ERROR = 500,
     NOT_IMPLEMENTED,
     BAD_GATEWAY,
@@ -46,8 +47,10 @@ class _Exception
 {
 private:
     int _ExceptionCode;
+    std::string _filename;
+    std::string reason_phrase;
     std::string _body;
-    void generateBody(std::string reason_phrase);
+    void generateBody();
     void set_Body(std::string);
 
 public:

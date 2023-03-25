@@ -13,6 +13,7 @@
 #define AUTOINDEX_ON 548
 #define AUTOINDEX_OFF 549
 #define _NO_CGI_LOCATION 1337
+#define PATH_MAX 1024
 
 #define SP " "
 #define LF "\n"
@@ -26,6 +27,7 @@
 #define UPLOAD_STORE "./public/upload/"
 #define CREATE_SUCCESS_FILE "./public/assets/success.html"
 #define ERROR_PATH "./public/assets/error.html"
+#define NO_CONTENT_PATH "./public/assets/NoContent.html"
 
 #include <iostream>
 #include <unistd.h>
@@ -35,6 +37,7 @@
 #include <sys/socket.h>
 #include <fstream>
 #include "./WebServer.hpp"
+#include "./ft_cgi.hpp"
 
 #include "./method.hpp"
 #include "./_Exception.hpp"
@@ -118,6 +121,7 @@ private:
     void printServerLogs(method const & vars);
     method *execute_request(void);
 
+    int request_status;
 public:
     // ! cheacked :
     std::string _findHeader(std::string header);
@@ -127,19 +131,16 @@ public:
 
     // ! end cheack ;
     bool getIs_cgi(void);
+    void setIs_cgi(int);
     void addType(std::string, std::string);
     std::string const &getType(std::string);
 
     //  read Files
-    bool retrievingsatatuscodeFile(void);
     std::string const &getReason(std::string);
 
-    bool uploadType(void);
 
     request(int, ServerConf *, std::string, std::string &);
-    std::vector<std::string> &execute(std::string body, Data *_confdata);
     void Retrieving_requested_resource(ServerConf *server);
-    void GETstatusOfexecution(method *req_method) const;
     std::vector<std::string> const &create_response();
     int findLocation(std::vector<std::map<std::string, std::map<std::string, std::vector<std::string> > > >);
 
@@ -153,6 +154,7 @@ public:
     std::string const &getroot() const;
     std::string getCGIbody() const;
     std::string const &getdefaultIndex() const;
+    std::string getFastcgiPass() const;
     //  redirect
     int const &getRedirect_status(void) const;
     void setRedirect_status(int redirect_status);
@@ -185,7 +187,8 @@ public:
     class CGI
     {
     public:
-        method *runCGI(request req);
+        method *runCGI(request & req);
+        void cookie_session(request req, std::string &Cookie_value, int &is_valid);
     };
 };
 std::vector<std::string> split(const std::string &str, const std::string &delimiter);
@@ -194,4 +197,5 @@ std::string trimBack(const std::string &s, std::string trim);
 std::string _CREATEresponse(std::map<std::string, std::string> content_type, int code_status, std::string reason_phrase, std::string body);
 bool is__subDir(const std::string root, const std::string dir);
 bool Is_cgi(std::string);
+std::string ft_to_string(int entier);
 #endif
