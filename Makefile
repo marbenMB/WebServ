@@ -9,7 +9,7 @@ FLAGS =  -Wall -Wextra -Werror -std=c++98  -fsanitize=address
 
 DEBUG = false
 
-SERVSRC = $(SERVER_PATH)Server.cpp $(SERVER_PATH)ServerClass.cpp $(SERVER_PATH)utils.cpp $(SERVER_PATH)Check.cpp $(SERVER_PATH)unitTests.cpp $(SERVER_PATH)acceptProcess.cpp
+SERVSRC = $(SERVER_PATH)Server.cpp $(SERVER_PATH)ServerClass.cpp $(SERVER_PATH)utils.cpp $(SERVER_PATH)Check.cpp $(SERVER_PATH)unitTests.cpp $(SERVER_PATH)acceptProcess.cpp $(SERVER_PATH)socketClass.cpp
 config_SRCS = $(CONFIGFILE_PATH)ConfigFile.cpp $(CONFIGFILE_PATH)CheckValidity.cpp $(CONFIGFILE_PATH)ft_error.cpp $(CONFIGFILE_PATH)save_data.cpp $(CONFIGFILE_PATH)tool.cpp
 
 

@@ -116,20 +116,21 @@ class	ClientSock : public SockProp
 		ClientSock (int fd, int port, std::string ip);
 		~ClientSock ();
 
+		//??: Request handling
+		bool	timeOutRequest(void);
 		void	separateHeadBody(std::string tmp);
-		void	transferEncoding(void);
-		void	formRequest(void);
 		std::string	findHeaderValue(std::string header);
+		void	transferEncoding(void);
 		void	sockConnection(void);
 		void	hostResp(void);
 		void	readChunkBody(void);
+		bool	checkSockReady(void);
+		void	formRequest(void);
 
+		//??: Response handling
 		void	formResponse(void);
 		void	reFormResponse(int sent);
 		void	resetClientProp(void);
-		bool	checkSockReady(void);
-
-		bool	timeOutRequest(void);
 };
 
 class	Server
