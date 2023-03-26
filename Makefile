@@ -50,7 +50,6 @@ re: fclean all
 
 Env : 
 	@ mkdir -p public/upload/
-	@ bash conf/scriptEnv.sh
-	# @ source ~/.zshrc
+	@ zsh conf/scriptEnv.sh
 
 .PHONY : all  push clean fclean re
