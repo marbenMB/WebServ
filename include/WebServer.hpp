@@ -31,8 +31,8 @@
 #define IP_NUM "0123456789:."
 #define NUM "0123456789"
 #define SIZE_TYPE "MKGBmkgb"
-#define GO_PATH "/Users/mbenbajj/.brew/bin/go"
-#define HOME_PATH "/Users/mbenbajj"
+#define GO_PATH "/Users/aboulhaj/.brew/bin/go"
+#define HOME_PATH "/Users/aboulhaj"
 
 ///////////////////////////////////////
 

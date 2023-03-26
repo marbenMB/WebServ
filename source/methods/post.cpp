@@ -23,9 +23,11 @@ _Post::_Post(request &_request)
         body.append("");
     }
     else if (tmp["type"].compare("application/x-www-form-urlencoded") == 0){
-        _request._setHeaderReq(REQUEST_URI, _request.getdefaultIndex());
         if (Is_cgi(_request.getdefaultIndex()))
+        {
+            _request._setHeaderReq(REQUEST_URI, _request.getdefaultIndex());
             _request.setIs_cgi(true);
+        }
         if (_request.getCGIstatus()){ throw request::CGI();}
     }
     else if (tmp["type"].compare("multipart/form-data") == 0)
