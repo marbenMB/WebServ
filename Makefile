@@ -43,7 +43,7 @@ clean:
 	@echo "\x1b[36m   +> Clean \033[0m\033[38;5;42m [Done] \033[0m";
 	
 fclean: clean
-	@rm -rf $(NAME) public/upload webServ.dSYM
+	@rm -rf $(NAME) public/upload webServ.dSYM public/session_list.html
 	@echo "\x1b[36m   +> fClean \033[0m\033[38;5;42m [Done] \033[0m";
 
 re: fclean all

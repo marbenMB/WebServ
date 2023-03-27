@@ -1,6 +1,42 @@
 #include "../../include/request.hpp"
 #include "../../include/ft_cgi.hpp"
 
+extern std::map<std::string, std::string> session_map;
+
+void list_session_page(){
+    std::map<std::string, std::string>::iterator it_bg;
+    std::map<std::string, std::string>::iterator it_end = session_map.end();
+    std::ifstream inFile;
+    std::ofstream outFile;
+    std::string buffer;
+    std::string body;
+
+    inFile.open(SESSION_TEMPLATE, std::ifstream::in);
+    if (!inFile.is_open())
+        throw _Exception(INTERNAL_SERVER_ERROR); // r************
+    while (std::getline(inFile, buffer)){
+        if (buffer.find("id=\"tbody\"") != std::string::npos){
+            body.append(buffer);
+            break;
+        }
+        body.append(buffer);
+    }
+    for (it_bg = session_map.begin(); it_bg != it_end; it_bg++) {
+        body.append("<tr><td>");
+        body.append((*it_bg).first);
+        body.append("</td><td class=\"detailsColumn\" >");
+        body.append((*it_bg).second);
+        body.append("</td></tr>");
+    }
+    body.append("</tbody></table></div></div><div id=\"Footer\"><p class=\"S-txt\">Web 2.0</p><p class=\"S-txt\">HTTP/1.1</p></div></div></body></html>");
+    outFile.open(SESSION_PAGE, std::ifstream::out);
+    if (!inFile.is_open())
+        throw _Exception(INTERNAL_SERVER_ERROR); // r************
+    outFile << body;
+    inFile.close();
+    outFile.close();
+}
+
 std::string getpath(std::string path_of) {
     FILE* pipe;
     if (path_of.compare("home") == 0)
@@ -215,6 +251,8 @@ void free_env(char **env) {
 
 void request::CGI::cookie_session(request req, std::string &Cookie_value, int &is_valid) {
     std::string yes_no;
+    std::string id_session;
+    std::string value_session;
     size_t is_cookie = std::string::npos;
     size_t is_session = std::string::npos;
     std::string login;
@@ -237,8 +275,12 @@ void request::CGI::cookie_session(request req, std::string &Cookie_value, int &i
         is_cookie = std::string::npos;
     }
     if (yes_no.compare("yes") == 0){
+        id_session = generate_id();
         Cookie_value = "Session";
-        Cookie_value += generate_id() + "=" + generate_id();
+        value_session = generate_id();
+        Cookie_value += id_session + "=" + value_session;
+        session_map.insert(std::make_pair(("Session" + id_session),value_session));
+        list_session_page();
     }
 }
 

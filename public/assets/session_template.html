@@ -14,10 +14,14 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
     />
+    <!-- <link rel="stylesheet" href="./style.css" /> -->
     <link rel="stylesheet" href="/assets/assets/style.css" />
-    <link rel="stylesheet" href="/assets/assets/template.css" />
+    <!-- <link rel="stylesheet" href="./template.css" /> -->
+    <!-- <link rel="stylesheet" href="./session_template.css" /> -->
+    <link rel="stylesheet" href="/assets/assets/session_template.css" />
+    <!-- <link rel="icon" type="image/png" href="./favicon.svg" /> -->
     <link rel="icon" type="image/png" href="/assets/assets/favicon.svg" />
-    <title>{title}</title>
+    <title>Session list</title>
   </head>
 
   <body>
@@ -25,6 +29,7 @@
       <!-- logo part -->
       <div id="Logo">
         <a href="./Home.html"><img src="/assets/assets/favicon.svg" alt="WebServ Logo" /></a>
+
         <!-- <a href="./Home.html"><img src="/assets/assets/favicon.svg" alt="WebServ Logo" /></a> -->
       </div>
 
@@ -65,12 +70,32 @@
             <span class="Selected">CGI POST</span>
           </a>
         </div>
-        <div class="Content">
-            <h1 id="error_title">{heading}</h1>
-            <h2 id="error_disc">{message}</h2>
-            <form action="" method="get" enctype="">
-                <button type="submit">Re-Post</button>
-            </form>
+        <div class="Content" id="session">
+          <table>
+            <thead>
+                <tr class="header" id="theader">
+                    <th id="nameColumnHeader" tabindex="0" role="button">session Id</th>
+                    <th id="dateColumnHeader" class="detailsColumn" tabindex="0" role="button">
+                        value
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+
+            <tr>
+                <td>session_id</td>
+                <td class="detailsColumn" >value</td>
+            </tr>
+            <tr>
+              <td>session_id</td>
+              <td class="detailsColumn" >value</td>
+          </tr>
+          <tr>
+            <td>session_id</td>
+            <td class="detailsColumn" >value</td>
+        </tr>
+      </tbody>
+    </table>
         </div>
       </div>
 

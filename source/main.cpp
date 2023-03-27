@@ -1,8 +1,9 @@
 #include "../include/serverSide.hpp"
 #include "../include/unitTests.hpp"
 #include "../include/Assets.hpp"
+#include "../include/ft_cgi.hpp"
 
-
+std::map<std::string, std::string> session_map;
 
 int _main (int ac, char **av)
 {
@@ -20,6 +21,7 @@ int _main (int ac, char **av)
         return (1);
     }
 	std::cout << GREEN << "+> Parsing Done !!" << END_CLR << std::endl << std::endl;
+    list_session_page();
 
     Assets  _assets;
     //	***	Creating WebServer :

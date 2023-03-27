@@ -27,11 +27,11 @@ def get_page(params_dict):
             template = f.read()
         html = template
     elif (params_dict and len(params_dict) >= 3):
-        with open('source/cgi_files/cgi_pages/template.html', 'r') as f:
+        with open('public/assets/template.html', 'r') as f:
             template = f.read()
         html = template.format(title=title, heading=heading, message=message)
     else:
-        with open('source/cgi_files/cgi_pages/post_template.html', 'r') as f:
+        with open('public/assets/post_template.html', 'r') as f:
             template = f.read()
         html = template
 
