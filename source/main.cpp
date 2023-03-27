@@ -6,8 +6,6 @@
 
 int _main (int ac, char **av)
 {
-
-	
     Data 	g_Data;
     if (ac == 2)
         g_Data.configuration.parcing_file(av[1], g_Data);
@@ -37,7 +35,9 @@ int _main (int ac, char **av)
         // printSockProp(myServ.serverSockets);
         std::cout << GREEN << "+> Socket Created !!" << END_CLR << std::endl;
 
-        std::cout << GREEN << "+> Socket Created !!" << END_CLR << std::endl;
+		//	Log IP:PORTS listen
+        logListen(myServ);
+
         acceptClients(myServ);
     } catch (std::exception &e) {
         std::cout << RED << "+> " << e.what() << END_CLR << std::endl;
@@ -46,6 +46,7 @@ int _main (int ac, char **av)
     // system("leaks webserv");
     return (0);
 }
+
 void s3ediya() {
     system("leaks webServ");
 }
