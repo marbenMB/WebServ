@@ -1,6 +1,23 @@
 #include "../../include/request.hpp"
 #include "../../include/ft_cgi.hpp"
 
+std::string getpath(std::string path_of) {
+    FILE* pipe;
+    if (path_of.compare("home") == 0)
+        pipe = popen("echo ~", "r");
+    else
+        pipe = popen("which go", "r");
+    char buffer[128];
+    std::string result;
+    while (!feof(pipe)) {
+        if (fgets(buffer, 128, pipe) != NULL)
+            result += buffer;
+    }
+    pclose(pipe);
+    result.erase(remove(result.begin(), result.end(), '\n'), result.end()); // remove newline character
+    return result;
+}
+
 bool Is_cgi(std::string str)
 {
     size_t pos = 0;
@@ -20,7 +37,6 @@ std::string generate_id() {
 
 void set_env(request req, std::vector<char*> &env_vec, int is_valid) {
     std::string line;
-    std::ostringstream number_str;
 
     if (!req._findHeader("Content-Type").empty()) {
         line = "CONTENT_TYPE=";
@@ -56,13 +72,6 @@ void set_env(request req, std::vector<char*> &env_vec, int is_valid) {
         line += req. _findHeader(REQUEST_URI);
         env_vec.push_back(strdup(line.c_str()));
     }
-    if (!req. _findHeader(REQUEST_URI).empty()) {
-        if (req. _findHeader(REQUEST_URI).find(".py") != std::string::npos)
-            line = "SCRIPT_LANG=python";
-        else
-            line = "SCRIPT_LANG=go";
-        env_vec.push_back(strdup(line.c_str()));
-    }
     if (!req.getCGIbody().empty()) {
         line = "REQUEST_BODY=";
         line += req.getCGIbody();
@@ -71,12 +80,6 @@ void set_env(request req, std::vector<char*> &env_vec, int is_valid) {
     if (!req.getFastcgiPass().empty()) {
         line = "FASTCGI_PASS=";
         line += req.getFastcgiPass();
-        env_vec.push_back(strdup(line.c_str()));
-    }
-    else
-    {
-        line = "FASTCGI_PASS=";
-        line += "./source/cgi_files/cgi_script";
         env_vec.push_back(strdup(line.c_str()));
     }
     if (is_valid == NEED_COOKIE) {
@@ -88,7 +91,7 @@ void set_env(request req, std::vector<char*> &env_vec, int is_valid) {
         env_vec.push_back(strdup(line.c_str()));
     }
     line = "HOME=";
-    line += HOME_PATH;
+    line += getpath("home");
     env_vec.push_back(strdup(line.c_str()));
     env_vec.push_back(NULL);
 }
@@ -119,7 +122,7 @@ void run_child(std::string filename, char **envp) {
     }
     else
     {
-        argv[0] = strdup(GO_PATH);
+        argv[0] = strdup(getpath("go").c_str());
         argv[1] = strdup("run");
         argv[2] = strdup(filename.c_str());
         argv[3] = NULL;
@@ -139,7 +142,7 @@ void run_child(std::string filename, char **envp) {
 
 int run_cgi(char **envp, std::string &_body) {
     int             result = 0;
-    int             status;
+    int             status = 0;
     pid_t           pid;
     std::string     filename;
     std::string     line;
@@ -156,20 +159,21 @@ int run_cgi(char **envp, std::string &_body) {
             run_child(filename, envp);
         else {
             waitpid(pid, &status, 0);
-            if (!WIFEXITED(status))
+            if (WIFEXITED(status))
                 result = WEXITSTATUS(status);
         }
     }
-    if (!result) {};
-    body_file.open("source/cgi_files/cgi_pages/file_cgi.html");
-    if (body_file.is_open()) {
-        while(std::getline(body_file, line)) {
-            _body.append(line);
+    if (!result) {
+        body_file.open("source/cgi_files/cgi_pages/file_cgi.html");
+        if (body_file.is_open()) {
+            while(std::getline(body_file, line)) {
+                _body.append(line);
+            }
+            body_file.close();
+            return (SUCCESS);
         }
         body_file.close();
-        return (SUCCESS);
     }
-    body_file.close();
     return (ERR_SERV);
 }
 
@@ -238,7 +242,6 @@ void request::CGI::cookie_session(request req, std::string &Cookie_value, int &i
     }
 }
 
-
 method * request::CGI::runCGI(request & req){
     char**              envp;
     std::vector<char*>  env_vec;
@@ -264,9 +267,7 @@ method * request::CGI::runCGI(request & req){
     }
     else {
         delete resp;
-        // system("leaks webServ");
         throw _Exception(status);
     }
-    // system("leaks webServ");
     return resp;
 }

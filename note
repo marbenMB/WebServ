@@ -16,3 +16,13 @@ parcing a config file:
     * set index variable to the value 'index.html'.
     * set map body size to default if not define and the default is 2G in the 'B'.
     * check Required variable if exist. (listen - root).
+
+
+cgi function :
+
+1 - check if the user have a valid cookie: (is_cgi.cpp [cookie_session])
+    * if don't have a cookie. wait intel the user accept create a valid cookie with expire date.
+    * if the user want create a session, then generate a session with a random id.
+2 - set envp of the child process to run a cgi script. (is_cgi.cpp [set_env])
+3 - check if the script file valid and exist and run it depend on if is a python or go script. and write a result in file_cgi.html.
+4 - check if the child process exit with succes to know if the body and status of response is a new file get by cgi and 200 in response status or is error page 404 or 500 and with the same status.
