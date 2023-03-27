@@ -5,10 +5,11 @@
 #include "WebServer.hpp"
 #include "request.hpp"
 #include "method.hpp"
-#include <libc.h>
 #include <poll.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
+#include <sys/time.h>
+
 
 ///////////////////// MACROS ////////////////////
 #define	EXIT_FAILURE 1
