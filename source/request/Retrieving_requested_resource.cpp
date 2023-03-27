@@ -235,7 +235,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
                 __URI.append("/");
             }
             __URI.append(__erraseTmp);
-            realpath("./", realPATH_subdir);
+            realpath("/", realPATH_subdir);
             realpath(__URI.c_str(), realPATH_dir);
             __erraseTmp.clear();
             __erraseTmp.append(realPATH_dir);
