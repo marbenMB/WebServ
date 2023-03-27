@@ -38,10 +38,6 @@ enum ServerDef
 	CLOSE,
 	SET_CNX, //? connexion not set
 
-	//	** Socket readiness to respond
-	READY = 12,
-	N_READY,
-
 	//	** Request stat
 	STAT = 199,
 	WELL = 200,
@@ -177,25 +173,6 @@ class	WebServ
 };
 
 //	****	*********	****	//
-//	****	TEMPLATES	****	//
-//	****	*********	****	//
-
-template <typename T>
-std::vector<T>	deepCopyVector(std::vector<T> vec)
-{
-	std::vector<T>	newVec;
-	typename std::vector<T>::iterator	it;
-
-	it = vec.begin();
-	while (it != vec.end())
-	{
-		newVec.push_back(*it);
-		it++;
-	}
-	return newVec;
-}
-
-//	****	*********	****	//
 //	****	FUNCTIONS	****	//
 //	****	*********	****	//
 
@@ -213,6 +190,7 @@ bool	checkDefaultServer(std::map<SockProp, std::vector<Server> > &servMap,std::s
 std::multimap<std::string, int>	extractionIpPort(std::vector<std::string> combIpPort);
 WebServ						establishServers(Data &g_data);
 void						createSockets(WebServ &serv);
+void						logListen(WebServ serv);
 void						acceptClients(WebServ &serv);
 
 #endif

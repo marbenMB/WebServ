@@ -40,3 +40,17 @@ std::vector<std::string>	getStringKeyVal(std::map<std::string, std::vector<std::
 		return myMap[key];
 	return	std::vector<std::string>();
 }
+
+void	logListen(WebServ serv)
+{
+	std::map<SockProp, std::vector<Server> >::iterator	it = serv.serverSockets.begin();
+
+	std::cout << GREEN << "\n=========================================" << END_CLR << std::endl;
+	std::cout << "+> WebServ Listen to : " << std::endl;
+	while (it != serv.serverSockets.end())
+	{
+		std::cout << "		- " << it->first._IP << " : " << it->first._Port << std::endl;
+		it++;
+	}
+	std::cout << GREEN << "=========================================" << END_CLR << std::endl;
+}
