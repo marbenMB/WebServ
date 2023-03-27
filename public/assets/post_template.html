@@ -15,7 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
     />
     <link rel="stylesheet" href="../assets/assets/style.css" />
-    <link rel="stylesheet" href="../assets/assets/style-cookie.css">
+    <link rel="stylesheet" href="../assets/assets/post_template.css">
     <link rel="icon" type="image/png" href="../assets/assets/favicon.svg" />
     <title>Get Started</title>
   </head>
@@ -57,24 +57,32 @@
           </a>
           <a href="./Server.html" class="Ps-txt">
             <span class="material-symbols-outlined"> chevron_right </span>
-            <span class="Selected">Cookis</span>
+            <span class="Selected">CGI POST</span>
           </a>
         </div>
-        <div class="Content" >
-          <div class="cookie-message">
-            <img src="../assets/assets/cookie.png" alt="cookie">
-            <h1>ma3andex cookisa</h1>
-          </div>
-          <div class="cookie__box">
-            <img src="../assets/assets/cookie.png" alt="cookie">
-            <div class="content">
-              <h2>Cookie</h2>
-              <p>Accept uses cookies .</p>
-              <div class="btn__group">
-                <button class="accept__btn" type="submit">Accept</button>
-                <button class="reject__btn">Reject</button>
-              </div>
+        <div class="Content">
+          <div class="_title"> CGI Form</div>
+          <div class="form-container">
+            <form
+              action=""
+              method="post"
+              enctype="application/x-www-form-urlencoded"
+            >
+              <input type="text" name="title" placeholder="Title" required />
+              <input type="text"  name="heading" placeholder="Heading" required />
+              <input type="text" name="message" placeholder="Message" required />
+             
+            <div class="session-box">
+                <label for="session">session</label>
+                <select name="session" id="session">
+                  <option disabled value="no">Select your choise</option>
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
+                </select>
             </div>
+            
+              <button type="submit">Submit</button>
+            </form>
           </div>
         </div>
       </div>
@@ -85,6 +93,5 @@
         <p class="S-txt">HTTP/1.1</p>
       </div>
     </div>
-    <script src="../assets/assets/script.js"></script>
   </body>
 </html>

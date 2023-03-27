@@ -15,7 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
     />
     <link rel="stylesheet" href="../assets/assets/style.css" />
-    <link rel="stylesheet" href="../assets/assets/style-cookie.css">
+    <link rel="stylesheet" href="../assets/assets/template.css" />
     <link rel="icon" type="image/png" href="../assets/assets/favicon.svg" />
     <title>Get Started</title>
   </head>
@@ -25,6 +25,7 @@
       <!-- logo part -->
       <div id="Logo">
         <a href="./Home.html"><img src="../assets/assets/favicon.svg" alt="WebServ Logo" /></a>
+        <!-- <a href="./Home.html"><img src="../assets/assets/favicon.svg" alt="WebServ Logo" /></a> -->
       </div>
 
       <!-- Side barre -->
@@ -52,30 +53,21 @@
         <!-- Path Barre -->
         <div id="Path">
           <a href="./Home.html" class="Ps-txt">
+            <!-- <img id="Barre-Icon" src="../assets/assets/accueil.png" alt="Home" /> -->
             <img id="Barre-Icon" src="../assets/assets/accueil.png" alt="Home" />
             <span>WebServ</span>
           </a>
           <a href="./Server.html" class="Ps-txt">
             <span class="material-symbols-outlined"> chevron_right </span>
-            <span class="Selected">Cookis</span>
+            <span class="Selected">CGI POST</span>
           </a>
         </div>
-        <div class="Content" >
-          <div class="cookie-message">
-            <img src="../assets/assets/cookie.png" alt="cookie">
-            <h1>ma3andex cookisa</h1>
-          </div>
-          <div class="cookie__box">
-            <img src="../assets/assets/cookie.png" alt="cookie">
-            <div class="content">
-              <h2>Cookie</h2>
-              <p>Accept uses cookies .</p>
-              <div class="btn__group">
-                <button class="accept__btn" type="submit">Accept</button>
-                <button class="reject__btn">Reject</button>
-              </div>
-            </div>
-          </div>
+        <div class="Content">
+            <h1 id="error_title">{heading}</h1>
+            <h2 id="error_disc">{message}</h2>
+            <form action="" method="get" enctype="">
+                <button type="submit">Re-Post</button>
+            </form>
         </div>
       </div>
 
@@ -85,6 +77,5 @@
         <p class="S-txt">HTTP/1.1</p>
       </div>
     </div>
-    <script src="../assets/assets/script.js"></script>
   </body>
 </html>

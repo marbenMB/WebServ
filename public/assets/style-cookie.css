@@ -5,49 +5,19 @@
     --body-font: "Poppins", sans-serif;
     --normal-font-size: 0.938rem;
   }
+
   
-  @media screen and (min-width: 968px) {
-    :root {
-      --normal-font-size: 1rem;
-    }
-  }
-  
-  *,
-  *:after,
-  *:before {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    font-family: var(--body-font);
-    transition: all 0.2s ease;
-  }
-  
-  body {
-    font-size: var(--normal-font-size);
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-weight: 400;
-  }
-  
-  .container {
-    max-width: 1024px;
-    margin: 0 auto;
-    padding: 3rem 0;
-    min-height: 100vh;
-    display: grid;
-    place-items: center;
-  }
-  
-  .cookie {
+  .Content {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
     max-width: 90%;
-    min-height: 100vh;
+    /* min-height: 100vh; */
     margin: 40px auto;
     justify-content: center;
     align-items: center;
   }
+
   
   /* COOKIE CONSENT BOX */
   
@@ -68,7 +38,10 @@
     text-align: center;
     padding: 25px 25px 30px;
     transform: translateX(0px);
-    background-color: #ffffff;
+    color: #000;
+    background : whitesmoke;
+
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 
   .cookie__box.hide {
