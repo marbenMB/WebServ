@@ -321,15 +321,14 @@ method *request::execute_request(void)
         this->_requestHeaders[REQUEST_METHOD] = _split[0];
         this->_requestHeaders[REQUEST_URI] = _split[1];
         this->_requestHeaders[HTTP_VERSION] = _split[2];
-
         std::string URI( _findHeader(REQUEST_URI));
         url_decode(this->_requestHeaders[REQUEST_URI]);
         size_t spliteRequestURI = URI.find("?");
         if (spliteRequestURI != std::string::npos){
             this->_setHeaderReq(REQUEST_URI, URI.substr(0, spliteRequestURI));
             this->_setHeaderReq(PARAMS, URI.substr(spliteRequestURI + 1, URI.length()));
+            url_decode(this->_requestHeaders[PARAMS]);
         }
-
         while (++it != req.end())
         {
             _split = split((std::string)*it, ": ");
