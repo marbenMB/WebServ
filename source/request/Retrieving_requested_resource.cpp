@@ -190,12 +190,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
         this->is_cgi = true;
         this->compare_URI.append("\%.go$");
     }
-    else  
-    {
-        // this->compare_URI.append("/");
-        // if (!this->request_URI.empty())
-        this->compare_URI.append(this->_findHeader(REQUEST_URI));
-    }
+    else this->compare_URI.append(this->_findHeader(REQUEST_URI));
     // this->compare_URI.append(this->request_URI);
      //  * init string |> /srcs/dir001/dir0011/test.txt
     // std::cout << "++> URI :" << this->compare_URI << std::endl;
@@ -204,16 +199,13 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
     {
         // ***> Create iterator for location Data
         std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator location_iterator = locations_iterator->begin();
-        // std::cout << "  +>" << location_iterator->first << "<| >this->compare_URI :" << this->compare_URI<<"<|" << std::endl;
         router.clear();
         router.append(location_iterator->first);
-        // std::cout << "router : |" << router << "| this->compare_URI : |" << this->compare_URI <<"| " <<  std::endl;
         if (router.compare(this->compare_URI) == 0){locationId = index;break;}
         ++locations_iterator;
         index++;
         if (locations_iterator == location.end() && locationId == -1){  // if '/srcs/dir001/dir0011/test.txt' not found ;
             size_t start = this->compare_URI.find_last_of("/"); // find the last '/'
-            // std::cout << "  #|>" << start <<std::endl;
             if (start != std::string::npos && this->compare_URI.compare("/") != 0){ // if the's  '/'
                 locations_iterator = location.begin(); // init iterator to the begin
                 index = 0; // init index count to the 0 for anther tour
@@ -235,7 +227,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
                 __URI.append("/");
             }
             __URI.append(__erraseTmp);
-            realpath("/", realPATH_subdir);
+            realpath("./", realPATH_subdir);
             realpath(__URI.c_str(), realPATH_dir);
             __erraseTmp.clear();
             __erraseTmp.append(realPATH_dir);

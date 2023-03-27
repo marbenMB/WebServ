@@ -35,7 +35,7 @@ endif
 all: Env $(NAME)
 
 $(NAME): $(FILES_OBJ)
-	${CC}  ${FLAGS}  $(FILES_OBJ) -o $(NAME)
+	${CC}  ${FLAGS}  $(FILES_OBJ) -o $(NAME)  -g
 	
 
 clean:

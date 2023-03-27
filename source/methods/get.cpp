@@ -75,30 +75,6 @@ _Get::_Get(request & _request)
                     buffer.append(pathdir, pathdir.length());
                     buffer.append("</title>\n");
                 }
-                if (buffer.find("<h1 id=\"header\"") != std::string::npos) // index of
-                {
-                    //*  <h1 id="header">Index of /Users/mmasstou/Desktop/my-Store/</h1>
-                    buffer.clear();
-                    buffer.append("<h1 id=\"header\">Index of ");
-                    buffer.append(pathdir);
-                    buffer.append("</h1>");
-                }
-                if (buffer.find("<a id=") != std::string::npos) // index of href
-                {
-                    //* <a id="parentDirLink" class="icon up" href="${}/..">
-
-                    buffer.clear();
-                    std::string parentDirLink(pathdir);
-                    buffer.append("<a id=\"parentDirLink\" class=\"icon up\" href=\"");
-                    // std::cout << "_request.getroot() :" << _request.getroot() << std::endl;
-                    // std::cout << "pathdir :" << pathdir << std::endl;
-                    size_t start = (parentDirLink.compare("/") == 0) ? std::string::npos :parentDirLink.rfind("/");
-                    (start != std::string::npos) ? parentDirLink.erase(start + 1, parentDirLink.length()) : parentDirLink;
-                    // std::cout << "parentDirLink :" << parentDirLink << std::endl;
-                    parentDirLink.erase(0, strlen(_request.getroot().c_str()));
-                    buffer.append(parentDirLink);
-                    buffer.append("\">      ");
-                }
                 if (buffer.find("<tbody id=") != std::string::npos) // start of the  table body
                 {
                     // *  <tbody id="tbody">
@@ -184,7 +160,7 @@ _Get::_Get(request & _request)
                     line.append("</a></td>");
                     line.append("<td class=\"detailsColumn\" >");
                     line.append(ft_to_string(STATFile.st_size));
-                    line.append("B</td>");
+                    line.append(" B</td>");
                     line.append("<td class=\"detailsColumn\" data-value=\"1672423565\"> ");
                     line.append(ctime(&STATFile.st_mtime));
                     line.append("</td></tr>\n\r");

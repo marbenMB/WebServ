@@ -1,54 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <style>
-    
-        table {
-            display: table;
-            border-collapse: separate;
-            box-sizing: border-box;
-            text-indent: initial;
-            border-spacing: 2px;
-            border-color: grey;
-            gap: 2rem;
-        }
-       
-    </style>
-</head>
+    <link rel="stylesheet" href="/assets/assets/autoIndex.css">
+  </head>
 
-<body>
-    <h1 id="header">Index of /Users/mmasstou/Desktop/my-Store/</h1>
-    <div id="parentDirLinkBox" style="display: block;">
-        <a id="parentDirLink" class="icon up" href="/Users/mmasstou/Desktop/my-Store/..">
-            <span id="parentDirText">[parent directory]</span>
-        </a>
-    </div>
+  <body>
+    <h1 id="header">Auto Index</h1>
+   
     <table>
-        <thead>
-            <tr class="header" id="theader">
-                <th id="nameColumnHeader" tabindex="0" role="button">Name</th>
-                <th id="sizeColumnHeader" class="detailsColumn" tabindex="0" role="button">
-                    Size
-                </th>
-                <th id="dateColumnHeader" class="detailsColumn" tabindex="0" role="button">
-                    Date Modified
-                </th>
-            </tr>
-        </thead>
-        <tbody id="tbody">
-            <tr>
-                <td data-value=".git/"><a class="icon dir" href="/Users/mmasstou/Desktop/my-Store/.git/">.git/</a></td>
-                <td class="detailsColumn" data-value="0"></td>
-                <td class="detailsColumn" data-value="1672423565">12/30/22, 7:06:05 PM</td>
-            </tr>
-           
-        </tbody>
+      <thead>
+        <tr class="header" id="theader">
+          <th id="nameColumnHeader" tabindex="0" role="button">Name</th>
+          <th
+            id="sizeColumnHeader"
+            class="detailsColumn"
+            tabindex="0"
+            role="button"
+          >
+            Size
+          </th>
+          <th
+            id="dateColumnHeader"
+            class="detailsColumn"
+            tabindex="0"
+            role="button"
+          >
+            Date Modified
+          </th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr>
+          <td data-value=".git/">
+            <a class="icon dir" href="/Users/mmasstou/Desktop/my-Store/.git/" >.git/</a>
+          </td>
+          <td class="detailsColumn" data-value="0"></td>
+          <td class="detailsColumn" data-value="1672423565">
+            12/30/22, 7:06:05 PM
+          </td>
+        </tr>
+      </tbody>
     </table>
-</body>
-
+  </body>
 </html>
