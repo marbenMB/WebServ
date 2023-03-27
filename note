@@ -1,0 +1,18 @@
+parcing a config file:
+
+1 - check if is't a config file in argument or use a default. (main.cpp)
+2 - check if the config file have the extention ".conf" and check open of the file. (ConfigFile.cpp [parcing_file])
+3 - check close brackets. (ConfigFile.cpp [check_brackets])
+4 - ckeck if the server bloc start with "server {". (ConfigFile.cpp [getdata])
+5 - check if inside the server scope there is a key and value in the line and end with ';'. (ConfigFile.cpp [server_block])
+6 - fill data in the vector in a key and value. (value as a vector in case of have a multiple value) (save_data.cpp [fill_vector_variable])
+    * if was a server data stock as a key string and vector of value (save_data.cpp [key_value])
+    * if was a location data, looking for a syntax "PATH {", and save a path as a key of the first location map. and a value is a map of variable inside a location.
+7 - check valid data. (CheckValidity.cpp [check_validity])
+    * valid server data, by checking a value of listen if is valid host and port, valid root and index by checking if was a single argument, and check body size by checking if was a number valid with the valid unity and convert to 'B' if was in other unity.
+    * valid server location, by ckecking a value of allow methods is was a support methods, and check the return value if was a status code and the path of redirection and if the status between 300 and 399. and autoindex if was 'on' or 'off', and check if the root and index and upload_store and fastcgi_pass have only one argument.
+8 - set default some variable if not define.
+    * set error page default with 400 and 500 error status.
+    * set index variable to the value 'index.html'.
+    * set map body size to default if not define and the default is 2G in the 'B'.
+    * check Required variable if exist. (listen - root).

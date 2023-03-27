@@ -27,6 +27,7 @@
 
 #define WHITE_SPACE " \t"
 #define SPACE ' '
+#define COMMENT '#'
 #define SEMI_COL ";"
 #define IP_NUM "0123456789:."
 #define NUM "0123456789"
