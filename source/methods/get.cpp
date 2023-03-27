@@ -5,21 +5,7 @@
 #include <dirent.h>
 
 
-_Get::_Get(request rhs)
-{
-    
-    this->execute_method(rhs);
-    
-}
-
-_Get::~_Get()
-{
-}
-/* -------------------------------------------------------------------------- */
-/*                            execute_method                            */
-/* -------------------------------------------------------------------------- */
-
-int _Get::execute_method(request _request)
+_Get::_Get(request & _request)
 {
     std::ifstream inFile;
     std::string line = "";
@@ -27,37 +13,18 @@ int _Get::execute_method(request _request)
     struct stat STATInfo;
     DIR *dirp;
     struct dirent *dp;
-
-
-
-    // ! item_name
-    // ! item_absPATH
-    // ! item_URL
-    // ! item_size
-    // ! item_createDate
     std::string item_name;
     std::string item_URL;
     std::string item_absPATH;
     std::string item_size;
     std::string item_createDATE;
-
-
-    // size_t pos = 0;
-    // std::string responseBody;
-    // check config file if the method is allowed:
-    // if (this->_findHeader(REQUEST_URI).compare("/") == 0){
-    //     this->setRequest_URI("/index.html");
-    // }
     std::string filename;
+
     filename.clear();
     filename.append(_request._findHeader(REQUEST_URI));
     if (_request.getRedirect_status() != -1)
     {
-        /*
-        <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>301 Redirction</title></head><body><h1>301 Redirction</h1></body></html>
-        **/ 
-        this->setStatuscode(_request.getRedirect_status());
-        this->setreason_phrase(_request.getReason(std::to_string(_request.getRedirect_status())));
+        this->setStatus(_request.getRedirect_status());
         filename.clear();
         filename.append(_request.getroot());
         filename.append(_request.getredirect_URL());
@@ -65,11 +32,7 @@ int _Get::execute_method(request _request)
         _request._setHeaderReq(REQUEST_URI, filename);
         // set Header : 
         this->addHeader("Location", _request.getredirect_URL());
-        line.append("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>");
-        line.append(std::to_string(this->getStatuscode()));
-        line.append(" Redirction</title></head><body><h1>");
-        line.append(std::to_string(this->getStatuscode()));
-        line.append(" Redirction</h1></body></html>");
+        line.clear();
     }
     else if (Is_cgi(filename)){ throw request::CGI();}
     else if (stat(filename.c_str(), &STATInfo) != 0){ // not exist
@@ -77,33 +40,25 @@ int _Get::execute_method(request _request)
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFREG) { // is file   S_ISREG(fileStat.st_mode)
         
-        if (Is_cgi(_request.getredirect_URL())){ throw request::CGI();} 
+        // if (Is_cgi(_request.getredirect_URL())){ throw request::CGI();} 
         std::stringstream ssbuf;
-        
-        this->setStatuscode(OK);
-        this->setreason_phrase(_request.getReason(std::to_string(this->getStatuscode())));
-        inFile.open(filename, std::ifstream::in);
+        this->setStatus(OK);
+        inFile.open(filename.c_str(), std::ifstream::in);
         ssbuf << inFile.rdbuf();
         line.append(ssbuf.str());
-        // while (std::getline(inFile, buffer))
-        // {
-        //     // std::cout << buffer << std::endl;
-        //     line.append(buffer);
-        // }
         inFile.close();
     }
     else if ((STATInfo.st_mode & S_IFMT) == S_IFDIR) { // is dir
-        // std::cout << "+++++> : " << filename << std::endl;
         filename.append(_request.getdefaultIndex());
-        inFile.open(filename, std::ifstream::in);
-        if (Is_cgi(_request.getdefaultIndex())){ throw request::CGI();}
+        inFile.open(filename.c_str(), std::ifstream::in);
+        if (Is_cgi(filename)){ 
+            _request._setHeaderReq(REQUEST_URI, _request.getdefaultIndex());
+            throw request::CGI();
+        }
         else if (!inFile.is_open() && _request.getAutoIndex() == AUTOINDEX_ON) // run AutoIndex 
         {
             std::string pathdir(_request._findHeader(REQUEST_URI));
-            // if (pathdir.compare("/") != 0){
-            //     pathdir.append("/..");
-            // }
-            // std::cout << "AUTOINDEX :" << _request._findHeader(REQUEST_URI) << std::endl;
+            
             line.clear();
             inFile.clear();
             inFile.open(AOTUINDEX_PATH, std::ifstream::in);
@@ -148,39 +103,23 @@ int _Get::execute_method(request _request)
                 {
                     // *  <tbody id="tbody">
                     line.append(buffer);
-                    line.append("\n\r");
                     break;
                 }
                 line.append(buffer);
-                line.append("\n\r");
             }
 
             inFile.close();
-
-            // std::cout << "not foud error" << std::endl;
-            // inFile.open("/Users/mmasstou/Desktop/webserV/var/srcs/autoIndex.html", std::ifstream::in)
-            // {
-
-            // }
-            // std::cout << GREEN << " AutoIndex On" << END_CLR << std::endl;
             dirp = opendir(pathdir.c_str());
             if (dirp == NULL){throw _Exception(INTERNAL_SERVER_ERROR);}
-            // std::cout << "Index of : " << pathdir << std::endl;
-            // std::cout << "parent directory : " << pathdir << std::endl;
-            // adding table fields :
             std::string request_URITmp;
 
             request_URITmp.append(_request._findHeader(REQUEST_URI));
-            (request_URITmp.back() == '/')
+            (request_URITmp[request_URITmp.length() - 1] == '/')
                 ? request_URITmp.erase(request_URITmp.length() - 1, request_URITmp.length())
                 : request_URITmp;
+
             while ((dp = readdir(dirp)) != NULL)
             {
-                // ! item_name
-                // ! item_absPATH
-                // ! item_URL
-                // ! item_size
-                // ! item_createDATE
                 /*
                     <tr>
                         <td data-value="${item_name}"><a class="icon file" draggable="true" href="${item_path}">${item_name}</a></td>
@@ -188,29 +127,17 @@ int _Get::execute_method(request _request)
                         <td class="detailsColumn" data-value="1672423565">${item_createDate}</td>
                     </tr>
                 **/
-
-                // std::cout << MAUVE  << "***** AOUTOINDEX *****" << std::endl;
                 item_name.clear();
                 item_name.append(dp->d_name, strlen(dp->d_name));
                 // std::cout << "item_name :" << item_name << std::endl;
                 // ? ./var/
-
-
-
 
                 item_absPATH.clear();
                 // item_absPATH.append(_request.getroot());
                 item_absPATH.append(_request._findHeader(REQUEST_URI));
                 item_absPATH.append("/");
                 item_absPATH.append(item_name);
-                // std::cout << "item_absPATH :" << item_absPATH << std::endl;
-
-                // item_URL.append(item_absPATH, item_absPATH.length());
-                // item_URL.erase(0, _request.getroot().length());
-
-
-
-
+         
                 item_URL.clear();
 
                 if (_request.getcompare_URI().compare("/") != 0){
@@ -218,7 +145,6 @@ int _Get::execute_method(request _request)
                 }
                 item_URL.append(item_absPATH.substr( _request.getroot().length(), item_absPATH.length()));
                 // std::cout << "item_URL :" << item_URL << std::endl;
-        
 
                 struct stat STATFile;
                 std::string filePATH;
@@ -227,33 +153,20 @@ int _Get::execute_method(request _request)
                     std::cout << " |" << filePATH << "| file Not found \n";
                     // continue;
                 }
-
-
-
-
                 item_size.clear();
-                item_size.append(std::to_string(STATFile.st_size));
-                // std::cout << "item_size :" << item_size << std::endl;
-
-
-
+                item_size.append(ft_to_string(STATFile.st_size));
 
                 item_createDATE.clear();
                 item_createDATE.append(ctime(&STATFile.st_mtime));
-                // std::cout << "item_createDATE :" << item_createDATE << END_CLR <<std::endl;
-
 
                 std::string d_nameTmp(dp->d_name);
-                // std::cout << " Name :" << d_nameTmp << std::endl;
                 if (d_nameTmp.compare(".") != 0 || d_nameTmp.compare("..") != 0)
                 {
                     filePATH.clear();
-                    filePATH.append(_request.getroot());
                     filePATH.append(request_URITmp);
                     filePATH.append("/");
                     filePATH.append(dp->d_name);
                     // std::cout << "filePATH :" << filePATH << std::endl;
-                    // 
                     // std::cout << "FILE PATH :" << filePATH << std::endl;
                     if (stat(filePATH.c_str(), &STATFile) != 0)
                     {
@@ -266,14 +179,11 @@ int _Get::execute_method(request _request)
                     filePATH.erase(0, strlen(_request.getroot().c_str()));
                     // line.append(_request.getcompare_URI(), _request.getcompare_URI().length());
                     line.append(item_URL);
-                    // std::cout << "**filePATH :" << filePATH << std::endl;
-                    // line.append("/");
-                    // line.append(dp->d_name);
                     line.append("\">");
                     line.append(dp->d_name);
                     line.append("</a></td>");
                     line.append("<td class=\"detailsColumn\" >");
-                    line.append(std::to_string(STATFile.st_size));
+                    line.append(ft_to_string(STATFile.st_size));
                     line.append("B</td>");
                     line.append("<td class=\"detailsColumn\" data-value=\"1672423565\"> ");
                     line.append(ctime(&STATFile.st_mtime));
@@ -285,13 +195,10 @@ int _Get::execute_method(request _request)
             {
                 perror("closedir");
                 throw _Exception(INTERNAL_SERVER_ERROR);
-                return 1;
             }
-            dp = nullptr;
+            dp = NULL;
             line.append("</tbody></table></body></html>");
-            // std::cout << "</Line >" << std::endl;
-            this->setStatuscode(200);
-            this->setreason_phrase("Ok");
+            this->setStatus(OK);
            
         }
         else if (inFile.is_open())
@@ -318,15 +225,20 @@ int _Get::execute_method(request _request)
     
     
     this->setResponseBody(line);
+    this->execute_method(_request);
+    
+}
+
+_Get::~_Get(){}
+int _Get::execute_method(request _request)
+{
     std::string extension;
     size_t pos = _request._findHeader(REQUEST_URI).rfind(".");
     if (pos == 0)
         extension = "html";
     else 
         extension = _request._findHeader(REQUEST_URI).substr(pos + 1, _request._findHeader(REQUEST_URI).length());
-    this->addHeader("Cache-Control", "no-cache");
-    // std::cout << "Assets::__getType(extension) :" << Assets::__getType(extension)  << " :>" << extension << std::endl;
     this->addHeader("Content-Type", Assets::__getType(extension));
-    this->addHeader("Content-Length", std::to_string(this->getResponseBody().length()));
+    this->addHeader("Content-Length", ft_to_string(this->getResponseBody().length()));
     return 1;
 }

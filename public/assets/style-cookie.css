@@ -1,0 +1,125 @@
+:root {
+    --text-color: #000000;
+    --bg-color: #dadada;
+  
+    --body-font: "Poppins", sans-serif;
+    --normal-font-size: 0.938rem;
+  }
+
+  
+  .Content {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 90%;
+    /* min-height: 100vh; */
+    margin: 40px auto;
+    justify-content: center;
+    align-items: center;
+  }
+
+  
+  /* COOKIE CONSENT BOX */
+  
+  .cookie__box {
+    --clr-primary: #c1610c;
+    --clr-accent: #615f5f;
+  
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    max-width: 365px;
+    width: 100%;
+    border-radius: 15px;
+    text-align: center;
+    padding: 25px 25px 30px;
+    transform: translateX(0px);
+    color: #000;
+    background : whitesmoke;
+
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .cookie__box.hide {
+    /* display: none; */
+    transition: all .4s ease-out;
+    transform: translateX(-500px);
+  }
+  .cookie__box > img {
+    max-width: 90px;
+  }
+  .cookie__box .content {
+    margin-top: 10px;
+  }
+  .cookie__box .content h2 {
+    font-size: 24px;
+    font-weight: 700;
+  }
+  .cookie__box .content p {
+    font-size: 15px;
+    margin: 5px 0 20px;
+    color: var(--clr-accent);
+  }
+  .cookie__box .content .btn__group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .cookie__box .content .btn__group * {
+    margin: 0 10px;
+  }
+  .cookie__box .content .btn__group .accept__btn ,   .cookie__box .content .btn__group .reject__btn {
+    padding: 5px 50px;
+    outline: none;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid var(--clr-primary);
+    color: #ffffff;
+    background-color: var(--clr-primary);
+  }
+  .cookie__box .content .btn__group .accept__btn:hover  , .cookie__box .content .btn__group .reject__btn:hover{
+    background-color: #ffffff;
+    color: var(--clr-primary);
+  }
+  .cookie__box .content .btn__group .learn__more-btn {
+    text-decoration: none;
+    color: var(--clr-primary);
+  }
+  .cookie__box .content .btn__group .learn__more-btn:hover {
+    text-decoration: underline;
+  }
+  
+  /* For medium devices */
+  @media screen and (max-width: 600px) {
+    .cookie__box {
+      left: 10px;
+      bottom: 10px;
+      padding: 20px 10px;
+    }
+  }
+  
+  /* For small devices */
+  @media screen and (max-width: 400px) {
+    .cookie__box {
+      max-width: 340px;
+    }
+    .cookie__box .content .btn__group {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+  
+  /* For extra-small devices */
+  @media screen and (max-width: 320px) {
+    .cookie__box {
+      max-width: 290px;
+    }
+  }
+  
+

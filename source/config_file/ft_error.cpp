@@ -3,40 +3,40 @@
 void ft_error_server_bloc(Data &g_Data, KeyValue v, std::string filename, int line_index) {
     if (v.key == "{"){
         g_Data.error = "WebServer: [emerg] unexpected \"{\" in ";
-        g_Data.error += filename + ':' + std::to_string(line_index);
+        g_Data.error += filename + ':' + ft_to_string(line_index);
     }
     else if (v.key != "server")
     {
         g_Data.error = "WebServer: [emerg] unknown directive \"";
-        g_Data.error += v.key + "\" in " + filename + ':' + std::to_string(line_index);
+        g_Data.error += v.key + "\" in " + filename + ':' + ft_to_string(line_index);
     }
     else {
         g_Data.error = "WebServer: [emerg] directive \"server\" has no opening \"{\" in ";
-        g_Data.error += filename + ':' + std::to_string(line_index);
+        g_Data.error += filename + ':' + ft_to_string(line_index);
     }
 }
 
 void ConfigFile::check_semicolon(Data &g_Data, KeyValue &v) {
     if (v.key != "location" && v.value.find_first_of(";") != (v.value.length() - 1)) {
         g_Data.error = "WebServer: [emerg] directive \"";
-        g_Data.error += v.key + "\" is not terminated by \";\" in " + this->filename + ':' + std::to_string(this->line_index);              
+        g_Data.error += v.key + "\" is not terminated by \";\" in " + this->filename + ':' + ft_to_string(this->line_index);              
     }
     else
         trim(v.value, ";");
 }
 
 int ConfigFile::valid_error_page(Data &g_Data, std::string error) {
-    int number = std::stoi(error);
+    int number = std::atoi(error.c_str());
     if (number >= 300 && number <= 599)
         return (1);
     g_Data.error = "WebServer: [emerg] value \"" + error + "\" must be between 300 and 599 in ";
-    g_Data.error += this->filename + ':' + std::to_string(this->line_index);
+    g_Data.error += this->filename + ':' + ft_to_string(this->line_index);
     return (0);
 }
 
 int ConfigFile::valid_return_status(Data &g_Data, std::string status) {
-    int number = std::stoi(status);
-    if (number >= 0 && number <= 999)
+    int number = std::atoi(status.c_str());
+    if (number >= 300 && number <= 399)
         return (1);
     g_Data.error = "WebServer: [emerg] invalid return code \"" + status + "\" in ";
     g_Data.error += this->filename;
@@ -75,12 +75,6 @@ void ConfigFile::check_return_location(Data &g_Data, map_vector_it location_data
                     g_Data.error += "\" in " + this->filename;
                 }
             }
-            // else {
-            //     if ((*value_it).find(".html") == std::string::npos) {
-            //         g_Data.error = "WebServer: [emerg] \"" + *value_it + "\" is not a redection file ('file.html') in ";
-            //         g_Data.error += this->filename;
-            //     }
-            // }
         }
     }
 }

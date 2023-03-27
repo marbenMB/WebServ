@@ -44,7 +44,21 @@ void	printMapClient (std::map<int, ClientSock> m)
 	}
 }
 
+void	printMultiMap(std::multimap<std::string, int> mmap)
+{
+	for (std::multimap<std::string, int>::iterator it = mmap.begin(); it != mmap.end(); it++)
+	{
+		std::cout << "IP : " << it->first << " : PORT : " << it->second << std::endl;
+	}
+}
+
 void	debug()
 {
 	std::cout << RED << "********* DEBUG **************** " << END_CLR << std::endl;
+}
+
+void	log(std::string forWhat, std::string msg)
+{
+	std::cout << GREEN << "|----| " << forWhat << " :  " 
+	<< msg << "|----| " << END_CLR << std::endl;
 }

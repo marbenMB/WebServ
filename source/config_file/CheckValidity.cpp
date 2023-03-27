@@ -87,8 +87,6 @@ void ConfigFile::server_location(Data &g_Data) {
                         check_one_arg(g_Data, location_data_it);
                     else if (location_data_it->first == "upload_store")
                         check_one_arg(g_Data, location_data_it);
-                    else if (location_data_it->first == "fastcgi_index")
-                        check_one_arg(g_Data, location_data_it);
                     else if (location_data_it->first == "fastcgi_pass")
                         check_one_arg(g_Data, location_data_it);
                     else {
@@ -134,12 +132,10 @@ bool check_exist_server_data(map_vector server_data, std::string key) {
 
 
 void set_default_error_vector(std::vector<std::string> &error_page) {
-    error_page.push_back("300");
-    error_page.push_back("./var/errors/30x.html");
     error_page.push_back("400");
-    error_page.push_back("./var/errors/40x.html");
+    error_page.push_back(ERROR_PATH);
     error_page.push_back("500");
-    error_page.push_back("./var/errors/50x.html");
+    error_page.push_back(ERROR_PATH);
 }
 
 void ConfigFile::set_default(Data &g_Data) {

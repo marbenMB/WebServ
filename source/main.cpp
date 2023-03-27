@@ -1,6 +1,9 @@
 #include "../include/serverSide.hpp"
 #include "../include/unitTests.hpp"
 #include "../include/Assets.hpp"
+#include "../include/ft_cgi.hpp"
+
+std::map<std::string, std::string> session_map;
 
 int _main (int ac, char **av)
 {
@@ -18,6 +21,7 @@ int _main (int ac, char **av)
         return (1);
     }
 	std::cout << GREEN << "+> Parsing Done !!" << END_CLR << std::endl << std::endl;
+    list_session_page();
 
     Assets  _assets;
     //	***	Creating WebServer :
@@ -33,6 +37,9 @@ int _main (int ac, char **av)
         // printSockProp(myServ.serverSockets);
         std::cout << GREEN << "+> Socket Created !!" << END_CLR << std::endl;
 
+		//	Log IP:PORTS listen
+        logListen(myServ);
+
         acceptClients(myServ);
     } catch (std::exception &e) {
         std::cout << RED << "+> " << e.what() << END_CLR << std::endl;
@@ -42,8 +49,12 @@ int _main (int ac, char **av)
     return (0);
 }
 
+void s3ediya() {
+    system("leaks webServ");
+}
+
 int main(int ac, char **av)
 {
 	_main(ac, av);
-    // system("leaks webserv");
+    // atexit(s3ediya);
 }

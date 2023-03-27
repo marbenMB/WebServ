@@ -24,5 +24,6 @@ void	printWebServ (WebServ &myServ);
 void	printSockProp (std::map<SockProp, std::vector<Server> > m);
 void	printMapClient (std::map<int, ClientSock> m);
 void	debug();
+void	log(std::string forWhat, std::string msg);
 
 #endif

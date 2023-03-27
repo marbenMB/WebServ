@@ -1,38 +1,33 @@
 #include "../../include/method.hpp"
 
-_Post::_Post(request rhs)
+_Post::_Post(request &_request)
 {
     
-    this->execute_method(rhs);
-}
-_Post::~_Post()
-{
-}
-int _Post::execute_method(request _request)
-{
     std::string buffer;
     std::string body;
     std::string filename;
     std::ofstream outFile;
     std::ifstream inFile;
     filename.append(CREATE_SUCCESS_FILE);
-    // bool _execute = false;
+   
     std::map<std::string, std::string> tmp = _request.getContent_Type();
-    // this->parseBody();
     if (_request.getRedirect_status() != -1)
     {
-        this->setStatuscode(_request.getRedirect_status());
-        this->setreason_phrase(_request.getReason(std::to_string(_request.getRedirect_status())));
+        this->setStatus(_request.getRedirect_status());
         filename.clear();
         filename.append(_request.getroot());
         filename.append(_request.getredirect_URL());
-
         _request._setHeaderReq(REQUEST_URI, filename);
         // set Header : 
         this->addHeader("Location", _request.getredirect_URL());
         body.append("");
     }
     else if (tmp["type"].compare("application/x-www-form-urlencoded") == 0){
+        if (Is_cgi(_request.getdefaultIndex()))
+        {
+            _request._setHeaderReq(REQUEST_URI, _request.getdefaultIndex());
+            _request.setIs_cgi(true);
+        }
         if (_request.getCGIstatus()){ throw request::CGI();}
     }
     else if (tmp["type"].compare("multipart/form-data") == 0)
@@ -51,8 +46,9 @@ int _Post::execute_method(request _request)
             filename.append("/");
             filename.append((*file_It).first);
             // std::cout <<" abs path to the file created :" << filename << std::endl;
-            outFile.open(filename, std::ifstream::out);
+            outFile.open(filename.c_str(), std::ifstream::out);
             if (!outFile.is_open()){ // cant open this file  Internal Server Error
+                std::cout << "file : " << filename << std::endl;
                throw _Exception(INTERNAL_SERVER_ERROR);
             }
             outFile << file_It[0].second;
@@ -60,71 +56,26 @@ int _Post::execute_method(request _request)
             ++file_It;
         }
         if (file_It == file.end()){
-            // forbiden
-            this->setStatuscode(201);
-            this->setreason_phrase(_request.getReason("201"));
+            this->setStatus(CREATED);
             filename.clear();
             filename.append(CREATE_SUCCESS_FILE);
             body.clear();
             std::stringstream ssbuf;
-            inFile.open(filename, std::ifstream::in);
+            inFile.open(filename.c_str(), std::ifstream::in);
             ssbuf << inFile.rdbuf();
             body.append(ssbuf.str());
             inFile.close();
         }
     }
-    this->setResponseBody(body);
+   this->setResponseBody(body);
+   this->execute_method(_request);
+}
+_Post::~_Post(){}
+int _Post::execute_method(request _request)
+{
+    (void)_request;
     this->addHeader("Cache-Control", "no-cache");
     this->addHeader("Content-Type",Assets::__getType("html"));
-    this->addHeader("Content-Length", std::to_string(this->getResponseBody().length()));
-    _request._setHeaderReq(REQUEST_URI, filename);
+    this->addHeader("Content-Length", ft_to_string(this->getResponseBody().length()));
     return true;
-}
-
-
-void _Post::setRequestBody(std::vector<std::string> reqBody)
-{
-    this->requestBody = reqBody;
-}
-void method::setContent_Length(int Content_Length)
-{
-    this->Content_Length = Content_Length;
-}
-void method::setClient_max_body_size(int Client_max_body_size)
-{
-    this->client_max_body_size = Client_max_body_size;
-}
-void method::setContent_Type(std::string Content_Type)
-{
-    std::vector<std::string> tmp = split(Content_Type, ";");
-    // std::cout << "set +> <Content_Type size='" << tmp.size() << "' type='" << tmp[0] << "'   boundary='" << tmp[1] << "'>" << std::endl;
-    this->Content_Type["type"] = (std::string)tmp[0];
-    if (tmp.size() == 2)
-        this->Content_Type["boundary"] = trimFront((std::string)tmp[1], "boundary=");
-}
-void method::setTransfer_Encoding(std::string Transfer_Encoding)
-{
-    this->Transfer_Encoding = Transfer_Encoding;
-}
-
-void _Post::setFilename(std::string value)
-{
-    this->_filename = value;
-}
-void _Post::setName(std::string value)
-{
-    this->_name = value;
-}
-void _Post::setContent(std::string value)
-{
-    this->_content = value;
-}
- std::string const &_Post::getFilename( void ){
-    return this->_filename;
- }
-std::string const &_Post::getName( void ){
-    return this->_name;
-}
-std::string const &_Post::getContent( void ){
-    return this->_content;
 }

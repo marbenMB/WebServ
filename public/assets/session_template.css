@@ -1,0 +1,59 @@
+.Content {
+	flex: 78%;
+	margin: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+	gap: 20px;
+}
+.Content table{
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+.Content table thead .header{
+  display: flex;
+  flex-direction: row;
+  gap: 45px;
+}
+.Content table thead .header>th{
+  font-size: 18px;
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 28px;
+    /* or 140% */
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+    text-transform: uppercase;
+}
+.Content table tbody{
+  display: flex;
+  flex-direction: column;
+
+  gap: 1px;
+}
+.Content table tbody tr{
+  display: flex;
+  flex-direction: row;
+  gap: 45px;
+}
+.Content table tbody tr>td{
+  font-size: 10px;
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 28px;
+    /* or 140% */
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+    text-transform: capitalize;
+}

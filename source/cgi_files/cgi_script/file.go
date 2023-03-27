@@ -33,8 +33,15 @@ func getPage(paramsDict map[string]string) string {
         heading = paramsDict["heading"]
         message = paramsDict["message"]
     }
-    if len(paramsDict) == 3 {
-        template, err := os.ReadFile("source/cgi_files/cgi_pages/template.html")
+    if os.Getenv("VALID_COOKIE") == "NO" {
+        template, err := os.ReadFile("./public/assets/no_cookie.html")
+        if err != nil {
+            fmt.Println(err)
+            return ""
+        }
+        html = string(template)
+    } else if len(paramsDict) >= 3 {
+        template, err := os.ReadFile("public/assets/template.html")
         if err != nil {
             fmt.Println(err)
             return ""
@@ -44,7 +51,7 @@ func getPage(paramsDict map[string]string) string {
         html = strings.ReplaceAll(html, "{heading}", heading)
         html = strings.ReplaceAll(html, "{message}", message)
     } else {
-        template, err := os.ReadFile("source/cgi_files/cgi_pages/post_template.html")
+        template, err := os.ReadFile("public/assets/post_template.html")
         if err != nil {
             fmt.Println(err)
             return ""
@@ -53,12 +60,12 @@ func getPage(paramsDict map[string]string) string {
     }
     return html
 }
+
 // * -- end template function ------//
 
 
 
 func main() {
-    // fmt.Println("hello")
     contentType := os.Getenv("CONTENT_TYPE")
     if contentType == "" {
             contentType = "text/plain"

@@ -25,7 +25,7 @@ class ConfigFile {
         ~ConfigFile();
         void parcing_file(std::string confilename, Data &g_Data);
         void getdata(Data &g_Data);
-        bool check_braces(Data &g_Data);
+        bool ckeck_brackets(Data &g_Data);
         void server_block(Data &g_Data, KeyValue v);
         void location(Data &g_Data, ServerConf &server, KeyValue v);
         void fill_vector_variable(Data &g_Data, ServerConf &server, KeyValue v);
