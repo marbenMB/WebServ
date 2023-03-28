@@ -73,7 +73,6 @@ _Post::~_Post(){}
 int _Post::execute_method(request _request)
 {
     (void)_request;
-    this->addHeader("Cache-Control", "no-cache");
     this->addHeader("Content-Type",Assets::__getType("html"));
     this->addHeader("Content-Length", ft_to_string(this->getResponseBody().length()));
     return true;

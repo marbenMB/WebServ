@@ -72,10 +72,6 @@ void	createSockets(WebServ &serv)
 	
 	int		sockFd;
 
-	struct addrinfo	hints;
-	std::stringstream		ss;
-	std::string				strPort;
-
 	struct sockaddr_in	addr;
 
 	bool	def;
@@ -96,21 +92,6 @@ void	createSockets(WebServ &serv)
 				throw	std::runtime_error("Socket() Failed !!");
 			if (setOptionSocket(sockFd))
 				throw	std::runtime_error("Setsockopt() Failed !!");
-			
-			//?:	Getting the addr info
-			bzero(&hints, sizeof(hints));
-			hints.ai_family = AF_INET;
-			hints.ai_protocol = SOCK_STREAM;
-			ss << it->second;
-			ss >> strPort;
-			ss << "";
-			ss.clear();
-			// if (getaddrinfo(it->first.c_str(), strPort.c_str(), &hints, &res))
-			// {
-			// 	std::cerr << it->first << " : " << strPort << std::endl;
-			// 	throw	std::runtime_error("Address Not Available !!");
-			// }
-			// freeaddrinfo(res);
 
 			//?:	Binding the socket with Ip and Port
 			bzero(&addr, sizeof(addr));

@@ -16,7 +16,7 @@
 #define	DUP_PORT	2
 
 #define DEFAULT_IP "0.0.0.0"
-#define	DEFAULT_PORT 80
+#define	DEFAULT_PORT 8080
 
 #define	MAXREAD	500000
 #define	MAXSEND	500000
