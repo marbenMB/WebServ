@@ -50,6 +50,7 @@ re: fclean all
 
 Env : 
 	@ mkdir -p public/upload/
+	@ mkdir -p source/cgi_files/cgi_pages
 	@ zsh conf/scriptEnv.sh
 
 .PHONY : all  push clean fclean re Env
