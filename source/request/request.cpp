@@ -71,7 +71,7 @@ request::request(
     // Date: <day-name>, <day> <month> <year> <hour>:<minute>:<second> GMT
      time(&time_z);
     timeinfo = localtime(&time_z);
-    std::strftime(buffer, 80, "%A, %d %B %Y %H:%M:%S GMT", timeinfo);
+    strftime(buffer, 80, "%A, %d %B %Y %H:%M:%S GMT", timeinfo);
     std::string _Time(buffer);
     reqmethod->addHeader("Date", _Time);
     reqmethod->addHeader("Cache-Control", "no-cache");
