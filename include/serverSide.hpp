@@ -5,10 +5,11 @@
 #include "WebServer.hpp"
 #include "request.hpp"
 #include "method.hpp"
-#include <libc.h>
 #include <poll.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
+#include <sys/time.h>
+
 
 ///////////////////// MACROS ////////////////////
 #define	EXIT_FAILURE 1
@@ -20,7 +21,6 @@
 #define	MAXREAD	500000
 #define	MAXSEND	500000
 
-#define	OUTTIME	600
 ///////////////////// ***** ////////////////////
 
 //	****	*********	****	//
@@ -41,11 +41,11 @@ enum ServerDef
 	//	** Request stat
 	STAT = 199,
 	WELL = 200,
-	TIMEOUT,
+	TIMEOUT,	//?: Request TimeOut
 
 	//	**
 	CRF = 4,
-	TIMELIMIT = 300
+	TIMELIMIT = 5000	//?: 5 sec
 };
 
 //	****	*********	****	//
