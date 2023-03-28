@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Outfit&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"/>
+	<link rel="stylesheet" href="../css/Style.css">
+	<link rel="icon" type="image/png" href="/assets/assets/favicon.svg">
+	<title>Introduction</title>
+</head>
+<body>
+	<div class="container">
+
+
+		<!-- logo part -->
+		<div id="Logo">
+			<a href="/"><img src="/assets/assets/img/Logo.png" alt="WebServ Logo"></a>
+		</div>
+
+
+		<!-- Side barre -->
+		<div id="Side">
+			<h1 class="P-txt">GETTING STARTED</h1>
+			<ul id="List">
+				<li>
+					<a href="/" class="S-txt">Start Page</a>
+				</li>
+				<li>
+					<a href="/assets/assets/html/Intro.html" class="S-txt">Introduction</a>
+				</li>
+				<li>
+					<a href="/upload/assets/html/Server.html" class="S-txt">Server</a>
+				</li>
+				<li>
+					<a href="/session_list.html" class="S-txt">Session list</a>
+				</li>
+			</ul>
+			<h1 class="P-txt">ABOUT US</h1>
+			<ul>
+				<li><a href="/assets/assets/html/About.html" class="S-txt">Team</a></li>
+			</ul>
+		</div>
+
+		<!-- Main body -->
+		<div id="Main">
+
+			<!-- Path Barre -->
+			<div id="Path">
+				<a href="/" class="Ps-txt">
+					<img id="Barre-Icon" src="/assets/assets/accueil.png" alt="Home">
+					<span>WebServ</span>
+				</a>
+				<a href="/assets/assets/html/Intro.html" class="Ps-txt">
+					<span class="material-symbols-outlined">
+						chevron_right
+						</span>
+					<span class="Selected">Getting Started</span>
+				</a>
+			</div>
+			<div class="Content">
+				<h2 class="S-txt">Get started with our webserv</h2>
+				<section class="Description">
+					<p class="P-txt">
+						This project is here to make you write your own HTTP server Using C++98. 
+						You will be able to test it with a real browser. 
+						HTTP is one of the most used protocol on internet. 
+						Knowing its arcane will be useful, even if you won't be working on a website.  
+					</p>
+					<ul>
+						<li>
+							<span class="S-txt">Execution : </span>
+							<p class="S-txt">make && ./webserv path/configFile.conf</p>
+						</li>
+					</ul>
+					<p class="P-txt">Stuff Implemented In This Web Server : </p>
+					<ul>
+						<li class="S-txt">MultiPort listening</li>
+						<li class="S-txt">HTTP Method : GET -- POST -- DELETE</li>
+						<li class="S-txt">Multi FastCGI : Go -- Python </li>
+						<li class="S-txt">Cookies and Session Managing </li>
+					</ul>	
+				</section>
+				<div class="btn">
+					<a href="https://cdn.intra.42.fr/pdf/pdf/72469/en.subject.pdf" class="S-txt A-button" target="_blank">For More About Project.</a>
+				</div>
+				<a href="https://github.com/marbenMB/WebServ" target="_blank" class="S-txt A-button">View On Github</a>
+				<a href="/upload/assets/html/Server.html" class="S-txt A-button">
+					<span class="material-symbols-outlined">
+						rocket
+					</span>
+					Launch Server
+				</a>
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<div id="Footer">
+			<p class="S-txt">Web 2.0</p>
+			<p class="S-txt">HTTP/1.1</p>
+		</div>
+	</div>
+</body>
+</html>

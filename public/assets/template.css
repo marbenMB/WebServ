@@ -1,0 +1,33 @@
+
+.Content {
+	flex: 78%;
+	margin: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+	gap: 20px;
+}
+
+.Content form button {
+  height: 42px;
+  background: linear-gradient(231.33deg, #26B1EF 27.77%, #0EAFF8 31.68%, #26A8E2 74.65%);
+  border-radius: 8px;
+  width: 42%;
+  min-width: max-content;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 28px;
+  text-transform: uppercase;
+  padding: 0 21px;
+}
+.Content form button:hover{
+  background: linear-gradient(231.33deg, #26B1EF 47.77%, #0EAFF8 51.68%, #26A8E2 94.65%);
+  filter: drop-shadow(0px 1.28px 3.14px rgba(3, 137, 32, 0.25481));
+ 
+}
