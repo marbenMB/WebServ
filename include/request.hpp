@@ -94,7 +94,6 @@ private:
         // cgi
     std::string CGIbody;
     std::string fastcgi_pass;
-    std::string fastcgi_index;
     bool is_cgi;
         // allowed vars
     int autoindex;
@@ -172,7 +171,6 @@ public:
     std::string const &getDefault_40x(void);
     std::string const &getDefault_50x(void);
     std::string const &getDefault_30x(void);
-    void print_vectINFO(std::vector<std::string>, std::string);
 
     // location
     std::string const &getcompare_URI(void) const;

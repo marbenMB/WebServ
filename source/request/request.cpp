@@ -14,7 +14,7 @@ request::request(
     std::string _requestBody;
     std::string _requestHeader;
     method *reqmethod;
-    time_t rawtime;
+    time_t time_z;
     struct tm* timeinfo;
     char buffer[80];
     
@@ -69,8 +69,8 @@ request::request(
         catch (_Exception &e){reqmethod = e.what(*this);}
     }
     // Date: <day-name>, <day> <month> <year> <hour>:<minute>:<second> GMT
-     time(&rawtime);
-    timeinfo = localtime(&rawtime);
+     time(&time_z);
+    timeinfo = localtime(&time_z);
     std::strftime(buffer, 80, "%A, %d %B %Y %H:%M:%S GMT", timeinfo);
     std::string _Time(buffer);
     reqmethod->addHeader("Date", _Time);
@@ -170,7 +170,6 @@ void request::initializationFILES(std::vector<std::string> filesVECTER)
 
     while (it != filesVECTER.end()){
         try{
-        // tmp = split((std::string)it[0], CRLF_2);
         pos = it[0].find(CRLF_2);
         if (pos != std::string::npos){
             tmp.push_back(it[0].substr(0, pos));
@@ -180,7 +179,6 @@ void request::initializationFILES(std::vector<std::string> filesVECTER)
             throw std::invalid_argument("makayench Bady ...");
         }
 
-        // std::cout << "it[0] :" <<  "------" << tmp.size() << "*****" << it[0] << std::endl;
         file_header = split((std::string)tmp[0], CRLF);
         if (file_header.size() != 2){
             throw std::invalid_argument("makaynach smiya dyal file ...");
@@ -259,12 +257,12 @@ void request::_setHeaderReq(std::string key, std::string value){
 
 void request::printServerLogs(method const & vars){
     std::string color_status;
-    time_t rawtime;
+    time_t time_z;
     struct tm* timeinfo;
     char buffer[80];
 
-    time(&rawtime);
-    timeinfo = localtime(&rawtime);
+    time(&time_z);
+    timeinfo = localtime(&time_z);
     strftime(buffer, 80, "%H:%M:%S ", timeinfo);
     std::string _Time(buffer);
 
@@ -313,11 +311,9 @@ method *request::execute_request(void)
         std::vector<std::string>::iterator it = req.begin();
         std::string it_value(*it);
 
-
         _split = split(it_value, " ");
         if (_split.size() < 2)
             throw _Exception(BAD_REQUEST); 
-
         this->_requestHeaders[REQUEST_METHOD] = _split[0];
         this->_requestHeaders[REQUEST_URI] = _split[1];
         this->_requestHeaders[HTTP_VERSION] = _split[2];
@@ -340,7 +336,6 @@ std::map<std::string, std::string> const &request::getContent_Type(void) const
 {
     return (this->Content_Type);
 }
-
 
 std::string ft_to_string(int entier){
     std::stringstream buf;

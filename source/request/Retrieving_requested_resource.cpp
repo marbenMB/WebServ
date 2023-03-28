@@ -68,11 +68,6 @@ void    request::Retrieving_requested_resource(ServerConf *server)
     }
     else
         this->fastcgi_pass = FAST_CGI_PASS;
-
-    // fastcgi_index
-    if (location_vars["fastcgi_index"].size()){
-        this->fastcgi_index = location_vars["fastcgi_index"][0];
-    }
     // autoindex
     if (location_vars["autoindex"].size() > 0 &&  location_vars["autoindex"][0].compare("on") == 0) {
         this->autoindex = AUTOINDEX_ON;
@@ -214,7 +209,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
             }
         }
     }
-    if (!this->is_cgi) // remove the mutch string 
+    if (!this->is_cgi) // remove similar string 
     {
         if (locationId != -1)
         {
