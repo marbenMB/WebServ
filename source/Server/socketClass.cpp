@@ -169,7 +169,7 @@ void	ClientSock::readChunkBody(void)
 	{
 		//?:	getting bytes to read
 		hexStr = _reqBody.substr(_skipedByte, _nFind - _skipedByte);
-		byte = std::stoi(hexStr, nullptr, 16);
+		byte = std::strtol(hexStr.c_str(), NULL, 16);
 
 		if (byte == 0)
 		{

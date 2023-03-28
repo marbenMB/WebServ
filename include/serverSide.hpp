@@ -21,7 +21,6 @@
 #define	MAXREAD	500000
 #define	MAXSEND	500000
 
-#define	OUTTIME	600
 ///////////////////// ***** ////////////////////
 
 //	****	*********	****	//
@@ -42,11 +41,11 @@ enum ServerDef
 	//	** Request stat
 	STAT = 199,
 	WELL = 200,
-	TIMEOUT,
+	TIMEOUT,	//?: Request TimeOut
 
 	//	**
 	CRF = 4,
-	TIMELIMIT = 300
+	TIMELIMIT = 5000	//?: 5 sec
 };
 
 //	****	*********	****	//
