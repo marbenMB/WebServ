@@ -35,7 +35,7 @@ endif
 all: Env $(NAME)
 
 $(NAME): $(FILES_OBJ)
-	${CC}  ${FLAGS}  $(FILES_OBJ) -o $(NAME)  -g
+	${CC}  ${FLAGS}  $(FILES_OBJ) -o $(NAME)
 	
 
 clean:
@@ -43,7 +43,7 @@ clean:
 	@echo "\x1b[36m   +> Clean \033[0m\033[38;5;42m [Done] \033[0m";
 	
 fclean: clean
-	@rm -rf $(NAME) public/upload webServ.dSYM public/session_list.html
+	@rm -rf $(NAME) public/upload webServ.dSYM public/session_list.html source/cgi_files/cgi_pages/file_cgi.html
 	@echo "\x1b[36m   +> fClean \033[0m\033[38;5;42m [Done] \033[0m";
 
 re: fclean all
@@ -52,4 +52,4 @@ Env :
 	@ mkdir -p public/upload/
 	@ zsh conf/scriptEnv.sh
 
-.PHONY : all  push clean fclean re
+.PHONY : all  push clean fclean re Env
