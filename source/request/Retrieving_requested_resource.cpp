@@ -37,7 +37,6 @@ void    request::Retrieving_requested_resource(ServerConf *server)
     locations_iterator += locationIndex;
     // ***> Create iterator for location Data
     std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator location_iterator = locations_iterator->begin();
-    std::string str = location_iterator->first;
 
     // get location Data from ConfigFile
     // create map instance 'location_vars'
@@ -53,15 +52,12 @@ void    request::Retrieving_requested_resource(ServerConf *server)
     // check for index in Location
     checkForIndex(location_vars["index"]);
     // upload_store
+    this->upload_store.clear();
     if (location_vars["upload_store"].size()){
-        this->upload_store.clear();
         this->upload_store.append(this->root);
         this->upload_store.append(location_vars["upload_store"][0]);
     }
-    else{
-        this->upload_store.clear();
-        this->upload_store.append(UPLOAD_STORE);
-        }
+    else {this->upload_store.append(UPLOAD_STORE);}
     // fastcgi_pass
     if (location_vars["fastcgi_pass"].size()){
         this->fastcgi_pass = location_vars["fastcgi_pass"][0];
@@ -94,8 +90,10 @@ void    request::Retrieving_requested_resource(ServerConf *server)
     }
     if ((_findHeader(REQUEST_METHOD).compare("POST") != 0 ) &&
         (_findHeader(REQUEST_METHOD).compare("GET") != 0) &&
-        (_findHeader(REQUEST_METHOD).compare("DELETE")))
-            this->__noImplimented = ALLOWED;
+        (_findHeader(REQUEST_METHOD).compare("DELETE") != 0))
+            this->__method_status = NOT_IMPLIMENTED;
+    else if (this->__post == NOT_ALLOWED)
+        this->__method_status = NOT_ALLOWED;
 }
 
 void request::checkForIndex(std::vector<std::string> vect){
@@ -186,9 +184,7 @@ int request::findLocation(std::vector<std::map<std::string, std::map<std::string
         this->compare_URI.append("\%.go$");
     }
     else this->compare_URI.append(this->_findHeader(REQUEST_URI));
-    // this->compare_URI.append(this->request_URI);
      //  * init string |> /srcs/dir001/dir0011/test.txt
-    // std::cout << "++> URI :" << this->compare_URI << std::endl;
 
     while (locations_iterator != location.end())
     {

@@ -8,7 +8,7 @@ request::request(
                              __post(NOT_ALLOWED),
                              __delete(NOT_ALLOWED),
                              __get(NOT_ALLOWED),
-                             __noImplimented(NOT_ALLOWED),
+                             __method_status(IMPLIMENTED),
                              request_status(status) 
 {
     std::string _requestBody;
@@ -17,23 +17,16 @@ request::request(
     time_t time_z;
     struct tm* timeinfo;
     char buffer[80];
-    
-    // std::vector<std::string> req_vector = split(request, "\r\n\r\n");
-    // std::cout << _request << std::endl;
+
     try
     {
         try
         {
-            /* code */
-           
-            // std::cout << "_request :" << _request << std::endl;
             size_t splitIndex = _request.find(CRLF_2);
             _requestHeader.clear();
             _requestBody.clear();
             if (splitIndex == std::string::npos)
-            {
                 _requestHeader = _request.substr(0, _request.length());
-            }
             else
             {
                 _requestHeader = _request.substr(0, splitIndex);
@@ -52,10 +45,8 @@ request::request(
 
 
             this->Verifying_Header(_requestHeader);
-			if (status == TIMEOUT)
-                throw _Exception(BAD_REQUEST);
             this->Retrieving_requested_resource(server);
-            if (this->_findHeader(REQUEST_METHOD).compare("POST") == 0)
+            if ((this->_findHeader(REQUEST_METHOD).compare("POST") == 0) && (this->__method_status != NOT_ALLOWED))
                 this->Verifying_Body(_requestBody);
             reqmethod = this->execute_request();
 
@@ -77,7 +68,7 @@ request::request(
     reqmethod->addHeader("Cache-Control", "no-cache");
     if (!this->_findHeader("User-Agent").empty())
         reqmethod->addHeader("User-Agent", this->_findHeader("User-Agent"));
-    reqmethod->addHeader("Server", "SA3DIYA");
+    reqmethod->addHeader("Server", SERVER_NAME);
     response = _CREATEresponse(
         reqmethod->getHeader(),
         reqmethod->getStatuscode(),
@@ -291,7 +282,7 @@ method *request::execute_request(void)
 {
     method *reqmethod = NULL;
     std::string __body;
-   if (this->__noImplimented == NOT_ALLOWED){
+   if (this->__method_status != NOT_IMPLEMENTED){
         if (_findHeader(REQUEST_METHOD).compare("GET") == 0 && this->__get == ALLOWED)
             reqmethod = new _Get(*this);
         else if (_findHeader(REQUEST_METHOD).compare("DELETE") == 0 && this->__delete == ALLOWED)
@@ -301,7 +292,7 @@ method *request::execute_request(void)
         else
             throw  _Exception(METHOD_NO_ALLOWED);
     }
-    else 
+    else
         throw  _Exception(NOT_IMPLEMENTED);
     return reqmethod;
 }

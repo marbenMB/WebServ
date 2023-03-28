@@ -1,6 +1,7 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 
+#define SERVER_NAME "SA3DIYA"
 #define BLUE "\x1b[36m"
 #define RED "\x1b[31m"
 #define GREEN "\x1b[32m"
@@ -9,7 +10,8 @@
 
 #define ALLOWED 12054
 #define NOT_ALLOWED 12055
-
+#define NOT_IMPLIMENTED 12056
+#define IMPLIMENTED 12057
 #define AUTOINDEX_ON 548
 #define AUTOINDEX_OFF 549
 #define _NO_CGI_LOCATION 1337
@@ -100,7 +102,7 @@ private:
     int __post;
     int __delete;
     int __get;
-    int __noImplimented;
+    int __method_status;
 
     // ! not checked .
     std::vector<std::string> requestBody;
