@@ -3,7 +3,6 @@
 
 #include <fcntl.h>
 #include <sys/wait.h>
-#include <algorithm>
 #include "./WebServer.hpp"
 #include "./request.hpp"
 

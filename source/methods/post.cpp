@@ -48,7 +48,6 @@ _Post::_Post(request &_request)
             // std::cout <<" abs path to the file created :" << filename << std::endl;
             outFile.open(filename.c_str(), std::ifstream::out);
             if (!outFile.is_open()){ // cant open this file  Internal Server Error
-                std::cout << "file : " << filename << std::endl;
                throw _Exception(INTERNAL_SERVER_ERROR);
             }
             outFile << file_It[0].second;

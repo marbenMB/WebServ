@@ -50,7 +50,7 @@ std::string getpath(std::string path_of) {
             result += buffer;
     }
     pclose(pipe);
-    result.erase(remove(result.begin(), result.end(), '\n'), result.end()); // remove newline character
+    result.erase(result.find("\n"), result.length());
     return result;
 }
 
