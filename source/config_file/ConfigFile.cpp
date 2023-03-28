@@ -100,8 +100,7 @@ void ConfigFile::getdata(Data &g_Data) {
                 if (v.line[0] == COMMENT)
                     continue;
                 v.index = v.line.find_first_not_of(WHITE_SPACE);
-                while(v.index == -1) {
-                    std::getline(this->_in_file, v.line);
+                while(v.index == -1 && std::getline(this->_in_file, v.line)) {
                     line_index++;
                     trim(v.line, WHITE_SPACE);
                     if (v.line[0] == COMMENT)
