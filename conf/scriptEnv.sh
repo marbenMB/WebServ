@@ -79,6 +79,7 @@ logo="░██╗░░░░░░░██╗███████╗██�
 
 clear
 echo "\033[0;34m" $logo "\033[0m"
+echo "\033[0;33m" "			[by : marbenMB - mmasstou - aboulhaj]" "\033[0m" && echo ''
 dependencies
 echo "\033[0;34m" $bound "\033[0m"
 exit 0
